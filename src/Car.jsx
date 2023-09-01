@@ -21,7 +21,6 @@ import { useLoader } from "@react-three/fiber";
 import { useFrame } from "@react-three/fiber";
 import { Perf } from "r3f-perf";
 import {
-  InstancedRigidBodies,
   CuboidCollider,
   RigidBody,
   useRapier,
