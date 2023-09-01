@@ -2,6 +2,14 @@
 
 start project: npm run dev
 
+A Raycast Vehicle for use with rapier.
+
+Based on the cannon-es RaycastVehicle implementation:
+
+https://github.com/pmndrs/cannon-es/blob/master/src/objects/RaycastVehicle.ts
+
+https://github.com/pmndrs/cannon-es/blob/master/LICENSE
+
 <!--
 **SlavaKittel/slavakittel** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 
