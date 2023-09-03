@@ -37,7 +37,7 @@ import {
 import WheelURl from "../public/bmwe30wheel2.glb?url";
 
 
-const Wheel = ({ side, rotation, radius }) => {
+const Wheel = ({ side, rotation, radius, position }) => {
   const { nodes, materials } = useGLTF(WheelURl);
   const scale = radius * 4
   return (
@@ -126,7 +126,7 @@ const Car = forwardRef(function Car({ children },ref) {
     indexForwardAxis: 0,
     indexUpAxis: 1,
 
-    directionLocal: [0, -1, 0],
+    directionLocal: [0, -1.3, 0],
     axleLocal: [0, 0, 1],
 
     suspensionStiffness: 30,
@@ -145,12 +145,12 @@ const Car = forwardRef(function Car({ children },ref) {
     useCustomSlidingRotationalSpeed: true,
 
     forwardAcceleration: 1,
-    sideAcceleration: 1,
+    sideAcceleration: 3,
 
     vehicleWidth: 1.7,
-    vehicleHeight: -0.3,
+    vehicleHeight: -0.35,
     vehicleFront: -1.35,
-    vehicleBack: 1.3,
+    vehicleBack: 1.45,
 })
 
   // const radius = 0.38
@@ -290,8 +290,8 @@ const Car = forwardRef(function Car({ children },ref) {
         // colliders="hull"
         colliders={false}
         // mass={100} // ??
-        position={[0, 4, 0]}
-        rotation={[0, Math.PI, 0]}
+        position={[0, 2, 0]}
+        rotation={[-0.3, Math.PI, 0]}
       >
         <primitive
           position={[0, -0.89, 0]}

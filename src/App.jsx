@@ -5,8 +5,6 @@ import ReactDOM from 'react-dom/client'
 import { Canvas } from '@react-three/fiber'
 
 import {
-    CuboidCollider,
-    CylinderCollider,
     Physics,
     RigidBody,
     useBeforePhysicsStep,
@@ -21,7 +19,7 @@ import {
   } from '@react-three/drei'
 
 
-  const Portfolio = () => {
+  const VehicleBMW = () => {
     const raycastVehicle = useRef()
     const controls = useControls()
 
@@ -88,9 +86,6 @@ import {
             engineForce -= maxForce
         }
 
-        console.log(steering)
-        console.log(steer)
-
         if (controls.current.left) {
             steerIncreaseLeft()
             steering = steer
@@ -156,48 +151,48 @@ import {
 
 export default function App() {
   return (
-    <Canvas
-        dpr ={ [ 1, 2 ] } // default pixelRatio
-        camera={{
-          position: [10, 5, 15],
-          fov: 35, 
-          zoom: 0.5,
-        }}
-        shadows
-    >
-      <Physics
-          debug
-          timeStep="vary"
-      >
-          {/* <Leva collapsed /> */}
-          {/* Camera */}
-          <OrbitControls makeDefault />
-
-          {/* Lights */}
-          <directionalLight castShadow position={[10, 4, 3]} intensity={20} />
-          <ambientLight intensity={5.9} />
-
-          <Portfolio />
-
-          {/* ground */}
-          <RigidBody type='fixed' restitution={1} friction={0.3}>  
-              <mesh 
-                  receiveShadow
-                  position-y={-1}
-              >
-                  <boxGeometry args={[ 200, 0.5, 200]}/>
-                  <meshStandardMaterial color="#f0f0f0" />
-                  {/* <MeshReflectorMaterial
-                  resolution={ 1018 }
-                  blur={ [1000, 1000] }
-                  mixBlur={1}
-                  mirror={ 0 }
-                  color="grey"
-                  /> */}
-              </mesh>
-          </RigidBody>
-          <gridHelper args={[50, 50]} position-y={-0.74} />
-      </Physics>
-    </Canvas>
+    <>
+        <Leva collapsed />
+        <Canvas
+            frameloop="demand"
+            dpr ={ [ 1, 2 ] } // default pixelRatio
+            camera={{
+              position: [10, 5, 2],
+              fov: 35,
+              zoom: 1,
+            }}
+            shadows
+        >
+          <Physics
+              debug
+              timeStep="vary"
+          >
+              {/* Camera */}
+              <OrbitControls makeDefault />
+              {/* Lights */}
+              <directionalLight castShadow position={[10, 4, 3]} intensity={20} />
+              <ambientLight intensity={5.9} />
+              <VehicleBMW />
+              {/* ground */}
+              <RigidBody type='fixed' restitution={1} friction={0.3}>
+                  <mesh
+                      receiveShadow
+                      position-y={-1}
+                  >
+                      <boxGeometry args={[ 200, 0.5, 200]}/>
+                      <meshStandardMaterial color="#f0f0f0" />
+                      {/* <MeshReflectorMaterial
+                      resolution={ 1018 }
+                      blur={ [1000, 1000] }
+                      mixBlur={1}
+                      mirror={ 0 }
+                      color="grey"
+                      /> */}
+                  </mesh>
+              </RigidBody>
+              <gridHelper args={[50, 50]} position-y={-0.74} />
+          </Physics>
+        </Canvas>
+    </>
   )
 }
