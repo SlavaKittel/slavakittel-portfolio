@@ -53,6 +53,10 @@ type WheelGLTF = GLTF & {
   };
   materials: {
     "disk.002": MeshStandardMaterial;
+    "disk_brake.001": MeshStandardMaterial;
+    "disk_brake_tr.001": MeshStandardMaterial;
+    "disk_paint.002": MeshStandardMaterial;
+    "tire.002": MeshStandardMaterial;
   };
 };
 
@@ -156,7 +160,7 @@ const Car = forwardRef<VehicleRef, VehicleProps>(function Car(
     vehicleBack,
     ...levaWheelOptions
   } = useLeva("wheel-options", {
-    radius: 0.38,
+    radius: 0.40,
 
     indexRightAxis: 2,
     indexForwardAxis: 0,
@@ -185,7 +189,7 @@ const Car = forwardRef<VehicleRef, VehicleProps>(function Car(
 
     vehicleWidth: 1.7,
     vehicleHeight: -0.35,
-    vehicleFront: -1.35,
+    vehicleFront: -1.38,
     vehicleBack: 1.45,
   });
 
