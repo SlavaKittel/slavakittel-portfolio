@@ -2,14 +2,16 @@ import React, { useRef } from "react";
 import "./style.css";
 import { Canvas } from "@react-three/fiber";
 
+import { Perf } from "r3f-perf";
 import { Physics, RigidBody, useBeforePhysicsStep } from "@react-three/rapier";
+import { useControls as useLeva } from "leva";
 
-import Car, { VehicleRef } from "./Car";
+import Vehicle, { VehicleRef } from "./components/Vehicle";
 import { Leva } from "leva";
 import { useControls } from "./hooks/use-controls";
 import { OrbitControls } from "@react-three/drei";
 
-const VehicleBMW = () => {
+const VehicleWithBeforPhyscis = () => {
   const raycastVehicle = useRef<VehicleRef>(null);
   const controls = useControls();
 
@@ -131,13 +133,17 @@ const VehicleBMW = () => {
     setBraking(brakeForce > 0);
   });
 
-  return <Car ref={raycastVehicle} />;
+  return <Vehicle ref={raycastVehicle} />;
 };
 
 export default function App() {
+  const { perfVisible } = useLeva({
+    perfVisible: false,
+  });
   return (
     <>
       <Leva collapsed />
+      {perfVisible && <Perf position="top-left" />}
       <Canvas
         frameloop="demand"
         dpr={[1, 2]} // default pixelRatio
@@ -151,10 +157,15 @@ export default function App() {
         <Physics debug timeStep="vary">
           {/* Camera */}
           <OrbitControls makeDefault />
+
           {/* Lights */}
           <directionalLight castShadow position={[10, 4, 3]} intensity={20} />
           <ambientLight intensity={5.9} />
-          <VehicleBMW />
+
+          <VehicleWithBeforPhyscis />
+
+          {/* */}
+
           {/* ground */}
           <RigidBody type="fixed" restitution={1} friction={0.3}>
             <mesh receiveShadow position-y={-1}>

@@ -8,22 +8,17 @@ import React, {
 } from "react";
 
 import {
-  Color,
   Group,
-  Mesh,
-  MeshStandardMaterial,
   Object3D,
   Vector3,
-  Vector3Tuple,
 } from "three";
 
-import { GLTF } from "three-stdlib";
+import Wheel from "./Wheel";
+
 import { useControls as useLeva } from "leva";
-import { useGLTF } from "@react-three/drei";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { useLoader } from "@react-three/fiber";
 // import { useFrame } from "@react-three/fiber";
-import { Perf } from "r3f-perf";
 import {
   CuboidCollider,
   RigidBody,
@@ -32,39 +27,14 @@ import {
   RigidBodyProps,
   // Physics,
   // CylinderCollider,
-  // useRevoluteJoint,§
+  // useRevoluteJoint,
   // useFixedJoint,
   // useBeforePhysicsStep,
 } from "@react-three/rapier";
 import {
   RapierRaycastVehicle,
   WheelOptions,
-} from "./lib/rapier-raycast-vehicle";
-
-import WheelURl from "../public/bmwe30wheel2.glb?url";
-
-type WheelGLTF = GLTF & {
-  nodes: {
-    wheel_FR_bbs_tex002_0: Mesh;
-    wheel_FR_blt002_0: Mesh;
-    wheel_FR_disk002_0: Mesh;
-    wheel_FR_disk_paint002_0: Mesh;
-    wheel_FR_tire002_0: Mesh;
-  };
-  materials: {
-    "disk.002": MeshStandardMaterial;
-    "disk_brake.001": MeshStandardMaterial;
-    "disk_brake_tr.001": MeshStandardMaterial;
-    "disk_paint.002": MeshStandardMaterial;
-    "tire.002": MeshStandardMaterial;
-  };
-};
-
-type WheelProps = JSX.IntrinsicElements["group"] & {
-  side: "left" | "right";
-  radius: number;
-  rotation: [number, number, number];
-};
+} from "../lib/rapier-raycast-vehicle";
 
 type RaycastVehicleWheel = {
   options: WheelOptions;
@@ -80,62 +50,10 @@ export type VehicleRef = {
   setBraking: (braking: boolean) => void;
 };
 
-const Wheel = ({ side, rotation, radius, ...props }: WheelProps) => {
-  const { nodes, materials } = useGLTF(WheelURl) as WheelGLTF;
-  const scale = radius * 4;
-  return (
-    <group dispose={null} {...props}>
-      <group scale={scale}>
-        <group scale={side === "left" ? -1 : 1}>
-          <mesh
-            rotation={rotation}
-            castShadow
-            receiveShadow
-            geometry={nodes.wheel_FR_bbs_tex002_0.geometry}
-            material={materials["disk.002"]}
-          />
-          <mesh
-            rotation={rotation}
-            castShadow
-            receiveShadow
-            geometry={nodes.wheel_FR_blt002_0.geometry}
-            material={materials["disk_brake.001"]}
-          />
-          <mesh
-            rotation={rotation}
-            castShadow
-            receiveShadow
-            geometry={nodes.wheel_FR_disk002_0.geometry}
-            material={materials["disk_brake_tr.001"]}
-          />
-          <mesh
-            rotation={rotation}
-            castShadow
-            receiveShadow
-            geometry={nodes.wheel_FR_disk_paint002_0.geometry}
-            material={materials["disk_paint.002"]}
-          />
-          <mesh
-            rotation={rotation}
-            castShadow
-            receiveShadow
-            geometry={nodes.wheel_FR_tire002_0.geometry}
-            material={materials["tire.002"]}
-          />
-        </group>
-      </group>
-    </group>
-  );
-};
-
-const Car = forwardRef<VehicleRef, VehicleProps>(function Car(
+const Vehicle = forwardRef<VehicleRef, VehicleProps>(function Car(
   { children },
   ref
 ) {
-  const { perfVisible } = useLeva({
-    perfVisible: false,
-  });
-
   const rapier = useRapier();
 
   const vehicleRef = useRef<RapierRaycastVehicle>(null!);
@@ -160,7 +78,7 @@ const Car = forwardRef<VehicleRef, VehicleProps>(function Car(
     vehicleBack,
     ...levaWheelOptions
   } = useLeva("wheel-options", {
-    radius: 0.40,
+    radius: 0.4,
 
     indexRightAxis: 2,
     indexForwardAxis: 0,
@@ -192,32 +110,6 @@ const Car = forwardRef<VehicleRef, VehicleProps>(function Car(
     vehicleFront: -1.38,
     vehicleBack: 1.45,
   });
-
-  // const radius = 0.38
-  // const indexRightAxis = 2
-  // const indexForwardAxis = 0
-  // const indexUpAxis = 1
-  // const directionLocalArray = [0, -1, 0]
-  // const axleLocalArray = [0, 0, 1]
-
-  // const suspensionStiffness = 30
-  // const suspensionRestLength = 0.3
-  // const maxSuspensionForce = 100000
-  // const maxSuspensionTravel = 0.3
-  // const sideFrictionStiffness = 1
-  // const frictionSlip = 1.4
-  // const dampingRelaxation = 2.3
-  // const dampingCompression = 4.4
-  // const rollInfluence = 0.01
-  // const customSlidingRotationalSpeed = -30
-  // const useCustomSlidingRotationalSpeed = true
-  // const forwardAcceleration = 1
-  // const sideAcceleration = 1
-
-  // const vehicleWidth = 1.7
-  // const vehicleHeight = -0.3
-  // const vehicleFront = -1.35
-  // const vehicleBack = 1.3
 
   const directionLocal = useMemo(
     () => new Vector3(...directionLocalArray),
@@ -322,15 +214,13 @@ const Car = forwardRef<VehicleRef, VehicleProps>(function Car(
 
   return (
     <>
-      {perfVisible && <Perf position="top-left" />}
-
       {/* Chassis */}
       <RigidBody
         ref={chassisRigidBodyRef}
         // colliders="hull"
         colliders={false}
         // mass={100} // ??
-        position={[0, 2, 0]}
+        position={[0, 4, 0]}
         rotation={[-0.3, Math.PI, 0]}
       >
         <primitive
@@ -376,4 +266,4 @@ const Car = forwardRef<VehicleRef, VehicleProps>(function Car(
   );
 });
 
-export default Car;
+export default Vehicle;
