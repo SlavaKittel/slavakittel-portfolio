@@ -7,29 +7,20 @@ import React, {
   forwardRef,
 } from "react";
 
-import {
-  Group,
-  Object3D,
-  Vector3,
-} from "three";
+import { Group, Object3D, Vector3 } from "three";
 
 import Wheel from "./Wheel";
 
 import { useControls as useLeva } from "leva";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { useLoader } from "@react-three/fiber";
-// import { useFrame } from "@react-three/fiber";
+
 import {
   CuboidCollider,
   RigidBody,
   useRapier,
   RapierRigidBody,
   RigidBodyProps,
-  // Physics,
-  // CylinderCollider,
-  // useRevoluteJoint,
-  // useFixedJoint,
-  // useBeforePhysicsStep,
 } from "@react-three/rapier";
 import {
   RapierRaycastVehicle,
@@ -220,8 +211,8 @@ const Vehicle = forwardRef<VehicleRef, VehicleProps>(function Car(
         // colliders="hull"
         colliders={false}
         // mass={100} // ??
-        position={[0, 4, 0]}
-        rotation={[-0.3, Math.PI, 0]}
+        position={[-90, 4, 0]}
+        rotation={[-0.1, 0.2, 0]}
       >
         <primitive
           position={[0, -0.89, 0]}
