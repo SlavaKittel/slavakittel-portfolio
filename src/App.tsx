@@ -193,47 +193,7 @@ const VehicleAndGroundWithBeforPhyscis = ({ isKeydown }: Props) => {
       camera.position.copy(currentCameraPosition.current);
       camera.lookAt(currentCameraLookAt.current);
     });
-
-    // let scrollTopValue = document.getElementById("scroll-controls")!.scrollTop / window.innerHeight
-    // useFrame((state, delta) => {
-    //   const chassisPositionTranslation =
-    //   raycastVehicle.current?.chassisRigidBody?.current?.translation();
-    //   co/     chassisPosition * window.innerHeight;
-    //   // }
-
-    //   const scrollOrVehiclePosition =
-    //     isKeydown && chassisPosition > scrollPosition
-    //       ? chassisPosition
-    //       : scrollPosition;
-
-    //   state.camera.position.set(scrollOrVehiclePosition * 190, 60, 0);
-
-    //   // console.log("isKeydown", isKeydown);
-    //   // console.log("isMouseWheel", isMouseWheel);
-    //   // // console.log("scrollPosition>", scrollPosition > chassisPosition);
-    //   // // console.log("chassisPosition>", scrollPosition < chassisPosition);
-    //   // console.log(
-    //   //   "=",
-    //   //   scrollPosition.toFixed(2) === chassisPosition.toFixed(2)
-    //   // );
-    //   // console.log("scrollPosition", scrollPosition.toFixed(2));
-    //   // console.log("chassisPosition", chassisPosition.toFixed(2));
-    //   // // console.log("newScrollPosition", newScrollPosition.toFixed(3));
-    // });nst chassisPosition = (chassisPositionTranslation!.x + 100) / 100 / 2;
-
-    //   let scrollPosition =
-    //     document.getElementById("scroll-controls")!.scrollTop /
-    //     window.innerHeight;
-
-    //   if (isKeydown && scrollTopValue > chassisPosition) {
-    //     scrollTopValue -= 0.006
-    //     scrollPosition = scrollTopValue;
-    //     // newScrollPosition -= 0.006;
-    //   }
-
-    //   // if (isKeydown && chassisPosition > scrollPosition) {
-    //   //   document.getElementById("scroll-controls")!.scrollTop =
-    //   /
+  
     return (
       <RigidBody type="fixed" restitution={1} friction={0.3}>
         <mesh receiveShadow position={[0, -1.77, 0]}>
@@ -290,47 +250,18 @@ export default function App() {
       <Canvas
         frameloop="demand"
         dpr={[1, 2]} // default pixelRatio
-        // orthographic
-        camera={{
-          // position: [400, 300, -200],
-          fov: 35,
-          // zoom: 1,
-        }}
-        // camera={{
-        //   position: [90, 60, 0],
-        //   fov: 35,
-        //   zoom: 0.1,
-        // }}
-        // camera={{
-        //   position: [190, 60, 0],
-        //   fov: 5,
-        //   zoom: 20,
-        // }}
+        camera={{ fov: 35 }}
         shadows
       >
         <ScrollControls pages={2}>
           <Physics timeStep="vary">
-            {/* Camera */}
-            {/* <OrthographicCamera
-            makeDefault
-            zoom={20}
-            top={200}
-            bottom={-200}
-            left={200}
-            right={-200}
-            near={1}
-            far={2000}
-            position={[190, 50, 0]}
-          /> */}
-            {/* <FlyControls makeDefault /> */}
-
             {/* Lights */}
             <directionalLight castShadow position={[10, 4, 3]} intensity={3} />
             <ambientLight intensity={2.9} />
 
             <VehicleAndGroundWithBeforPhyscis isKeydown={isKeydown} />
 
-            {/* web-site boundary */}
+            {/* Web-site boundary */}
             <RigidBody colliders="cuboid" type="fixed">
               <mesh receiveShadow position={[1, 0, 15]} rotation-x={0.1}>
                 <boxGeometry args={[200, 3, 1]} />
