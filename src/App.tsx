@@ -30,11 +30,11 @@ const VehicleHooks = ({ isKeydown }: Props) => {
   const currentCameraLookAt = useRef(new Vector3());
 
   const maxForce = 100;
-  const maxBrake = 1;
+  const maxBrake = 0.3;
   const maxSteer = 0.7;
 
   // start logic for smooth turning of the front wheels
-  const stepSteer = 0.01;
+  const stepSteer = 0.002;
   let steer = 0;
   function steerIncreaseLeft() {
     setTimeout(function () {
@@ -192,11 +192,7 @@ const VehicleHooks = ({ isKeydown }: Props) => {
     camera.lookAt(currentCameraLookAt.current);
   });
 
-  return (
-    <>
-      <Vehicle ref={raycastVehicle} />
-    </>
-  );
+  return <Vehicle ref={raycastVehicle} />;
 };
 
 export default function App() {
@@ -239,7 +235,7 @@ export default function App() {
         shadows
       >
         <ScrollControls pages={2}>
-          <Physics timeStep="vary">
+          <Physics timeStep={1 / 480}>
             {/* Lights */}
             <directionalLight castShadow position={[10, 4, 3]} intensity={3} />
             <ambientLight intensity={2.9} />
