@@ -20,7 +20,7 @@ type Props = {
   isKeydown: boolean;
 };
 
-const VehicleAndGroundWithBeforPhyscis = ({ isKeydown }: Props) => {
+const VehicleHooks = ({ isKeydown }: Props) => {
   const raycastVehicle = useRef<VehicleRef>(null);
 
   const controls = useControls();
@@ -147,69 +147,54 @@ const VehicleAndGroundWithBeforPhyscis = ({ isKeydown }: Props) => {
     // setBraking(brakeForce > 0);
   });
 
-  function GroundWebSite() {
-    const scroll = useScroll();
-    useFrame((state, delta) => {
-      const chassis = raycastVehicle.current?.chassisRigidBody;
-      if (!chassis?.current) return;
+  const scroll = useScroll();
+  useFrame((state, delta) => {
+    const chassis = raycastVehicle.current?.chassisRigidBody;
+    if (!chassis?.current) return;
 
-      const ratioScreen = window.innerHeight / window.innerWidth;
-      const calculatedCoefficientScale = () => {
-        if (ratioScreen > 0.5 && ratioScreen < 1)
-          return Math.pow(ratioScreen, 3) * 4;
-        if (ratioScreen > 1) return ratioScreen * 3;
-        return Math.pow(ratioScreen, 3) * 10 - 1;
-      };
-      const calcCoefficientY = ratioScreen > 1 ? 9 : 3;
+    const ratioScreen = window.innerHeight / window.innerWidth;
+    const calculatedCoefficientScale = () => {
+      if (ratioScreen > 0.5 && ratioScreen < 1)
+        return Math.pow(ratioScreen, 3) * 4;
+      if (ratioScreen > 1) return ratioScreen * 3;
+      return Math.pow(ratioScreen, 3);
+    };
 
-      chassisTranslation.copy(chassis.current.translation() as Vector3);
+    const calcCoefficientY = ratioScreen > 1 ? 9 : 3;
 
-      const scrollPosition = scroll.offset * 2 * 100 - 100;
-      const scrollOrVehiclePosition = isKeydown
-        ? chassisTranslation.x
-        : scrollPosition;
+    chassisTranslation.copy(chassis.current.translation() as Vector3);
 
-      const scrollOrVehiclePositionZ = isKeydown
-        ? 0.3 * chassisTranslation.z
-        : 0;
+    const scrollPosition = scroll.offset * 2 * 100 - 100;
+    const scrollOrVehiclePosition = isKeydown
+      ? chassisTranslation.x
+      : scrollPosition;
 
-      const t = 1 - Math.pow(0.01, delta);
+    const scrollOrVehiclePositionZ = isKeydown ? 0.3 * chassisTranslation.z : 0;
 
-      cameraIdealOffset.set(35, 20, 0);
-      cameraIdealOffset.addScaledVector(
-        new THREE.Vector3(10, calcCoefficientY, 0),
-        calculatedCoefficientScale()
-      );
-      cameraIdealOffset.add(new THREE.Vector3(scrollOrVehiclePosition, 0, 0));
+    const t = 1 - Math.pow(0.01, delta);
 
-      cameraIdealLookAt.set(22, 6, 0);
-      cameraIdealLookAt.add(
-        new THREE.Vector3(scrollOrVehiclePosition, 0, scrollOrVehiclePositionZ)
-      );
-
-      currentCameraPosition.current.lerp(cameraIdealOffset, t);
-      currentCameraLookAt.current.lerp(cameraIdealLookAt, t);
-
-      camera.position.copy(currentCameraPosition.current);
-      camera.lookAt(currentCameraLookAt.current);
-    });
-  
-    return (
-      <RigidBody type="fixed" restitution={1} friction={0.3}>
-        <mesh receiveShadow position={[0, -1.77, 0]}>
-          <boxGeometry args={[200, 0.5, 30]} />
-          <meshStandardMaterial color="#4e69b9" />
-        </mesh>
-      </RigidBody>
+    cameraIdealOffset.set(20, 20, 0);
+    cameraIdealOffset.addScaledVector(
+      new THREE.Vector3(10, calcCoefficientY, 0),
+      calculatedCoefficientScale()
     );
-  }
+    cameraIdealOffset.add(new THREE.Vector3(scrollOrVehiclePosition, 0, 0));
+
+    cameraIdealLookAt.set(10, 10, 0);
+    cameraIdealLookAt.add(
+      new THREE.Vector3(scrollOrVehiclePosition, 0, scrollOrVehiclePositionZ)
+    );
+
+    currentCameraPosition.current.lerp(cameraIdealOffset, t);
+    currentCameraLookAt.current.lerp(cameraIdealLookAt, t);
+
+    camera.position.copy(currentCameraPosition.current);
+    camera.lookAt(currentCameraLookAt.current);
+  });
 
   return (
     <>
       <Vehicle ref={raycastVehicle} />
-
-      {/* ground */}
-      <GroundWebSite />
     </>
   );
 };
@@ -259,7 +244,7 @@ export default function App() {
             <directionalLight castShadow position={[10, 4, 3]} intensity={3} />
             <ambientLight intensity={2.9} />
 
-            <VehicleAndGroundWithBeforPhyscis isKeydown={isKeydown} />
+            <VehicleHooks isKeydown={isKeydown} />
 
             {/* Web-site boundary */}
             <RigidBody colliders="cuboid" type="fixed">
@@ -270,6 +255,14 @@ export default function App() {
               <mesh receiveShadow position={[1, 0, -15]} rotation-x={-0.1}>
                 <boxGeometry args={[200, 3, 1]} />
                 <meshStandardMaterial color="#ce0300" />
+              </mesh>
+            </RigidBody>
+
+            {/* Ground */}
+            <RigidBody type="fixed" restitution={1} friction={0.3}>
+              <mesh receiveShadow position={[0, -1.77, 0]}>
+                <boxGeometry args={[200, 0.5, 30]} />
+                <meshStandardMaterial color="#4e69b9" />
               </mesh>
             </RigidBody>
           </Physics>
