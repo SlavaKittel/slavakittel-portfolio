@@ -168,6 +168,7 @@ const Vehicle = forwardRef<VehicleRef, VehicleProps>(function Car(
     chassisRigidBody: chassisRigidBodyRef,
     rapierRaycastVehicle: vehicleRef,
     setBraking: () => {
+      // TODO break?
       // const material = brakeLightsRef.current
       //     .material as MeshStandardMaterial
       // material.color = braking
@@ -210,7 +211,7 @@ const Vehicle = forwardRef<VehicleRef, VehicleProps>(function Car(
         ref={chassisRigidBodyRef}
         // colliders="hull"
         colliders={false}
-        // mass={100} // ??
+        // mass={100} // TODO ??
         position={[-90, 4, 0]}
         rotation={[-0.1, 0.2, 0]}
       >

@@ -2,15 +2,22 @@ import * as THREE from "three";
 import React, { useRef, useState, useEffect } from "react";
 import { Canvas, useThree, useFrame } from "@react-three/fiber";
 
-import { Perf } from "r3f-perf";
-import { Physics, RigidBody, useBeforePhysicsStep } from "@react-three/rapier";
-import { useControls as useLeva } from "leva";
-import { Vector3 } from "three";
-import { ScrollControls, useScroll } from "@react-three/drei";
-
-import Vehicle, { VehicleRef } from "./components/Vehicle";
 import { Leva } from "leva";
 import { useControls } from "./hooks/use-controls";
+
+import { Perf } from "r3f-perf";
+import {
+  Physics,
+  RigidBody,
+  CuboidCollider,
+  useBeforePhysicsStep,
+} from "@react-three/rapier";
+import { useControls as useLeva } from "leva";
+import { Vector3 } from "three";
+import { ScrollControls, useScroll, OrbitControls } from "@react-three/drei";
+
+import Vehicle, { VehicleRef } from "./components/Vehicle";
+import MainText from "./components/MainText";
 
 const cameraIdealOffset = new Vector3();
 const cameraIdealLookAt = new Vector3();
@@ -21,9 +28,17 @@ type Props = {
 };
 
 const VehicleHooks = ({ isKeydown }: Props) => {
-  const raycastVehicle = useRef<VehicleRef>(null);
+  const { cameraMode } = useLeva("camera", {
+    cameraMode: {
+      value: "drive",
+      options: ["drive", "orbit"],
+    },
+  });
 
   const controls = useControls();
+  const scroll = useScroll();
+
+  const raycastVehicle = useRef<VehicleRef>(null);
 
   const camera = useThree((state) => state.camera);
   const currentCameraPosition = useRef(new Vector3(15, 15, 0));
@@ -135,6 +150,7 @@ const VehicleHooks = ({ isKeydown }: Props) => {
       wheelObject.quaternion.copy(wheelState.worldTransform.quaternion);
     }
 
+    // TODO need to brake or speed text?
     // update speed text
     // if (currentSpeedTextDiv.current) {
     //     const km = Math.abs(
@@ -147,8 +163,8 @@ const VehicleHooks = ({ isKeydown }: Props) => {
     // setBraking(brakeForce > 0);
   });
 
-  const scroll = useScroll();
   useFrame((state, delta) => {
+    if (cameraMode !== "drive") return;
     const chassis = raycastVehicle.current?.chassisRigidBody;
     if (!chassis?.current) return;
 
@@ -192,11 +208,20 @@ const VehicleHooks = ({ isKeydown }: Props) => {
     camera.lookAt(currentCameraLookAt.current);
   });
 
-  return <Vehicle ref={raycastVehicle} />;
+  return (
+    <>
+      {cameraMode === "orbit" && <OrbitControls />}
+      <Vehicle ref={raycastVehicle} />
+    </>
+  );
 };
 
 export default function App() {
-  const [isKeydown, setKeydown] = useState(false);
+  const { perfVisible, debug } = useLeva({
+    perfVisible: false,
+    debug: true,
+  });
+  const [isKeydown, setKeydown] = useState(true);
 
   useEffect(() => {
     const clickListener = (e: { code: string; preventDefault: () => void }) => {
@@ -221,25 +246,33 @@ export default function App() {
     return () => document.removeEventListener("wheel", clickListener);
   }, []);
 
-  const { perfVisible } = useLeva({
-    perfVisible: false,
-  });
   return (
     <>
       <Leva collapsed />
-      {perfVisible && <Perf position="top-left" />}
       <Canvas
-        frameloop="demand"
-        dpr={[1, 2]} // default pixelRatio
-        camera={{ fov: 35 }}
+        frameloop="demand" // TODO ?
+        dpr={[1, 2]} // default pixelRatio //TODO need?
+        camera={{
+          fov: 35,
+        }}
         shadows
       >
+        {perfVisible && <Perf position="top-left" />}
         <ScrollControls pages={2}>
-          <Physics timeStep={1 / 480}>
+          <Physics
+            timeStep={1 / 400}
+            updatePriority={-50}
+            gravity={[0, -9.08, 0]}
+            debug={debug}
+          >
             {/* Lights */}
             <directionalLight castShadow position={[10, 4, 3]} intensity={3} />
             <ambientLight intensity={2.9} />
 
+            {/* Main text */}
+            <MainText />
+
+            {/* Vehicle with hooks */}
             <VehicleHooks isKeydown={isKeydown} />
 
             {/* Web-site boundary */}
@@ -255,15 +288,21 @@ export default function App() {
             </RigidBody>
 
             {/* Ground */}
-            <RigidBody type="fixed" restitution={1} friction={0.3}>
-              <mesh receiveShadow position={[0, -1.77, 0]}>
-                <boxGeometry args={[200, 0.5, 30]} />
+            <RigidBody
+              type="fixed"
+              colliders={false}
+              friction={1}
+              position={[0, -2, 0]}
+              restitution={0.3}
+            >
+              <CuboidCollider args={[100, 0.5, 15]} />
+              <mesh receiveShadow>
+                <boxGeometry args={[200, 1, 30]} />
                 <meshStandardMaterial color="#4e69b9" />
               </mesh>
             </RigidBody>
           </Physics>
         </ScrollControls>
-        {/* <gridHelper args={[80, 50]} position-y={-0.74} /> */}
       </Canvas>
     </>
   );
