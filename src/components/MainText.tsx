@@ -1,10 +1,11 @@
 import React, { useState, useRef } from "react";
 import { RigidBody, RapierRigidBody } from "@react-three/rapier";
-import { Text3D } from "@react-three/drei";
+import { Text3D, useMatcapTexture } from "@react-three/drei";
 
 type TextProps = {};
 
 const MainText = ({}: TextProps) => {
+  const [matcapTexture] = useMatcapTexture("245642_3D8168_3D6858_417364", 256);
   const lettersArrayName = [
     "S",
     "L",
@@ -68,7 +69,7 @@ const MainText = ({}: TextProps) => {
           bevelSegments={5}
         >
           {letter}
-          <meshStandardMaterial color={isAsleep ? "green" : "blue"} />
+          <meshMatcapMaterial matcap={matcapTexture} />
         </Text3D>
       </RigidBody>
     );

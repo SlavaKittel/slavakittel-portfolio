@@ -219,7 +219,7 @@ const VehicleHooks = ({ isKeydown }: Props) => {
 export default function App() {
   const { perfVisible, debug } = useLeva({
     perfVisible: false,
-    debug: true,
+    debug: false,
   });
   const [isKeydown, setKeydown] = useState(true);
 
@@ -242,8 +242,12 @@ export default function App() {
   useEffect(() => {
     const clickListener = () => setKeydown(false);
     document.addEventListener("wheel", clickListener);
+    document.addEventListener("touchmove", clickListener);
 
-    return () => document.removeEventListener("wheel", clickListener);
+    return () => {
+      document.removeEventListener("wheel", clickListener)
+      document.removeEventListener("touchmove", clickListener)
+    };
   }, []);
 
   return (
