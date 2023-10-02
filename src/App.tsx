@@ -1,6 +1,8 @@
 import * as THREE from "three";
 import React, { useRef, useState, useEffect } from "react";
 import { Canvas, useThree, useFrame } from "@react-three/fiber";
+import styled from "styled-components";
+import { isMobile } from "react-device-detect";
 
 import { Leva } from "leva";
 import { useControls } from "./hooks/use-controls";
@@ -15,6 +17,9 @@ import {
 import { useControls as useLeva } from "leva";
 import { Vector3 } from "three";
 import { ScrollControls, useScroll, OrbitControls } from "@react-three/drei";
+
+import { Joystick } from "react-joystick-component";
+import { IJoystickUpdateEvent } from "react-joystick-component/build/lib/Joystick";
 
 import Vehicle, { VehicleRef } from "./components/Vehicle";
 import MainText from "./components/MainText";
@@ -48,38 +53,8 @@ const VehicleHooks = ({ isKeydown }: Props) => {
   const maxBrake = 0.3;
   const maxSteer = 0.7;
 
-  // start logic for smooth turning of the front wheels
   const stepSteer = 0.002;
   let steer = 0;
-  function steerIncreaseLeft() {
-    setTimeout(function () {
-      if (steer < maxSteer && controls.current.left) {
-        steer += stepSteer;
-      }
-    }, 70);
-  }
-  function steerDicreaseLeft() {
-    setTimeout(function () {
-      if (steer > stepSteer && !controls.current.left) {
-        steer -= stepSteer;
-      }
-    }, 70);
-  }
-  function steerIncreaseRight() {
-    setTimeout(function () {
-      if (steer > -maxSteer && controls.current.right) {
-        steer -= stepSteer;
-      }
-    }, 70);
-  }
-  function steerDicreaseRight() {
-    setTimeout(function () {
-      if (steer < -stepSteer && !controls.current.right) {
-        steer += stepSteer;
-      }
-    }, 70);
-  }
-  // end logic for smooth turning of the front wheels
 
   useBeforePhysicsStep((world) => {
     if (
@@ -107,19 +82,30 @@ const VehicleHooks = ({ isKeydown }: Props) => {
     }
 
     if (controls.current.left) {
-      steerIncreaseLeft();
+      if (steer < maxSteer) {
+        steer += stepSteer;
+      }
       steering = steer;
     }
+
     if (!controls.current.left) {
-      steerDicreaseLeft();
+      if (steer > stepSteer) {
+        steer -= stepSteer;
+      }
       steering = steer;
     }
+
     if (controls.current.right) {
-      steerIncreaseRight();
+      if (steer > -maxSteer) {
+        steer -= stepSteer;
+      }
       steering = steer;
     }
+
     if (!controls.current.right) {
-      steerDicreaseRight();
+      if (steer < -stepSteer) {
+        steer += stepSteer;
+      }
       steering = steer;
     }
 
@@ -240,19 +226,77 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    const appCanvas = document.getElementById("gameCanvas");
     const clickListener = () => setKeydown(false);
     document.addEventListener("wheel", clickListener);
-    document.addEventListener("touchmove", clickListener);
+    appCanvas?.addEventListener("touchmove", clickListener);
 
     return () => {
-      document.removeEventListener("wheel", clickListener)
-      document.removeEventListener("touchmove", clickListener)
+      document.removeEventListener("wheel", clickListener);
+      appCanvas?.removeEventListener("touchmove", clickListener);
     };
   }, []);
+
+  const getKeyEvent = (letter: string, code: number, typeEvent: string) =>
+    new KeyboardEvent(typeEvent, {
+      key: letter,
+      code: `key${letter}`,
+      which: code,
+      keyCode: code,
+      charCode: code,
+      shiftKey: false,
+      ctrlKey: false,
+      altKey: false,
+      metaKey: false,
+    });
+
+  const moveHandler = (event: IJoystickUpdateEvent) => {
+    if (event.direction === "LEFT") {
+      dispatchEvent(getKeyEvent("A", 65, "keydown"));
+      setKeydown(true);
+    }
+    if (event.direction === "RIGHT") {
+      dispatchEvent(getKeyEvent("D", 68, "keydown"));
+      setKeydown(true);
+    }
+    if (event.direction === "FORWARD") {
+      dispatchEvent(getKeyEvent("W", 87, "keydown"));
+      setKeydown(true);
+    }
+    if (event.direction === "BACKWARD") {
+      dispatchEvent(getKeyEvent("S", 83, "keydown"));
+      setKeydown(true);
+    }
+
+    if (event.direction !== "LEFT") {
+      dispatchEvent(getKeyEvent("A", 65, "keyup"));
+    }
+    if (event.direction !== "RIGHT") {
+      dispatchEvent(getKeyEvent("D", 68, "keyup"));
+    }
+    if (event.direction !== "FORWARD") {
+      dispatchEvent(getKeyEvent("W", 87, "keyup"));
+    }
+    if (event.direction !== "BACKWARD") {
+      dispatchEvent(getKeyEvent("S", 83, "keyup"));
+    }
+  };
+
+  const moveHandlerStop = () => {
+    dispatchEvent(getKeyEvent("A", 65, "keyup"));
+    dispatchEvent(getKeyEvent("D", 68, "keyup"));
+    dispatchEvent(getKeyEvent("W", 87, "keyup"));
+    dispatchEvent(getKeyEvent("S", 83, "keyup"));
+  };
 
   return (
     <>
       <Leva collapsed />
+      {isMobile && (
+        <JoystikStyled>
+          <Joystick size={100} move={moveHandler} stop={moveHandlerStop} />
+        </JoystikStyled>
+      )}
       <Canvas
         frameloop="demand" // TODO ?
         dpr={[1, 2]} // default pixelRatio //TODO need?
@@ -260,6 +304,7 @@ export default function App() {
           fov: 35,
         }}
         shadows
+        id="gameCanvas"
       >
         {perfVisible && <Perf position="top-left" />}
         <ScrollControls pages={2}>
@@ -311,3 +356,22 @@ export default function App() {
     </>
   );
 }
+
+export const JoystikStyled = styled.div`
+  display: flex;
+  position: absolute;
+  bottom: 40px;
+  margin-right: auto;
+  margin-left: auto;
+  left: 50%;
+  transform: translate(-50%, 0);
+  z-index: 100;
+  & > div {
+    background: rgba(189, 241, 243, 0.2) !important;
+    border: 1px solid gray;
+    & > button {
+      background: rgba(53, 66, 152, 0.5) !important;
+      border: 1px solid #ffffffce !important;
+    }
+  }
+`;
