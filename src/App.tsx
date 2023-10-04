@@ -30,9 +30,11 @@ const chassisTranslation = new Vector3();
 
 type Props = {
   isKeydown: boolean;
+  maxForceMobile: number;
+  steeringMobile: number;
 };
 
-const VehicleHooks = ({ isKeydown }: Props) => {
+const VehicleHooks = ({ isKeydown, maxForceMobile, steeringMobile }: Props) => {
   const { cameraMode } = useLeva("camera", {
     cameraMode: {
       value: "drive",
@@ -74,39 +76,44 @@ const VehicleHooks = ({ isKeydown }: Props) => {
     let engineForce = 0;
     let steering = 0;
 
-    if (controls.current.forward) {
-      engineForce += maxForce;
-    }
-    if (controls.current.backward) {
-      engineForce -= maxForce;
-    }
-
-    if (controls.current.left) {
-      if (steer < maxSteer) {
-        steer += stepSteer;
+    if (isMobile) {
+      engineForce += maxForceMobile;
+      steering += steeringMobile;
+    } else {
+      if (controls.current.forward) {
+        engineForce += maxForce;
       }
-      steering = steer;
-    }
-
-    if (!controls.current.left) {
-      if (steer > stepSteer) {
-        steer -= stepSteer;
+      if (controls.current.backward) {
+        engineForce -= maxForce;
       }
-      steering = steer;
-    }
 
-    if (controls.current.right) {
-      if (steer > -maxSteer) {
-        steer -= stepSteer;
+      if (controls.current.left) {
+        if (steer < maxSteer) {
+          steer += stepSteer;
+        }
+        steering = steer;
       }
-      steering = steer;
-    }
 
-    if (!controls.current.right) {
-      if (steer < -stepSteer) {
-        steer += stepSteer;
+      if (!controls.current.left) {
+        if (steer > stepSteer) {
+          steer -= stepSteer;
+        }
+        steering = steer;
       }
-      steering = steer;
+
+      if (controls.current.right) {
+        if (steer > -maxSteer) {
+          steer -= stepSteer;
+        }
+        steering = steer;
+      }
+
+      if (!controls.current.right) {
+        if (steer < -stepSteer) {
+          steer += stepSteer;
+        }
+        steering = steer;
+      }
     }
 
     const brakeForce = controls.current.brake ? maxBrake : 0;
@@ -226,7 +233,7 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    const appCanvas = document.getElementById("gameCanvas");
+    const appCanvas = document.getElementById("appCanvas");
     const clickListener = () => setKeydown(false);
     document.addEventListener("wheel", clickListener);
     appCanvas?.addEventListener("touchmove", clickListener);
@@ -237,56 +244,21 @@ export default function App() {
     };
   }, []);
 
-  const getKeyEvent = (letter: string, code: number, typeEvent: string) =>
-    new KeyboardEvent(typeEvent, {
-      key: letter,
-      code: `key${letter}`,
-      which: code,
-      keyCode: code,
-      charCode: code,
-      shiftKey: false,
-      ctrlKey: false,
-      altKey: false,
-      metaKey: false,
-    });
+  const [maxForceMobile, setMaxForceMobile] = useState(0);
+  const [steeringMobile, setSteeringMobile] = useState(0);
+  const maxForce = 100;
+  const maxSteer = 0.3;
 
   const moveHandler = (event: IJoystickUpdateEvent) => {
-    if (event.direction === "LEFT") {
-      dispatchEvent(getKeyEvent("A", 65, "keydown"));
-      setKeydown(true);
-    }
-    if (event.direction === "RIGHT") {
-      dispatchEvent(getKeyEvent("D", 68, "keydown"));
-      setKeydown(true);
-    }
-    if (event.direction === "FORWARD") {
-      dispatchEvent(getKeyEvent("W", 87, "keydown"));
-      setKeydown(true);
-    }
-    if (event.direction === "BACKWARD") {
-      dispatchEvent(getKeyEvent("S", 83, "keydown"));
-      setKeydown(true);
-    }
-
-    if (event.direction !== "LEFT") {
-      dispatchEvent(getKeyEvent("A", 65, "keyup"));
-    }
-    if (event.direction !== "RIGHT") {
-      dispatchEvent(getKeyEvent("D", 68, "keyup"));
-    }
-    if (event.direction !== "FORWARD") {
-      dispatchEvent(getKeyEvent("W", 87, "keyup"));
-    }
-    if (event.direction !== "BACKWARD") {
-      dispatchEvent(getKeyEvent("S", 83, "keyup"));
-    }
+    if (!event.y || !event.x) return;
+    setMaxForceMobile(maxForce * event?.y);
+    setSteeringMobile(maxSteer * -event?.x);
+    setKeydown(true);
   };
 
   const moveHandlerStop = () => {
-    dispatchEvent(getKeyEvent("A", 65, "keyup"));
-    dispatchEvent(getKeyEvent("D", 68, "keyup"));
-    dispatchEvent(getKeyEvent("W", 87, "keyup"));
-    dispatchEvent(getKeyEvent("S", 83, "keyup"));
+    setMaxForceMobile(0);
+    setSteeringMobile(0);
   };
 
   return (
@@ -304,7 +276,7 @@ export default function App() {
           fov: 35,
         }}
         shadows
-        id="gameCanvas"
+        id="appCanvas"
       >
         {perfVisible && <Perf position="top-left" />}
         <ScrollControls pages={2}>
@@ -322,7 +294,11 @@ export default function App() {
             <MainText />
 
             {/* Vehicle with hooks */}
-            <VehicleHooks isKeydown={isKeydown} />
+            <VehicleHooks
+              isKeydown={isKeydown}
+              maxForceMobile={maxForceMobile}
+              steeringMobile={steeringMobile}
+            />
 
             {/* Web-site boundary */}
             <RigidBody colliders="cuboid" type="fixed">
