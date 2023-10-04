@@ -9,7 +9,7 @@ import React, {
 
 import { Group, Object3D, Vector3 } from "three";
 
-import Wheel from "./Wheel";
+import Wheel from "../../Wheel";
 
 import { useControls as useLeva } from "leva";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
@@ -25,7 +25,7 @@ import {
 import {
   RapierRaycastVehicle,
   WheelOptions,
-} from "../lib/rapier-raycast-vehicle";
+} from "../../../lib/rapier-raycast-vehicle";
 
 type RaycastVehicleWheel = {
   options: WheelOptions;
