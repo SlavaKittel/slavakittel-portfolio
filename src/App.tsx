@@ -24,26 +24,29 @@ import { IJoystickUpdateEvent } from "react-joystick-component/build/lib/Joystic
 import Vehicle, { VehicleRef } from "./components/Vehicle";
 import MainText from "./components/MainText";
 
-const cameraIdealOffset = new Vector3();
-const cameraIdealLookAt = new Vector3();
-const chassisTranslation = new Vector3();
-
 type Props = {
   isKeydown: boolean;
   maxForceMobile: number;
   steeringMobile: number;
 };
 
-const VehicleHooks = ({ isKeydown, maxForceMobile, steeringMobile }: Props) => {
+const CameraAndControlVehicle = ({
+  isKeydown,
+  maxForceMobile,
+  steeringMobile,
+}: Props) => {
   const { cameraMode } = useLeva("camera", {
     cameraMode: {
       value: "drive",
       options: ["drive", "orbit"],
     },
   });
-
   const controls = useControls();
   const scroll = useScroll();
+
+  const cameraIdealOffset = new Vector3();
+  const cameraIdealLookAt = new Vector3();
+  const chassisTranslation = new Vector3();
 
   const raycastVehicle = useRef<VehicleRef>(null);
 
@@ -293,8 +296,8 @@ export default function App() {
             {/* Main text */}
             <MainText />
 
-            {/* Vehicle with hooks */}
-            <VehicleHooks
+            {/* Vehicle with Camera and Controls hooks */}
+            <CameraAndControlVehicle
               isKeydown={isKeydown}
               maxForceMobile={maxForceMobile}
               steeringMobile={steeringMobile}
