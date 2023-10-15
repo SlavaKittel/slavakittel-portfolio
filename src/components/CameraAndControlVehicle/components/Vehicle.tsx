@@ -32,7 +32,7 @@ type RaycastVehicleWheel = {
   object: RefObject<Object3D>;
 };
 
-export type VehicleProps = RigidBodyProps;
+export type VehicleModelProps = RigidBodyProps;
 
 export type VehicleRef = {
   chassisRigidBody: RefObject<RapierRigidBody>;
@@ -41,7 +41,7 @@ export type VehicleRef = {
   setBraking: (braking: boolean) => void;
 };
 
-const Vehicle = forwardRef<VehicleRef, VehicleProps>(function Car(
+const VehicleModel = forwardRef<VehicleRef, VehicleModelProps>(function Car(
   { children },
   ref
 ) {
@@ -258,4 +258,4 @@ const Vehicle = forwardRef<VehicleRef, VehicleProps>(function Car(
   );
 });
 
-export default Vehicle;
+export default VehicleModel;

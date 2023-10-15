@@ -10,19 +10,23 @@ import { useControls as useLeva } from "leva";
 import { Vector3 } from "three";
 import { useScroll, OrbitControls } from "@react-three/drei";
 
-import Vehicle, { VehicleRef } from "./components/Vehicle";
+import VehicleModel, { VehicleRef } from "./components/Vehicle";
 
-type VehicleHooksProps = {
+type VehicleProps = {
   isKeydown: boolean;
   maxForceMobile: number;
   steeringMobile: number;
+  setCurrentScroll: (currentScroll: number) => void;
+  isVideoBlock: boolean;
 };
 
-export default function CameraAndControlVehicle({
+export default function Vehicle({
   isKeydown,
   maxForceMobile,
   steeringMobile,
-}: VehicleHooksProps) {
+  setCurrentScroll,
+  isVideoBlock,
+}: VehicleProps) {
   const { cameraMode } = useLeva("camera", {
     cameraMode: {
       value: "drive",
@@ -31,16 +35,15 @@ export default function CameraAndControlVehicle({
   });
   const controls = useControls();
   const scroll = useScroll();
-
-  const cameraIdealOffset = new Vector3();
-  const cameraIdealLookAt = new Vector3();
-  const chassisTranslation = new Vector3();
+  const camera = useThree((state) => state.camera);
 
   const raycastVehicle = useRef<VehicleRef>(null);
-
-  const camera = useThree((state) => state.camera);
-  const currentCameraPosition = useRef(new Vector3(15, 15, 0));
+  const currentCameraPosition = useRef(new Vector3());
   const currentCameraLookAt = useRef(new Vector3());
+
+  const newCameraPosition = new Vector3();
+  const newCameraLookAt = new Vector3();
+  const newChassisTranslation = new Vector3();
 
   const maxForce = 100;
   const maxBrake = 0.3;
@@ -149,45 +152,61 @@ export default function CameraAndControlVehicle({
 
   useFrame((state, delta) => {
     if (cameraMode !== "drive") return;
+
     const chassis = raycastVehicle.current?.chassisRigidBody;
     if (!chassis?.current) return;
 
+    // chassis translation
+    newChassisTranslation.copy(chassis.current.translation() as Vector3);
+
+    const { offset, scroll: scrollCurrent } = scroll as any;
+    const speedAnimation = 0.045;
     const ratioScreen = window.innerHeight / window.innerWidth;
     const calculatedCoefficientScale = () => {
+      if (isVideoBlock) return 1;
       if (ratioScreen > 0.5 && ratioScreen < 1)
-        return Math.pow(ratioScreen, 3) * 4;
-      if (ratioScreen > 1) return ratioScreen * 3;
+        return Math.pow(ratioScreen, 3) * 2;
+      if (ratioScreen > 1 && ratioScreen < 2) return ratioScreen * 1.3;
+      if (ratioScreen > 2) return ratioScreen * 1.2;
       return Math.pow(ratioScreen, 3);
     };
+    const calcVideoBlockByRatioY = () => {
+      if (ratioScreen > 1 && ratioScreen < 2) return 24 * ratioScreen;
+      return 27 * ratioScreen;
+    };
+    const scrollPosition = isVideoBlock ? -85 : offset * 2 * 100 - 100;
 
-    const calcCoefficientY = ratioScreen > 1 ? 9 : 3;
+    // axises calculation
+    const videoBlockX = isVideoBlock ? 0.01 : 20;
+    const videoBlockY = isVideoBlock ? calcVideoBlockByRatioY() : 20;
+    const ratioScreenY = ratioScreen > 1 ? 9 : 3;
+    const scrollOrVehiclePositionX =
+      isKeydown && !isVideoBlock ? newChassisTranslation.x : scrollPosition;
+    const scrollOrVehiclePositionZ =
+      isKeydown && !isVideoBlock ? 0.3 * newChassisTranslation.z : 0;
 
-    chassisTranslation.copy(chassis.current.translation() as Vector3);
+    // set current scroll
+    setCurrentScroll(scrollCurrent.current);
 
-    const scrollPosition = scroll.offset * 2 * 100 - 100;
-    const scrollOrVehiclePosition = isKeydown
-      ? chassisTranslation.x
-      : scrollPosition;
-
-    const scrollOrVehiclePositionZ = isKeydown ? 0.3 * chassisTranslation.z : 0;
-
-    const t = 1 - Math.pow(0.01, delta);
-
-    cameraIdealOffset.set(20, 20, 0);
-    cameraIdealOffset.addScaledVector(
-      new THREE.Vector3(10, calcCoefficientY, 0),
+    // newCameraPosition
+    newCameraPosition.set(videoBlockX, videoBlockY, 0);
+    newCameraPosition.addScaledVector(
+      new THREE.Vector3(10, ratioScreenY, 0),
       calculatedCoefficientScale()
     );
-    cameraIdealOffset.add(new THREE.Vector3(scrollOrVehiclePosition, 0, 0));
+    newCameraPosition.add(new THREE.Vector3(scrollOrVehiclePositionX, 0, 0));
 
-    cameraIdealLookAt.set(10, 10, 0);
-    cameraIdealLookAt.add(
-      new THREE.Vector3(scrollOrVehiclePosition, 0, scrollOrVehiclePositionZ)
+    // newCameraLookAt
+    newCameraLookAt.set(10, 10, 0);
+    newCameraLookAt.add(
+      new THREE.Vector3(scrollOrVehiclePositionX, 0, scrollOrVehiclePositionZ)
     );
 
-    currentCameraPosition.current.lerp(cameraIdealOffset, t);
-    currentCameraLookAt.current.lerp(cameraIdealLookAt, t);
+    // smooth animation
+    currentCameraPosition.current.lerp(newCameraPosition, speedAnimation);
+    currentCameraLookAt.current.lerp(newCameraLookAt, speedAnimation);
 
+    // set camera
     camera.position.copy(currentCameraPosition.current);
     camera.lookAt(currentCameraLookAt.current);
   });
@@ -195,7 +214,7 @@ export default function CameraAndControlVehicle({
   return (
     <>
       {cameraMode === "orbit" && <OrbitControls />}
-      <Vehicle ref={raycastVehicle} />
+      <VehicleModel ref={raycastVehicle} />
     </>
   );
 }

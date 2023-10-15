@@ -39,21 +39,18 @@ const MainText = ({}: TextProps) => {
     "o",
   ];
 
-  const mainTextName = lettersArrayName.map((letter, index) => {
+  const mainTextMyName = lettersArrayName.map((letter, index) => {
     const positionLetterByZ = () => {
-      if (index > 4 && index < 7) return -(index * 1.4 - 4);
-      if (index >= 7) return -(index * 1.4 - 4.5);
-      return -(index * 1.3 - 9.5);
+      if (index > 4 && index < 7) return -(index * 1.4 - 6);
+      if (index >= 7) return -(index * 1.4 - 6.5);
+      return -(index * 1.3 - 7.5);
     };
-    const [isAsleep, setIsAsleep] = useState(false);
     const rigidBody = useRef<RapierRigidBody>(null);
     return (
       <RigidBody
         ref={rigidBody}
         colliders="hull"
         position={[-85, 5.74, positionLetterByZ()]}
-        onSleep={() => setIsAsleep(true)}
-        onWake={() => setIsAsleep(false)}
         rotation-y={Math.PI * 0.5}
         key={`${index}-${letter}`}
         friction={1}
@@ -76,18 +73,15 @@ const MainText = ({}: TextProps) => {
   });
   const mainTextPortfolio = lettersArrayPortfolio.map((letter, index) => {
     const positionLetterByZ = () => {
-      if (index >= 8) return -(index * 0.7 - 4.5);
-      return -(index * 0.7 - 9.5);
+      if (index >= 8) return -(index * 0.6 - 4);
+      return -(index * 0.6 - 5.5);
     };
-    const [isAsleep, setIsAsleep] = useState(false);
     const rigidBody = useRef<RapierRigidBody>(null);
     return (
       <RigidBody
         ref={rigidBody}
         colliders="cuboid"
         position={[-82, 5.74, positionLetterByZ()]}
-        onSleep={() => setIsAsleep(true)}
-        onWake={() => setIsAsleep(false)}
         rotation-z={Math.PI * 0.5}
         rotation-x={Math.PI * 1.5}
         key={`${index}-${letter}`}
@@ -104,14 +98,14 @@ const MainText = ({}: TextProps) => {
           bevelSegments={5}
         >
           {letter}
-          <meshStandardMaterial color={isAsleep ? "green" : "blue"} />
+          <meshStandardMaterial color='black' />
         </Text3D>
       </RigidBody>
     );
   });
   return (
     <>
-      {mainTextName}
+      {mainTextMyName}
       {mainTextPortfolio}
     </>
   );
