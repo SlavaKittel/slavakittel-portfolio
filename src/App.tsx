@@ -13,7 +13,7 @@ import { ScrollControls } from "@react-three/drei";
 import { Joystick } from "react-joystick-component";
 import { IJoystickUpdateEvent } from "react-joystick-component/build/lib/Joystick";
 
-import Vehicle from "./components/CameraAndControlVehicle/CameraAndControlVehicle";
+import Vehicle from "./components/Vehicle/Vehicle";
 import MainText from "./components/MainText";
 import LinkedInLogo from "./components/LinkedInLogo";
 import VideoBlock from "./components/VideoBlock";
@@ -104,8 +104,10 @@ export default function App() {
             {/* Lights */}
             <directionalLight castShadow position={[10, 4, 3]} intensity={3} />
             <ambientLight intensity={2.9} />
+
             {/* Main text */}
             <MainText />
+
             {/* Vehicle with Camera and Controls hooks */}
             <Vehicle
               isKeydown={isKeydown}
@@ -119,6 +121,7 @@ export default function App() {
               position={[-75, -1.9, 0]}
               onClick={() => setIsVideoBlock(!isVideoBlock)}
             />
+
             {/* Web-site boundary */}
             <RigidBody colliders="cuboid" type="fixed">
               <mesh receiveShadow position={[1, 0, 9]} rotation-x={0.1}>
@@ -130,6 +133,7 @@ export default function App() {
                 <meshStandardMaterial color="#ce0300" />
               </mesh>
             </RigidBody>
+
             {/* Ground */}
             <RigidBody
               type="fixed"
@@ -160,7 +164,7 @@ export const AppStyled = styled.div<{ $isVideoBlock: boolean }>`
   overflow: hidden;
   & > div > div > div {
     overflow: ${({ $isVideoBlock }) =>
-      $isVideoBlock ? "hidden !important;" : "unset" };
+      $isVideoBlock ? "hidden !important;" : "unset"};
   }
 `;
 

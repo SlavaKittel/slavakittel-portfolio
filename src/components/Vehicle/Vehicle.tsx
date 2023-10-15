@@ -10,7 +10,7 @@ import { useControls as useLeva } from "leva";
 import { Vector3 } from "three";
 import { useScroll, OrbitControls } from "@react-three/drei";
 
-import VehicleModel, { VehicleRef } from "./components/Vehicle";
+import VehicleModel, { VehicleRef } from "./components/VihecleModel";
 
 type VehicleProps = {
   isKeydown: boolean;
