@@ -73,8 +73,8 @@ const MainText = ({}: TextProps) => {
   });
   const mainTextPortfolio = lettersArrayPortfolio.map((letter, index) => {
     const positionLetterByZ = () => {
-      if (index >= 8) return -(index * 0.6 - 4);
-      return -(index * 0.6 - 5.5);
+      if (index >= 8) return -(index * 0.6 - 3);
+      return -(index * 0.6 - 6.5);
     };
     const rigidBody = useRef<RapierRigidBody>(null);
     return (
