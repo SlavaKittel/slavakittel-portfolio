@@ -160,7 +160,8 @@ export default function Vehicle({
     newChassisTranslation.copy(chassis.current.translation() as Vector3);
 
     const { offset, scroll: scrollCurrent } = scroll as any;
-    const speedAnimation = 0.045;
+    const speedAnimation = 1.0 - Math.pow(0.01, delta);
+    // const speedAnimation = 0.045;
     const ratioScreen = window.innerHeight / window.innerWidth;
     const calculatedCoefficientScale = () => {
       if (isVideoBlock) return 1;
@@ -207,15 +208,8 @@ export default function Vehicle({
     currentCameraLookAt.current.lerp(newCameraLookAt, speedAnimation);
 
     // set camera
-    camera.position.copy(newCameraPosition);
-    camera.lookAt(newCameraLookAt);
-    // // smooth animation
-    // currentCameraPosition.current.lerp(newCameraPosition, speedAnimation);
-    // currentCameraLookAt.current.lerp(newCameraLookAt, speedAnimation);
-
-    // // set camera
-    // camera.position.copy(currentCameraPosition.current);
-    // camera.lookAt(currentCameraLookAt.current);
+    camera.position.copy(currentCameraPosition.current);
+    camera.lookAt(currentCameraLookAt.current);
   });
 
   return (
