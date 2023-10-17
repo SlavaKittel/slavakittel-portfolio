@@ -94,7 +94,7 @@ export default function App() {
         id="appCanvas"
       >
         {perfVisible && <Perf position="top-left" />}
-        <ScrollControls pages={2} damping={0.00001}>
+        <ScrollControls pages={2} damping={0.01}>
           <Physics
             timeStep={1 / 800}
             updatePriority={-50}

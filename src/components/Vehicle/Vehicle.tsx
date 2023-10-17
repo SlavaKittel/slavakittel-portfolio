@@ -160,8 +160,8 @@ export default function Vehicle({
     newChassisTranslation.copy(chassis.current.translation() as Vector3);
 
     const { offset, scroll: scrollCurrent } = scroll as any;
-    // const speedAnimation = 1.0 - Math.pow(0.01, delta);
-    const speedAnimation = 100 * delta;
+    const speedAnimation = 1.0 - Math.pow(0.0000001, delta);
+    // const speedAnimation = 50 * delta;
     // const speedAnimation = 0.045;
     const ratioScreen = window.innerHeight / window.innerWidth;
     const calculatedCoefficientScale = () => {
