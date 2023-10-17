@@ -86,7 +86,7 @@ export default function App() {
       />
       <Canvas
         frameloop="demand"
-        dpr={[1, 2]} // default pixelRatio //TODO need?
+        dpr={[0.5, 0.5]} // default pixelRatio //TODO need?
         camera={{
           fov: 35,
         }}
