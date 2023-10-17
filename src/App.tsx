@@ -85,7 +85,7 @@ export default function App() {
         $isVideoBlock={isVideoBlock}
       />
       <Canvas
-        frameloop="always"
+        frameloop="demand"
         dpr={[1, 2]} // default pixelRatio //TODO need?
         camera={{
           fov: 35,

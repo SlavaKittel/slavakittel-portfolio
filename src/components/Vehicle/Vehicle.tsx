@@ -207,8 +207,15 @@ export default function Vehicle({
     currentCameraLookAt.current.lerp(newCameraLookAt, speedAnimation);
 
     // set camera
-    camera.position.copy(currentCameraPosition.current);
-    camera.lookAt(currentCameraLookAt.current);
+    camera.position.copy(newCameraPosition);
+    camera.lookAt(newCameraLookAt);
+    // // smooth animation
+    // currentCameraPosition.current.lerp(newCameraPosition, speedAnimation);
+    // currentCameraLookAt.current.lerp(newCameraLookAt, speedAnimation);
+
+    // // set camera
+    // camera.position.copy(currentCameraPosition.current);
+    // camera.lookAt(currentCameraLookAt.current);
   });
 
   return (
