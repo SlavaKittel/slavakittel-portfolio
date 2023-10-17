@@ -85,7 +85,7 @@ export default function App() {
         $isVideoBlock={isVideoBlock}
       />
       <Canvas
-        frameloop="demand"
+        frameloop="always"
         dpr={[1, 2]} // default pixelRatio //TODO need?
         camera={{
           fov: 35,
@@ -96,8 +96,8 @@ export default function App() {
         {perfVisible && <Perf position="top-left" />}
         <ScrollControls pages={2}>
           <Physics
-            // timeStep={1 / 400}
-            // updatePriority={-50}
+            timeStep={1 / 400}
+            updatePriority={-50}
             gravity={[0, -9.08, 0]}
             debug={debug}
           >
