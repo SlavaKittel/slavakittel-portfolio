@@ -86,7 +86,7 @@ export default function App() {
       />
       <Canvas
         frameloop="demand"
-        dpr={[0.5, 0.5]} // default pixelRatio //TODO need?
+        dpr={[1, 2]} // default pixelRatio //TODO need?
         camera={{
           fov: 35,
         }}
@@ -94,9 +94,9 @@ export default function App() {
         id="appCanvas"
       >
         {perfVisible && <Perf position="top-left" />}
-        <ScrollControls pages={2} damping={0.01}>
+        <ScrollControls pages={2} damping={0.005}> { /* TODO what the damping quantity? */}
           <Physics
-            timeStep={1 / 800}
+            timeStep={1 / 400}
             updatePriority={-50}
             gravity={[0, -9.08, 0]}
             debug={debug}
