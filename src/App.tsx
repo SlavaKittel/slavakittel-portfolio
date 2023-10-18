@@ -55,7 +55,7 @@ export default function App() {
     };
   }, []);
 
-  const [maxForceMobile, setMaxForceMobile] = useState<number | undefined>(0);
+  const [maxForceMobile, setMaxForceMobile] = useState<number>(0);
   const [steeringMobile, setSteeringMobile] = useState(0);
   const maxForce = 80;
   const maxSteer = 0.3;

@@ -14,7 +14,7 @@ import VehicleModel, { VehicleRef } from "./components/VihecleModel";
 
 type VehicleProps = {
   isKeydown: boolean;
-  maxForceMobile: number | undefined;
+  maxForceMobile: number;
   steeringMobile: number;
   setCurrentScroll: (currentScroll: number) => void;
   isVideoBlock: boolean;
@@ -71,7 +71,6 @@ export default function Vehicle({
     let steering = 0;
 
     if (isMobile) {
-      if (!maxForceMobile) return;
       engineForce += maxForceMobile;
       steering += steeringMobile;
     } else {
