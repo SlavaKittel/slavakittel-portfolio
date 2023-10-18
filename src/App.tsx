@@ -55,14 +55,18 @@ export default function App() {
     };
   }, []);
 
-  const [maxForceMobile, setMaxForceMobile] = useState(0);
+  const [maxForceMobile, setMaxForceMobile] = useState<number | undefined>(0);
   const [steeringMobile, setSteeringMobile] = useState(0);
-  const maxForce = 100;
+  const maxForce = 80;
   const maxSteer = 0.3;
 
   const moveHandler = (event: IJoystickUpdateEvent) => {
     if (!event.y || !event.x) return;
-    setMaxForceMobile(maxForce * event?.y);
+    const getMaxForceMobile = (y: number) => {
+      if (y > 0 && y < 0.75) return 40
+      return maxForce * y;
+    }
+    setMaxForceMobile(getMaxForceMobile(event?.y));
     setSteeringMobile(maxSteer * -event?.x);
     setKeydown(true);
   };
