@@ -175,7 +175,7 @@ export const AppStyled = styled.div<{ $isVideoBlock: boolean }>`
 export const JoystikStyled = styled.div`
   display: flex;
   position: absolute;
-  bottom: 40px;
+  bottom: 60px;
   margin-right: auto;
   margin-left: auto;
   left: 50%;
@@ -203,8 +203,8 @@ export const ScrollDownIconStyled = styled.div<{
   position: absolute;
   top: ${({ $currentScroll, $isVideoBlock }) =>
     ($currentScroll && $currentScroll > 0.1) || $isVideoBlock
-      ? "calc(100vh)"
-      : "calc(100vh - 60px)"};
+      ? "calc(100%)"
+      : "calc(100% - 60px)"};
   transition: top 0.5s ease-in-out;
   left: 50%;
   transform: translate(-50%, 0);
