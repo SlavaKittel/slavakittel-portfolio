@@ -8,7 +8,7 @@ import { Leva } from "leva";
 import { Perf } from "r3f-perf";
 import { Physics, RigidBody, CuboidCollider } from "@react-three/rapier";
 import { useControls as useLeva } from "leva";
-import { ScrollControls } from "@react-three/drei";
+import { ScrollControls, Text } from "@react-three/drei";
 
 import { Joystick } from "react-joystick-component";
 import { IJoystickUpdateEvent } from "react-joystick-component/build/lib/Joystick";
@@ -63,9 +63,9 @@ export default function App() {
   const moveHandler = (event: IJoystickUpdateEvent) => {
     if (!event.y || !event.x) return;
     const getMaxForceMobile = (y: number) => {
-      if (y > 0 && y < 0.75) return 40
+      if (y > 0 && y < 0.75) return 40;
       return maxForce * y;
-    }
+    };
     setMaxForceMobile(getMaxForceMobile(event?.y));
     setSteeringMobile(maxSteer * -event?.x);
     setKeydown(true);
@@ -84,10 +84,12 @@ export default function App() {
           <Joystick size={100} move={moveHandler} stop={moveHandlerStop} />
         </JoystikStyled>
       )}
-      <ScrollDownIconStyled
+      <ScrollDownWrapperStyled
         $currentScroll={currentScroll}
         $isVideoBlock={isVideoBlock}
-      />
+      >
+        <div className="text">Scroll Down</div>
+      </ScrollDownWrapperStyled>
       <Canvas
         frameloop="demand"
         dpr={[1, 2]} // default pixelRatio //TODO need?
@@ -97,8 +99,20 @@ export default function App() {
         shadows
         id="appCanvas"
       >
+        <Text
+          color="#242424"
+          fontSize={1.3}
+          font="/fonts/Barlow_Condensed/BarlowCondensed-SemiBold.ttf"
+          position={[-74, 0, 0]}
+          rotation={[Math.PI / 2, Math.PI, -Math.PI / 2]}
+          maxWidth={17}
+          lineHeight={1.0}
+          textAlign="center"
+        >
+          Hi it's Slava, lets talk about my new project
+        </Text>
         {perfVisible && <Perf position="top-left" />}
-        <ScrollControls pages={2} damping={0.005}> { /* TODO what the damping quantity? */}
+        <ScrollControls pages={2} damping={0.005}>
           <Physics
             timeStep={1 / 400}
             updatePriority={-50}
@@ -120,9 +134,10 @@ export default function App() {
               setCurrentScroll={setCurrentScroll}
               isVideoBlock={isVideoBlock}
             />
-            <LinkedInLogo position={[-68, -2.3, 0]} />
+
+            <LinkedInLogo position={[-45, -0.5, 0]} />
             <VideoBlock
-              position={[-75, -1.9, 0]}
+              position={[-55, 0, 0]}
               onClick={() => setIsVideoBlock(!isVideoBlock)}
             />
 
@@ -143,7 +158,7 @@ export default function App() {
               type="fixed"
               colliders={false}
               friction={1}
-              position={[0, -2, 0]}
+              position={[0, -0.51, 0]}
               restitution={0.3}
             >
               <CuboidCollider args={[100, 0.5, 15]} />
@@ -192,11 +207,14 @@ export const JoystikStyled = styled.div`
 `;
 
 const jumpInfinite = keyframes`
-  0% {margin-top: 0}
-  50% {margin-top: 20px}
-  100% {margin-top: 0}
+  0% { transform: skewX(-15deg); }
+  2% { transform: skewX(15deg); }
+  4% { transform: skewX(-15deg); }
+  6% { transform: skewX(15deg); }
+  8% { transform: skewX(0deg); }
+  100% { transform: skewX(0deg); }  
  `;
-export const ScrollDownIconStyled = styled.div<{
+export const ScrollDownWrapperStyled = styled.div<{
   $currentScroll?: number;
   $isVideoBlock?: boolean;
 }>`
@@ -204,26 +222,14 @@ export const ScrollDownIconStyled = styled.div<{
   top: ${({ $currentScroll, $isVideoBlock }) =>
     ($currentScroll && $currentScroll > 0.1) || $isVideoBlock
       ? "calc(100%)"
-      : "calc(100% - 60px)"};
+      : "calc(100% - 50px)"};
   transition: top 0.5s ease-in-out;
   left: 50%;
+  font-family: Barlow;
+  font-size: 18px;
   transform: translate(-50%, 0);
-  width: 0;
-  height: 30px;
-  border: 2px solid;
-  border-radius: 2px;
   z-index: 1;
-  animation: ${jumpInfinite} 1.5s infinite;
-  &:after {
-    content: " ";
-    position: absolute;
-    top: 12px;
-    left: -10px;
-    width: 16px;
-    height: 16px;
-    border-bottom: 4px solid;
-    border-right: 4px solid;
-    border-radius: 4px;
-    transform: rotateZ(45deg);
+  .text {
+    animation: ${jumpInfinite} 2.5s infinite;
   }
 `;

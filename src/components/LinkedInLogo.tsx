@@ -15,24 +15,28 @@ export type LinkedInRef = {
 
 const LinkedInLogo = ({ position }: LinkedInProps) => {
   const linkedInRef = useRef<LinkedInRef>();
-  const linkedIn = useLoader(GLTFLoader, "./linkedin-logo.glb");
+  const linkedInModel = useLoader(GLTFLoader, "./linkedin-logo.glb");
   const [hovered, setHover] = useState(false);
   const [mouseDown, setMouseDown] = useState(false);
 
+  // TODO will do component Button or redesign
   useFrame(() => {
-    linkedInRef.current!.scale.x = hovered
-      ? MathUtils.lerp(linkedInRef.current!.scale.x, 1.2, 0.05)
-      : MathUtils.lerp(linkedInRef.current!.scale.x, 1, 0.05);
-    linkedInRef.current!.scale.y = hovered
-      ? MathUtils.lerp(linkedInRef.current!.scale.y, 1.2, 0.05)
-      : MathUtils.lerp(linkedInRef.current!.scale.y, 1, 0.05);
-    linkedInRef.current!.scale.z = hovered
-      ? MathUtils.lerp(linkedInRef.current!.scale.z, 1.2, 0.05)
-      : MathUtils.lerp(linkedInRef.current!.scale.z, 1, 0.05);
-
-    linkedInRef.current!.position.y = mouseDown
-      ? MathUtils.lerp(linkedInRef.current!.position.y, -2.5, 0.1)
-      : MathUtils.lerp(linkedInRef.current!.position.y, -2.3, 0.1);
+    const positionY = () => {
+      if (mouseDown)
+        return MathUtils.lerp(
+          linkedInRef.current!.position.y,
+          position[1] - 0.2,
+          0.1
+        );
+      if (hovered)
+        return MathUtils.lerp(
+          linkedInRef.current!.position.y,
+          position[1] + 0.4,
+          0.1
+        );
+      return MathUtils.lerp(linkedInRef.current!.position.y, position[1], 0.1);
+    };
+    linkedInRef.current!.position.y = positionY();
   });
 
   return (
@@ -40,7 +44,7 @@ const LinkedInLogo = ({ position }: LinkedInProps) => {
       <primitive
         ref={linkedInRef}
         position={position}
-        object={linkedIn.scene}
+        object={linkedInModel.scene}
         onClick={(e: { stopPropagation: () => any }) => (
           (window.location.href = "https://www.linkedin.com/in/slavakittel/"),
           e.stopPropagation()

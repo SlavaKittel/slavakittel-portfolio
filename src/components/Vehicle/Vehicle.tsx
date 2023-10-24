@@ -174,7 +174,7 @@ export default function Vehicle({
       if (ratioScreen > 1 && ratioScreen < 2) return 24 * ratioScreen;
       return 27 * ratioScreen;
     };
-    const scrollPosition = isVideoBlock ? -85 : offset * 2 * 100 - 100;
+    const scrollPosition = isVideoBlock ? -65 : offset * 2 * 100 - 100;
 
     // axises calculation
     const videoBlockX = isVideoBlock ? 0.01 : 20;
