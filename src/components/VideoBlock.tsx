@@ -156,28 +156,28 @@ const VideoBlock = ({ position, onClick }: VideoBlockProps) => {
               <mesh position-x={0}>
                 <planeGeometry args={[20, 20, 1]} />
                 <meshBasicMaterial
-                  map={useVideoTexture("video/top-view.mp4")}
+                  map={useVideoTexture("video/comp3.mp4")}
                   toneMapped={false}
                 />
               </mesh>
               <mesh position-x={21}>
                 <planeGeometry args={[20, 20, 1]} />
                 <meshBasicMaterial
-                  map={useVideoTexture("video/comp.mp4")}
+                  map={useVideoTexture("video/comp3.mp4")}
                   toneMapped={false}
                 />
               </mesh>
               <mesh position-x={42}>
                 <planeGeometry args={[20, 20, 1]} />
                 <meshBasicMaterial
-                  map={useVideoTexture("video/furniture.mp4")}
+                  map={useVideoTexture("video/comp3.mp4")}
                   toneMapped={false}
                 />
               </mesh>
               <mesh position-x={63}>
                 <planeGeometry args={[20, 20, 1]} />
                 <meshBasicMaterial
-                  map={useVideoTexture("video/scooter.mp4")}
+                  map={useVideoTexture("video/comp3.mp4")}
                   toneMapped={false}
                 />
               </mesh>

@@ -20,7 +20,7 @@ import VideoBlock from "./components/VideoBlock";
 
 export default function App() {
   const { perfVisible, debug } = useLeva({
-    perfVisible: false,
+    perfVisible: true,
     debug: false,
   });
   const [isKeydown, setKeydown] = useState(true);
