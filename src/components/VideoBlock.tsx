@@ -102,8 +102,8 @@ const VideoBlock = ({ position, onClick }: VideoBlockProps) => {
       <RigidBody type="fixed" colliders="hull">
         <primitive
           ref={arrowRightRef}
-          scale={0.6}
-          position={[-56.3, null, -7.8]}
+          scale={0.8}
+          position={[-56.6, null, -7.8]}
           object={arrowModel.scene}
           onClick={(e: { stopPropagation: () => any }) =>
             getNewNumberOfSlider(e, "right", maxNumberOfSliders)
@@ -119,9 +119,9 @@ const VideoBlock = ({ position, onClick }: VideoBlockProps) => {
       <RigidBody type="fixed" colliders="hull">
         <Clone
           ref={arrowLeftRef}
-          scale={0.6}
+          scale={0.8}
           rotation-y={Math.PI}
-          position={[-54.3, 0, 7.8]}
+          position={[-54.1, 0, 7.8]}
           object={arrowModel.scene}
           onClick={(e: { stopPropagation: () => any }) =>
             getNewNumberOfSlider(e, "left", maxNumberOfSliders)
@@ -157,28 +157,24 @@ const VideoBlock = ({ position, onClick }: VideoBlockProps) => {
                 <planeGeometry args={[20, 20, 1]} />
                 <meshBasicMaterial
                   map={useVideoTexture("video/skate1200x900.mp4")}
-                  toneMapped={false}
                 />
               </mesh>
               <mesh position-x={21}>
                 <planeGeometry args={[20, 20, 1]} />
                 <meshBasicMaterial
                   map={useVideoTexture("video/top-view1200x900.mp4")}
-                  toneMapped={false}
                 />
               </mesh>
               <mesh position-x={42}>
                 <planeGeometry args={[20, 20, 1]} />
                 <meshBasicMaterial
                   map={useVideoTexture("video/scooter1200x900.mp4")}
-                  toneMapped={false}
                 />
               </mesh>
               <mesh position-x={63}>
                 <planeGeometry args={[20, 20, 1]} />
                 <meshBasicMaterial
                   map={useVideoTexture("video/furniture1200x900.mp4")}
-                  toneMapped={false}
                 />
               </mesh>
             </mesh>
