@@ -20,23 +20,8 @@ const MainText = ({}: TextProps) => {
     "L",
   ];
   const lettersArrayPortfolio = [
-    "C",
-    "r",
-    "e",
-    "a",
-    "t",
-    "i",
-    "v",
-    "e",
-    "P",
-    "o",
-    "r",
-    "t",
-    "f",
-    "o",
-    "l",
-    "i",
-    "o",
+    "be",
+    "creative",
   ];
 
   const mainTextMyName = lettersArrayName.map((letter, index) => {
@@ -72,16 +57,13 @@ const MainText = ({}: TextProps) => {
     );
   });
   const mainTextPortfolio = lettersArrayPortfolio.map((letter, index) => {
-    const positionLetterByZ = () => {
-      if (index >= 8) return -(index * 0.6 - 3);
-      return -(index * 0.6 - 6.5);
-    };
+    const positionLetterByZ = index === 1 ? -5 : -3;
     const rigidBody = useRef<RapierRigidBody>(null);
     return (
       <RigidBody
         ref={rigidBody}
         colliders="cuboid"
-        position={[-82, 5.74, positionLetterByZ()]}
+        position={[-82, 5.74, positionLetterByZ]}
         rotation-z={Math.PI * 0.5}
         rotation-x={Math.PI * 1.5}
         key={`${index}-${letter}`}

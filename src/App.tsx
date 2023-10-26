@@ -57,13 +57,14 @@ export default function App() {
 
   const [maxForceMobile, setMaxForceMobile] = useState<number>(0);
   const [steeringMobile, setSteeringMobile] = useState(0);
-  const maxForce = 80;
-  const maxSteer = 0.3;
+  // TODO naming??
+  const maxForce = 100;
+  const maxSteer = 0.5;
 
   const moveHandler = (event: IJoystickUpdateEvent) => {
     if (!event.y || !event.x) return;
     const getMaxForceMobile = (y: number) => {
-      if (y > 0 && y < 0.75) return 40;
+      if (y > 0 && y < 0.75) return 90;
       return maxForce * y;
     };
     setMaxForceMobile(getMaxForceMobile(event?.y));
@@ -109,7 +110,21 @@ export default function App() {
           lineHeight={1.0}
           textAlign="center"
         >
-          Hi it's Slava, lets talk about my new project
+          I'm Slava, and my mission is to lead the way in 3D web user interaction.
+          Now, you can buy my products and services to transform your digital presence.
+          Together, we'll shape the future of web interaction for your success.
+        </Text>
+        <Text
+          color="#242424"
+          fontSize={1}
+          font="/fonts/Barlow_Condensed/BarlowCondensed-SemiBold.ttf"
+          position={[-63, 0, 0]}
+          rotation={[Math.PI / 2, Math.PI, -Math.PI / 2]}
+          maxWidth={17}
+          lineHeight={1.0}
+          textAlign="center"
+        >
+          Good examples, what we expect by 3d web user interaction
         </Text>
         {perfVisible && <Perf position="top-left" />}
         <ScrollControls pages={2} damping={0.005}>
@@ -120,8 +135,8 @@ export default function App() {
             debug={debug}
           >
             {/* Lights */}
-            <directionalLight castShadow position={[10, 4, 3]} intensity={3} />
-            <ambientLight intensity={2.9} />
+            <directionalLight castShadow position={[-3, 4, 3]} intensity={1} />
+            <ambientLight intensity={0.9} />
 
             {/* Main text */}
             <MainText />

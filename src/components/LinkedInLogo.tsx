@@ -15,7 +15,7 @@ export type LinkedInRef = {
 
 const LinkedInLogo = ({ position }: LinkedInProps) => {
   const linkedInRef = useRef<LinkedInRef>();
-  const linkedInModel = useLoader(GLTFLoader, "./linkedin-logo.glb");
+  const linkedInModel = useLoader(GLTFLoader, "./glb-models/linkedin-logo.glb");
   const [hovered, setHover] = useState(false);
   const [mouseDown, setMouseDown] = useState(false);
 
