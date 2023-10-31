@@ -107,8 +107,8 @@ export default function App() {
           fov: 35,
         }}
         id="appCanvas"
-        // linear // TODO need to apply true srgb color
-        // legacy // TODO need to apply true srgb color
+        linear // TODO need to apply true srgb color
+        legacy // TODO need to apply true srgb color
       >
         {perfVisible && <Perf position="top-left" />}
         <color args={["#5c5a5a"]} attach="background" />
@@ -160,15 +160,13 @@ export default function App() {
             <pointLight
               ref={directionalLigthRef}
               position={[-90, 10, 10]}
-              // intensity={1.2}
-              intensity={1.7}
+              intensity={1.2}
               shadow-mapSize={[5024, 5024]}
             />
-            {/* <ambientLight intensity={1.7} /> */}
-            <ambientLight intensity={1.4} />
+            <ambientLight intensity={1.7} />
 
             {/* Main text */}
-            <MainText />
+            {/* <MainText /> */}
 
             {/* Vehicle with Camera and Controls hooks */}
             <Vehicle
