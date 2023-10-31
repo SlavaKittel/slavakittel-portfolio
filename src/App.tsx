@@ -207,7 +207,7 @@ export default function App() {
               <CuboidCollider args={[100, 0.5, 9]} />
               <mesh rotation-x={-Math.PI / 2} position={[0, 0.5, 0]}>
                 <planeGeometry args={[200, 18]} />
-                <MeshReflectorMaterial
+                {/* <MeshReflectorMaterial
                   blur={[500, 500]}
                   resolution={450}
                   mixBlur={1}
@@ -219,6 +219,17 @@ export default function App() {
                   color="#050708"
                   metalness={0.9}
                   mirror={0}
+                /> */}
+                <MeshReflectorMaterial
+                  blur={[400, 100]}
+                  resolution={1024}
+                  mixBlur={1}
+                  mixStrength={15}
+                  depthScale={1}
+                  minDepthThreshold={0.85}
+                  color="#151515"
+                  metalness={0.6}
+                  roughness={1}
                 />
               </mesh>
             </RigidBody>
