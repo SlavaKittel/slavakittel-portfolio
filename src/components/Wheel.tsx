@@ -37,36 +37,26 @@ const Wheel = ({ side, rotation, radius, ...props }: WheelProps) => {
         <group scale={side === "left" ? -1 : 1}>
           <mesh
             rotation={rotation}
-            castShadow
-            receiveShadow
             geometry={nodes.wheel_FR_bbs_tex002_0.geometry}
             material={materials["disk.002"]}
           />
           <mesh
             rotation={rotation}
-            castShadow
-            receiveShadow
             geometry={nodes.wheel_FR_blt002_0.geometry}
             material={materials["disk_brake.001"]}
           />
           <mesh
             rotation={rotation}
-            castShadow
-            receiveShadow
             geometry={nodes.wheel_FR_disk002_0.geometry}
             material={materials["disk_brake_tr.001"]}
           />
           <mesh
             rotation={rotation}
-            castShadow
-            receiveShadow
             geometry={nodes.wheel_FR_disk_paint002_0.geometry}
             material={materials["disk_paint.002"]}
           />
           <mesh
             rotation={rotation}
-            castShadow
-            receiveShadow
             geometry={nodes.wheel_FR_tire002_0.geometry}
             material={materials["tire.002"]}
           />

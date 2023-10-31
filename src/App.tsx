@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 import styled, { keyframes } from "styled-components";
 import { isMobile } from "react-device-detect";
+import { EffectComposer } from "@react-three/postprocessing";
+import * as THREE from "three";
 
 import { Leva } from "leva";
 
 import { Perf } from "r3f-perf";
 import { Physics, RigidBody, CuboidCollider } from "@react-three/rapier";
 import { useControls as useLeva } from "leva";
-import { ScrollControls, Text } from "@react-three/drei";
+import { ScrollControls, Text, MeshReflectorMaterial } from "@react-three/drei";
 
 import { Joystick } from "react-joystick-component";
 import { IJoystickUpdateEvent } from "react-joystick-component/build/lib/Joystick";
@@ -19,8 +21,10 @@ import LinkedInLogo from "./components/LinkedInLogo";
 import VideoBlock from "./components/VideoBlock";
 
 export default function App() {
+  const directionalLigthRef = useRef<any>(); // TODO only for dev
+
   const { perfVisible, debug } = useLeva({
-    perfVisible: false,
+    perfVisible: true,
     debug: false,
   });
   const [isKeydown, setKeydown] = useState(true);
@@ -91,17 +95,34 @@ export default function App() {
       >
         <div className="text">Scroll Down</div>
       </ScrollDownWrapperStyled>
+
       <Canvas
+        gl={{ antialias: true, toneMapping: THREE.NoToneMapping }}
+        onCreated={({ gl }) => {
+          gl.toneMapping = THREE.NoToneMapping;
+        }} // TODO need to apply true srgb color
         frameloop="demand"
         dpr={[1, 2]} // default pixelRatio //TODO need?
         camera={{
           fov: 35,
         }}
-        shadows
         id="appCanvas"
+        linear // TODO need to apply true srgb color
+        legacy // TODO need to apply true srgb color
       >
+        {perfVisible && <Perf position="top-left" />}
+        <color args={["#5c5a5a"]} attach="background" />
+        {/* TODO calculate Depth and check performance */}
+        <EffectComposer disableNormalPass>
+          {/* <DepthOfField
+            focusDistance={0.025} // where to focus
+            focalLength={0.08} // focal length
+            bokehScale={6} // bokeh size
+          /> */}
+        </EffectComposer>
+
         <Text
-          color="#242424"
+          color="#bababa"
           fontSize={1.3}
           font="/fonts/Barlow_Condensed/BarlowCondensed-SemiBold.ttf"
           position={[-74, 0, 0]}
@@ -110,12 +131,13 @@ export default function App() {
           lineHeight={1.0}
           textAlign="center"
         >
-          I'm Slava, and my mission is to lead the way in 3D web user interaction.
-          Now, you can buy my products and services to transform your digital presence.
-          Together, we'll shape the future of web interaction for your success.
+          I'm Slava, and my mission is to lead the way in 3D web user
+          interaction. Now, you can buy my products and services to transform
+          your digital presence. Together, we'll shape the future of web
+          interaction for your success.
         </Text>
         <Text
-          color="#242424"
+          color="#bababa"
           fontSize={1}
           font="/fonts/Barlow_Condensed/BarlowCondensed-SemiBold.ttf"
           position={[-63, 0, 0]}
@@ -126,7 +148,7 @@ export default function App() {
         >
           Good examples, what we expect by 3d web user interaction
         </Text>
-        {perfVisible && <Perf position="top-left" />}
+
         <ScrollControls pages={2} damping={0.005}>
           <Physics
             timeStep={1 / 400}
@@ -135,8 +157,13 @@ export default function App() {
             debug={debug}
           >
             {/* Lights */}
-            <directionalLight castShadow position={[-3, 4, 3]} intensity={1} />
-            <ambientLight intensity={0.9} />
+            <pointLight
+              ref={directionalLigthRef}
+              position={[-90, 10, 10]}
+              intensity={1.2}
+              shadow-mapSize={[5024, 5024]}
+            />
+            <ambientLight intensity={1.7} />
 
             {/* Main text */}
             <MainText />
@@ -148,6 +175,7 @@ export default function App() {
               steeringMobile={steeringMobile}
               setCurrentScroll={setCurrentScroll}
               isVideoBlock={isVideoBlock}
+              directionalLigthRef={directionalLigthRef}
             />
 
             <LinkedInLogo position={[-45, -0.5, 0]} />
@@ -158,13 +186,13 @@ export default function App() {
 
             {/* Web-site boundary */}
             <RigidBody colliders="cuboid" type="fixed">
-              <mesh receiveShadow position={[1, 0, 9]} rotation-x={0.1}>
+              <mesh position={[1, 0, 9]} rotation-x={0.1}>
                 <boxGeometry args={[200, 3, 0.1]} />
-                <meshStandardMaterial color="#ce0300" />
+                <meshStandardMaterial color="#1d4446" />
               </mesh>
-              <mesh receiveShadow position={[1, 0, -9]} rotation-x={-0.1}>
+              <mesh position={[1, 0, -9]} rotation-x={-0.1}>
                 <boxGeometry args={[200, 3, 0.1]} />
-                <meshStandardMaterial color="#ce0300" />
+                <meshStandardMaterial color="#1d4446" />
               </mesh>
             </RigidBody>
 
@@ -176,10 +204,22 @@ export default function App() {
               position={[0, -0.51, 0]}
               restitution={0.3}
             >
-              <CuboidCollider args={[100, 0.5, 15]} />
-              <mesh receiveShadow>
-                <boxGeometry args={[200, 1, 18]} />
-                <meshStandardMaterial color="#4e69b9" />
+              <CuboidCollider args={[100, 0.5, 9]} />
+              <mesh rotation-x={-Math.PI / 2} position={[0, 0.5, 0]}>
+                <planeGeometry args={[200, 18]} />
+                <MeshReflectorMaterial
+                  blur={[900, 900]}
+                  resolution={600}
+                  mixBlur={1}
+                  mixStrength={50}
+                  roughness={0.8}
+                  depthScale={0.4}
+                  minDepthThreshold={1.5}
+                  maxDepthThreshold={1.4}
+                  color="#050708"
+                  metalness={0.9}
+                  mirror={0}
+                />
               </mesh>
             </RigidBody>
           </Physics>
@@ -242,6 +282,7 @@ export const ScrollDownWrapperStyled = styled.div<{
   left: 50%;
   font-family: Barlow;
   font-size: 18px;
+  color: white;
   transform: translate(-50%, 0);
   z-index: 1;
   .text {

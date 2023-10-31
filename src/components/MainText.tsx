@@ -1,11 +1,12 @@
-import React, { useState, useRef } from "react";
-import { RigidBody, RapierRigidBody } from "@react-three/rapier";
+import * as THREE from "three";
+import { RigidBody } from "@react-three/rapier";
 import { Text3D, useMatcapTexture } from "@react-three/drei";
+import { useLoader } from "@react-three/fiber";
+import { TextureLoader } from "three/src/loaders/TextureLoader";
 
 type TextProps = {};
 
 const MainText = ({}: TextProps) => {
-  const [matcapTexture] = useMatcapTexture("245642_3D8168_3D6858_417364", 256);
   const lettersArrayName = [
     "S",
     "L",
@@ -19,10 +20,7 @@ const MainText = ({}: TextProps) => {
     "E",
     "L",
   ];
-  const lettersArrayPortfolio = [
-    "be",
-    "creative",
-  ];
+  const lettersArrayPortfolio = ["be", "creative"];
 
   const mainTextMyName = lettersArrayName.map((letter, index) => {
     const positionLetterByZ = () => {
@@ -30,10 +28,37 @@ const MainText = ({}: TextProps) => {
       if (index >= 7) return -(index * 1.4 - 6.5);
       return -(index * 1.3 - 7.5);
     };
-    const rigidBody = useRef<RapierRigidBody>(null);
+    const nameTexture = (type: string) =>
+      `./texture/DiamondPlate008B_1K-JPG_${type}.jpg`;
+    const [colorMap, displacementMap, normalMap, roughnessMap, aoMap] =
+      useLoader(TextureLoader, [
+        nameTexture("Color"),
+        nameTexture("Displacement"),
+        nameTexture("NormalGL"),
+        nameTexture("Roughness"),
+        nameTexture("AmbientOcclusion"),
+      ]);
+
+    const repeatTextures = (texture: {
+      wrapS: number;
+      wrapT: number;
+      repeat: { x: number; y: number };
+    }) => {
+      const repeat = 0.2;
+      texture.wrapS = THREE.RepeatWrapping;
+      texture.wrapT = THREE.RepeatWrapping;
+      texture.repeat.x = repeat;
+      texture.repeat.y = repeat;
+    };
+
+    repeatTextures(colorMap)
+    repeatTextures(displacementMap)
+    repeatTextures(normalMap)
+    repeatTextures(roughnessMap)
+    repeatTextures(aoMap)
+
     return (
       <RigidBody
-        ref={rigidBody}
         colliders="hull"
         position={[-85, 5.74, positionLetterByZ()]}
         rotation-y={Math.PI * 0.5}
@@ -51,17 +76,29 @@ const MainText = ({}: TextProps) => {
           bevelSegments={5}
         >
           {letter}
-          <meshMatcapMaterial matcap={matcapTexture} />
+          <meshStandardMaterial
+            displacementScale={0}
+            displacementBias={0}
+            map={colorMap}
+            displacementMap={displacementMap}
+            normalMap={normalMap}
+            roughnessMap={roughnessMap}
+            aoMap={aoMap}
+            metalness={0.6}
+            roughness={0.5}
+          />
         </Text3D>
       </RigidBody>
     );
   });
   const mainTextPortfolio = lettersArrayPortfolio.map((letter, index) => {
+    const [matcapTexture] = useMatcapTexture(
+      "34A09C_6EE5E3_5CD7D3_4EC9C6",
+      256
+    );
     const positionLetterByZ = index === 1 ? -5 : -3;
-    const rigidBody = useRef<RapierRigidBody>(null);
     return (
       <RigidBody
-        ref={rigidBody}
         colliders="cuboid"
         position={[-82, 5.74, positionLetterByZ]}
         rotation-z={Math.PI * 0.5}
@@ -80,7 +117,7 @@ const MainText = ({}: TextProps) => {
           bevelSegments={5}
         >
           {letter}
-          <meshStandardMaterial color='black' />
+          <meshMatcapMaterial matcap={matcapTexture} />
         </Text3D>
       </RigidBody>
     );

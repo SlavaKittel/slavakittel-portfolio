@@ -138,7 +138,6 @@ const VideoBlock = ({ position, onClick }: VideoBlockProps) => {
       <mesh
         rotation={[-Math.PI / 2, 0, Math.PI / 2]}
         position={position}
-        receiveShadow
         onClick={onClick}
         onPointerEnter={() => (document.body.style.cursor = "pointer")}
         onPointerLeave={() => (document.body.style.cursor = "default")}

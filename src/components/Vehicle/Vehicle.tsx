@@ -18,6 +18,7 @@ type VehicleProps = {
   steeringMobile: number;
   setCurrentScroll: (currentScroll: number) => void;
   isVideoBlock: boolean;
+  directionalLigthRef: any;
 };
 
 export default function Vehicle({
@@ -26,7 +27,10 @@ export default function Vehicle({
   steeringMobile,
   setCurrentScroll,
   isVideoBlock,
+  directionalLigthRef,
 }: VehicleProps) {
+  // TODO only for dev
+  // useHelper(directionalLigthRef, THREE.PointLightHelper, 7)
   const { cameraMode } = useLeva("camera", {
     cameraMode: {
       value: "drive",
