@@ -208,8 +208,8 @@ export default function App() {
               <mesh rotation-x={-Math.PI / 2} position={[0, 0.5, 0]}>
                 <planeGeometry args={[200, 18]} />
                 <MeshReflectorMaterial
-                  blur={[900, 900]}
-                  resolution={50}
+                  blur={[500, 500]}
+                  resolution={450}
                   mixBlur={1}
                   mixStrength={50}
                   roughness={0.8}
