@@ -152,7 +152,7 @@ export default function App() {
         <ScrollControls pages={2} damping={0.005}>
           <Physics
             // timeStep={1 / 400}
-            timeStep={1 / 50}
+            timeStep='vary'
             updatePriority={-50}
             gravity={[0, -9.08, 0]}
             debug={debug}
