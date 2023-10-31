@@ -121,7 +121,7 @@ export default function App() {
           /> */}
         </EffectComposer>
 
-        <Text
+        {/* <Text
           color="#bababa"
           fontSize={1.3}
           font="/fonts/Barlow_Condensed/BarlowCondensed-SemiBold.ttf"
@@ -147,7 +147,7 @@ export default function App() {
           textAlign="center"
         >
           Good examples, what we expect by 3d web user interaction
-        </Text>
+        </Text> */}
 
         <ScrollControls pages={2} damping={0.005}>
           <Physics
@@ -163,10 +163,10 @@ export default function App() {
               intensity={1.2}
               shadow-mapSize={[5024, 5024]}
             />
-            <ambientLight intensity={1.7} />
+            {/* <ambientLight intensity={1.7} /> */}
 
             {/* Main text */}
-            <MainText />
+            {/* <MainText /> */}
 
             {/* Vehicle with Camera and Controls hooks */}
             <Vehicle
@@ -178,14 +178,14 @@ export default function App() {
               directionalLigthRef={directionalLigthRef}
             />
 
-            <LinkedInLogo position={[-45, -0.5, 0]} />
+            {/* <LinkedInLogo position={[-45, -0.5, 0]} />
             <VideoBlock
               position={[-55, 0, 0]}
               onClick={() => setIsVideoBlock(!isVideoBlock)}
-            />
+            /> */}
 
             {/* Web-site boundary */}
-            <RigidBody colliders="cuboid" type="fixed">
+            {/* <RigidBody colliders="cuboid" type="fixed">
               <mesh position={[1, 0, 9]} rotation-x={0.1}>
                 <boxGeometry args={[200, 3, 0.1]} />
                 <meshStandardMaterial color="#1d4446" />
@@ -194,7 +194,7 @@ export default function App() {
                 <boxGeometry args={[200, 3, 0.1]} />
                 <meshStandardMaterial color="#1d4446" />
               </mesh>
-            </RigidBody>
+            </RigidBody> */}
 
             {/* Ground */}
             <RigidBody
@@ -207,7 +207,7 @@ export default function App() {
               <CuboidCollider args={[100, 0.5, 9]} />
               <mesh rotation-x={-Math.PI / 2} position={[0, 0.5, 0]}>
                 <planeGeometry args={[200, 18]} />
-                {/* <MeshReflectorMaterial
+                <MeshReflectorMaterial
                   blur={[500, 500]}
                   resolution={450}
                   mixBlur={1}
@@ -219,8 +219,8 @@ export default function App() {
                   color="#050708"
                   metalness={0.9}
                   mirror={0}
-                /> */}
-                <MeshReflectorMaterial
+                />
+                {/* <MeshReflectorMaterial
                   blur={[400, 100]}
                   resolution={1024}
                   mixBlur={1}
@@ -230,7 +230,7 @@ export default function App() {
                   color="#151515"
                   metalness={0.6}
                   roughness={1}
-                />
+                /> */}
               </mesh>
             </RigidBody>
           </Physics>
