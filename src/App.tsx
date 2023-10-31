@@ -166,7 +166,7 @@ export default function App() {
             <ambientLight intensity={1.7} />
 
             {/* Main text */}
-            {/* <MainText /> */}
+            <MainText />
 
             {/* Vehicle with Camera and Controls hooks */}
             <Vehicle
@@ -207,7 +207,8 @@ export default function App() {
               <CuboidCollider args={[100, 0.5, 9]} />
               <mesh rotation-x={-Math.PI / 2} position={[0, 0.5, 0]}>
                 <planeGeometry args={[200, 18]} />
-                <MeshReflectorMaterial
+                <meshStandardMaterial color="#1d4446" />
+                {/* <MeshReflectorMaterial
                   blur={[900, 900]}
                   resolution={600}
                   mixBlur={1}
@@ -219,7 +220,7 @@ export default function App() {
                   color="#050708"
                   metalness={0.9}
                   mirror={0}
-                />
+                /> */}
               </mesh>
             </RigidBody>
           </Physics>
