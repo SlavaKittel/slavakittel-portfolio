@@ -242,7 +242,6 @@ export default function App() {
                   maxDepthThreshold={1} // Upper edge for the depthTexture interpolation (default = 0)
                   depthToBlurRatioBias={0.2} // Adds a bias factor to the depthTexture before calculating the blur amount [blurFactor = blurTexture * (depthTexture + bias)]. It accepts values between 0 and 1, default is 0.25. An amount > 0 of bias makes sure that the blurTexture is not too sharp because of the multiplication with the depthTexture
                 />
-                {/* <meshStandardMaterial roughness={0} metalness={1} color="blue" /> */}
                 {/* <MeshReflectorMaterial
                   blur={[500, 500]}
                   resolution={250}
@@ -256,6 +255,7 @@ export default function App() {
                   metalness={0.9}
                   mirror={0}
                 /> */}
+                {/* <meshStandardMaterial roughness={0} metalness={1} color="blue" /> */}
               </mesh>
             </RigidBody>
           </Physics>

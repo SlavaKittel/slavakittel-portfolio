@@ -5,7 +5,7 @@ import { isMobile } from "react-device-detect";
 type FunZoneProps = {};
 
 const FunZone = ({}: FunZoneProps) => {
-  const count = isMobile ? 30 : 100;
+  const count = isMobile ? 10 : 100;
 
   const instances = useMemo(() => {
     const instances: InstancedRigidBodyProps[] = [];

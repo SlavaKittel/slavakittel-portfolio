@@ -2,6 +2,8 @@
 
 start project: npm run dev
 
+start build: npm run build
+
 A Raycast Vehicle for use with rapier.
 
 Based on the cannon-es RaycastVehicle implementation:
