@@ -31,7 +31,7 @@ export default function App() {
   const [currentScroll, setCurrentScroll] = useState(0);
   const [isVideoBlock, setIsVideoBlock] = useState(false);
 
-  // Scroll and key controll listenere
+  // Scroll and key controll listener
   useEffect(() => {
     const clickListener = (e: { code: string; preventDefault: () => void }) => {
       if (
