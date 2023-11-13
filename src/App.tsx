@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Canvas } from "@react-three/fiber";
+import { useState, useEffect } from "react";
+import { Canvas, useLoader } from "@react-three/fiber";
 import styled, { keyframes } from "styled-components";
 import { isMobile } from "react-device-detect";
-import { EffectComposer } from "@react-three/postprocessing";
+import { TextureLoader } from "three/src/loaders/TextureLoader";
 import * as THREE from "three";
 
 import { Leva } from "leva";
@@ -17,12 +17,12 @@ import { IJoystickUpdateEvent } from "react-joystick-component/build/lib/Joystic
 
 import Vehicle from "./components/Vehicle/Vehicle";
 import MainText from "./components/MainText";
+import FunZone from "./components/FunZone";
 import LinkedInLogo from "./components/LinkedInLogo";
 import VideoBlock from "./components/VideoBlock";
+import Lights from "./components/Lights";
 
 export default function App() {
-  const directionalLigthRef = useRef<any>(); // TODO only for dev
-
   const { perfVisible, debug } = useLeva({
     perfVisible: true,
     debug: false,
@@ -31,6 +31,7 @@ export default function App() {
   const [currentScroll, setCurrentScroll] = useState(0);
   const [isVideoBlock, setIsVideoBlock] = useState(false);
 
+  // Scroll and key controll listenere
   useEffect(() => {
     const clickListener = (e: { code: string; preventDefault: () => void }) => {
       if (
@@ -59,6 +60,7 @@ export default function App() {
     };
   }, []);
 
+  //Joystik Control
   const [maxForceMobile, setMaxForceMobile] = useState<number>(0);
   const [steeringMobile, setSteeringMobile] = useState(0);
   // TODO naming??
@@ -81,6 +83,27 @@ export default function App() {
     setSteeringMobile(0);
   };
 
+  //Ground Texture
+  const [roughness, normal, aoMap] = useLoader(TextureLoader, [
+    "./texture/MetalBronzeWorn001_ROUGHNESS_1K_METALNESS.png",
+    "./texture/MetalBronzeWorn001_NRM_1K_METALNESS.png",
+    "./texture/MetalBronzeWorn001_DISP16_1K_METALNESS.png",
+  ]);
+  const repeatTextures = (texture: {
+    wrapS: number;
+    wrapT: number;
+    repeat: { x: number; y: number };
+  }) => {
+    const repeat = 10;
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.x = repeat;
+    texture.repeat.y = repeat * 0.1;
+  };
+  repeatTextures(roughness);
+  repeatTextures(normal);
+  repeatTextures(aoMap);
+
   return (
     <AppStyled $isVideoBlock={isVideoBlock}>
       <Leva collapsed />
@@ -100,8 +123,10 @@ export default function App() {
         gl={{ antialias: true, toneMapping: THREE.NoToneMapping }}
         onCreated={({ gl }) => {
           gl.toneMapping = THREE.NoToneMapping;
-        }} // TODO need to apply true srgb color
-        frameloop="demand"
+        }}
+        // TODO need to apply true srgb color
+        // frameloop="demand"
+        // shadowMap={{ enabled: true, type: "BasicShadowMap"}}
         dpr={[1, 2]} // default pixelRatio //TODO need?
         camera={{
           fov: 35,
@@ -111,15 +136,7 @@ export default function App() {
         legacy // TODO need to apply true srgb color
       >
         {perfVisible && <Perf position="top-left" />}
-        <color args={["#5c5a5a"]} attach="background" />
-        {/* TODO calculate Depth and check performance */}
-        <EffectComposer disableNormalPass>
-          {/* <DepthOfField
-            focusDistance={0.025} // where to focus
-            focalLength={0.08} // focal length
-            bokehScale={6} // bokeh size
-          /> */}
-        </EffectComposer>
+        <color args={["#6b7272"]} attach="background" />
 
         <Text
           color="#bababa"
@@ -157,13 +174,7 @@ export default function App() {
             debug={debug}
           >
             {/* Lights */}
-            <pointLight
-              ref={directionalLigthRef}
-              position={[-90, 10, 10]}
-              intensity={1.2}
-              shadow-mapSize={[5024, 5024]}
-            />
-            <ambientLight intensity={1.7} />
+            <Lights />
 
             {/* Main text */}
             <MainText />
@@ -175,7 +186,6 @@ export default function App() {
               steeringMobile={steeringMobile}
               setCurrentScroll={setCurrentScroll}
               isVideoBlock={isVideoBlock}
-              directionalLigthRef={directionalLigthRef}
             />
 
             <LinkedInLogo position={[-45, -0.5, 0]} />
@@ -196,6 +206,9 @@ export default function App() {
               </mesh>
             </RigidBody>
 
+            {/* Fun Zone and Test Performance */}
+            <FunZone />
+
             {/* Ground */}
             <RigidBody
               type="fixed"
@@ -207,30 +220,41 @@ export default function App() {
               <CuboidCollider args={[100, 0.5, 9]} />
               <mesh rotation-x={-Math.PI / 2} position={[0, 0.5, 0]}>
                 <planeGeometry args={[200, 18]} />
+                {/* TODO need to choose for best performance */}
                 <MeshReflectorMaterial
+                  envMapIntensity={0}
+                  normalMap={normal}
+                  roughnessMap={roughness}
+                  aoMap={aoMap}
+                  // normalScale={[0.8, 0.8]}
+                  dithering={true}
+                  color={[0.021, 0.025, 0.028]}
+                  roughness={0.9}
+                  metalness={0.1}
+                  blur={[2000, 2000]} // Blur ground reflections (width, heigt), 0 skips blur
+                  mixBlur={30} // How much blur mixes with surface roughness (default = 1)
+                  mixStrength={80} // Strength of the reflections
+                  mixContrast={1} // Contrast of the reflections
+                  resolution={isMobile ? 80 : 250} // Off-buffer resolution, lower=faster, higher=better quality, slower
+                  mirror={0} // Mirror environment, 0 = texture colors, 1 = pick up env colors
+                  depthScale={0.01} // Scale the depth factor (0 = no depth, default = 0)
+                  minDepthThreshold={0.8} // Lower edge for the depthTexture interpolation (default = 0)
+                  maxDepthThreshold={1} // Upper edge for the depthTexture interpolation (default = 0)
+                  depthToBlurRatioBias={0.2} // Adds a bias factor to the depthTexture before calculating the blur amount [blurFactor = blurTexture * (depthTexture + bias)]. It accepts values between 0 and 1, default is 0.25. An amount > 0 of bias makes sure that the blurTexture is not too sharp because of the multiplication with the depthTexture
+                />
+                {/* <meshStandardMaterial roughness={0} metalness={1} color="blue" /> */}
+                {/* <MeshReflectorMaterial
                   blur={[500, 500]}
-                  resolution={450}
+                  resolution={250}
                   mixBlur={1}
                   mixStrength={50}
                   roughness={0.8}
                   depthScale={0.4}
-                  minDepthThreshold={1.5}
+                  minDepthThreshold={1}
                   maxDepthThreshold={1.4}
                   color="#050708"
                   metalness={0.9}
                   mirror={0}
-                />
-                {/* TODO mobile crash */}
-                {/* <MeshReflectorMaterial
-                  blur={[400, 100]}
-                  resolution={1024}
-                  mixBlur={1}
-                  mixStrength={15}
-                  depthScale={1}
-                  minDepthThreshold={0.85}
-                  color="#151515"
-                  metalness={0.6}
-                  roughness={1}
                 /> */}
               </mesh>
             </RigidBody>

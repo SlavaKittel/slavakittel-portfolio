@@ -7,7 +7,7 @@ import { TextureLoader } from "three/src/loaders/TextureLoader";
 type TextProps = {};
 
 const MainText = ({}: TextProps) => {
-  const lettersArrayName = [
+  const lettersArrayMyName = [
     "S",
     "L",
     "A",
@@ -20,9 +20,10 @@ const MainText = ({}: TextProps) => {
     "E",
     "L",
   ];
-  const lettersArrayPortfolio = ["be", "creative"];
+  const lettersArrayBeCreaive = ["be", "creative"];
+  const lettersArrayFunZone = ["fun", "zone"];
 
-  const mainTextMyName = lettersArrayName.map((letter, index) => {
+  const mainTextMyName = lettersArrayMyName.map((letter, index) => {
     const positionLetterByZ = () => {
       if (index > 4 && index < 7) return -(index * 1.4 - 6);
       if (index >= 7) return -(index * 1.4 - 6.5);
@@ -51,11 +52,11 @@ const MainText = ({}: TextProps) => {
       texture.repeat.y = repeat;
     };
 
-    repeatTextures(colorMap)
-    repeatTextures(displacementMap)
-    repeatTextures(normalMap)
-    repeatTextures(roughnessMap)
-    repeatTextures(aoMap)
+    repeatTextures(colorMap);
+    repeatTextures(displacementMap);
+    repeatTextures(normalMap);
+    repeatTextures(roughnessMap);
+    repeatTextures(aoMap);
 
     return (
       <RigidBody
@@ -91,7 +92,8 @@ const MainText = ({}: TextProps) => {
       </RigidBody>
     );
   });
-  const mainTextPortfolio = lettersArrayPortfolio.map((letter, index) => {
+  
+  const mainTextPortfolio = lettersArrayBeCreaive.map((letter, index) => {
     const [matcapTexture] = useMatcapTexture(
       "34A09C_6EE5E3_5CD7D3_4EC9C6",
       256
@@ -122,10 +124,44 @@ const MainText = ({}: TextProps) => {
       </RigidBody>
     );
   });
+
+  const funZoneText = lettersArrayFunZone.map((letter, index) => {
+    const [matcapTexture] = useMatcapTexture(
+      "34A09C_6EE5E3_5CD7D3_4EC9C6",
+      256
+    );
+    const positionLetterByZ = index === 1 ? -0.5 : 2;
+    return (
+      <RigidBody
+        colliders="cuboid"
+        position={[-32, 5.74, positionLetterByZ]}
+        rotation-z={Math.PI * 0.5}
+        rotation-x={Math.PI * 1.5}
+        key={`${index}-${letter}`}
+        friction={1}
+      >
+        <Text3D
+          font="./fonts/Fjalla One_Regular.json"
+          size={1}
+          height={0.4}
+          curveSegments={12}
+          bevelEnabled
+          bevelThickness={0.02}
+          bevelSize={0}
+          bevelSegments={5}
+        >
+          {letter}
+          <meshMatcapMaterial matcap={matcapTexture} />
+        </Text3D>
+      </RigidBody>
+    );
+  });
+
   return (
     <>
       {mainTextMyName}
       {mainTextPortfolio}
+      {funZoneText}
     </>
   );
 };

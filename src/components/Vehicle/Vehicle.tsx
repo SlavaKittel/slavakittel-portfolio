@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import React, { useRef } from "react";
+import { useRef } from "react";
 import { useThree, useFrame } from "@react-three/fiber";
 import { isMobile } from "react-device-detect";
 
@@ -18,7 +18,6 @@ type VehicleProps = {
   steeringMobile: number;
   setCurrentScroll: (currentScroll: number) => void;
   isVideoBlock: boolean;
-  directionalLigthRef: any;
 };
 
 export default function Vehicle({
@@ -27,10 +26,7 @@ export default function Vehicle({
   steeringMobile,
   setCurrentScroll,
   isVideoBlock,
-  directionalLigthRef,
 }: VehicleProps) {
-  // TODO only for dev
-  // useHelper(directionalLigthRef, THREE.PointLightHelper, 7)
   const { cameraMode } = useLeva("camera", {
     cameraMode: {
       value: "drive",
@@ -163,7 +159,7 @@ export default function Vehicle({
     // chassis translation
     newChassisTranslation.copy(chassis.current.translation() as Vector3);
 
-    const { offset, scroll: scrollCurrent } = scroll as any;
+    const { offset } = scroll;
     const speedAnimation = 1.0 - Math.pow(0.005, delta);
     const ratioScreen = window.innerHeight / window.innerWidth;
     const calculatedCoefficientScale = () => {
@@ -190,7 +186,7 @@ export default function Vehicle({
       isKeydown && !isVideoBlock ? 0.3 * newChassisTranslation.z : 0;
 
     // set current scroll
-    setCurrentScroll(scrollCurrent.current);
+    setCurrentScroll(offset);
 
     // newCameraPosition
     newCameraPosition.set(videoBlockX, videoBlockY, 0);
