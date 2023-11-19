@@ -18,7 +18,7 @@
     "vite": "^4.0.4"
   },
   "dependencies": {
-    "@react-three/drei": "^9.77.4",
+    "@react-three/drei": "^9.88.13",
     "@react-three/fiber": "^8.13.3",
     "@react-three/postprocessing": "^2.15.8",
     "@react-three/rapier": "^1.1.1",

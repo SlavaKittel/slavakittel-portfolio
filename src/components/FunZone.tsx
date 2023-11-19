@@ -5,7 +5,7 @@ import { isMobile } from "react-device-detect";
 type FunZoneProps = {};
 
 const FunZone = ({}: FunZoneProps) => {
-  const count = isMobile ? 10 : 100;
+  const count = isMobile ? 25 : 100;
 
   const instances = useMemo(() => {
     const instances: InstancedRigidBodyProps[] = [];
@@ -13,7 +13,7 @@ const FunZone = ({}: FunZoneProps) => {
       instances.push({
         key: "instance_" + Math.random(),
         position: [
-          Math.random() * 10 - 10,
+          Math.random() * 10 + 20,
           Math.random() * 70 + 210,
           (0.5 - Math.random()) * 4,
         ],

@@ -209,9 +209,7 @@ const VehicleModel = forwardRef<VehicleRef, VehicleModelProps>(function Car(
       {/* Chassis */}
       <RigidBody
         ref={chassisRigidBodyRef}
-        // colliders="hull"
         colliders={false}
-        // mass={100} // TODO ??
         position={[-90, 4, 0]}
         rotation={[-0.1, 0.2, 0]}
       >

@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { useRef } from "react";
-import { useThree, useFrame } from "@react-three/fiber";
+import { useFrame } from "@react-three/fiber";
 import { isMobile } from "react-device-detect";
 
 import { useControls } from "../../hooks/use-controls";
@@ -35,7 +35,6 @@ export default function Vehicle({
   });
   const controls = useControls();
   const scroll = useScroll();
-  const camera = useThree((state) => state.camera);
 
   const raycastVehicle = useRef<VehicleRef>(null);
   const currentCameraPosition = useRef(new Vector3());
@@ -207,8 +206,8 @@ export default function Vehicle({
     currentCameraLookAt.current.lerp(newCameraLookAt, speedAnimation);
 
     // set camera
-    camera.position.copy(currentCameraPosition.current);
-    camera.lookAt(currentCameraLookAt.current);
+    state.camera.position.copy(currentCameraPosition.current);
+    state.camera.lookAt(currentCameraLookAt.current);
   });
 
   return (

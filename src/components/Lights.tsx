@@ -8,9 +8,9 @@ type PointLightSpecProp = {
 };
 
 const Lights = ({}: LightsProps) => {
-  const pointLighCount = 8;
-  const pointLighWidth = 30;
-  const pointLighIntensity = 0.4;
+  const pointLighCount = 14;
+  const pointLighWidth = 40;
+  const pointLighIntensity = 0.32;
 
   const pointLightsSpec = useMemo(() => {
     const specification: PointLightSpecProp[] = [];
@@ -18,7 +18,7 @@ const Lights = ({}: LightsProps) => {
       specification.push({
         key: "spec_" + Math.random(),
         position: [
-          -110 + i * 10,
+          -110 + i * 20,
           5,
           (i % 2) * pointLighWidth - pointLighWidth / 2,
         ],

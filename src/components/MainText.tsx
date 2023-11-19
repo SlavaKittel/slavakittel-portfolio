@@ -134,7 +134,7 @@ const MainText = ({}: TextProps) => {
     return (
       <RigidBody
         colliders="cuboid"
-        position={[-32, 5.74, positionLetterByZ]}
+        position={[-12, 5.74, positionLetterByZ]}
         rotation-z={Math.PI * 0.5}
         rotation-x={Math.PI * 1.5}
         key={`${index}-${letter}`}

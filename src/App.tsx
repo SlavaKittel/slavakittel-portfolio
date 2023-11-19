@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Canvas, useLoader } from "@react-three/fiber";
+import { useState, useEffect, useRef } from "react";
+import { Canvas, useLoader, useFrame, extend } from "@react-three/fiber";
 import styled, { keyframes } from "styled-components";
 import { isMobile } from "react-device-detect";
 import { TextureLoader } from "three/src/loaders/TextureLoader";
@@ -10,7 +10,7 @@ import { Leva } from "leva";
 import { Perf } from "r3f-perf";
 import { Physics, RigidBody, CuboidCollider } from "@react-three/rapier";
 import { useControls as useLeva } from "leva";
-import { ScrollControls, Text, MeshReflectorMaterial } from "@react-three/drei";
+import { ScrollControls, MeshReflectorMaterial, Text } from "@react-three/drei";
 
 import { Joystick } from "react-joystick-component";
 import { IJoystickUpdateEvent } from "react-joystick-component/build/lib/Joystick";
@@ -18,8 +18,9 @@ import { IJoystickUpdateEvent } from "react-joystick-component/build/lib/Joystic
 import Vehicle from "./components/Vehicle/Vehicle";
 import MainText from "./components/MainText";
 import FunZone from "./components/FunZone";
-import LinkedInLogo from "./components/LinkedInLogo";
+import SocialNetworkLogo from "./components/SocialNetworkLogo";
 import VideoBlock from "./components/VideoBlock";
+import VideoSliderShaderBlock from "./components/VideoSliderShaderBlock";
 import Lights from "./components/Lights";
 
 export default function App() {
@@ -172,6 +173,7 @@ export default function App() {
             updatePriority={-50}
             gravity={[0, -9.08, 0]}
             debug={debug}
+            maxStabilizationIterations={8}
           >
             {/* Lights */}
             <Lights />
@@ -188,11 +190,22 @@ export default function App() {
               isVideoBlock={isVideoBlock}
             />
 
-            <LinkedInLogo position={[-45, -0.5, 0]} />
+            <SocialNetworkLogo
+              position={[-23, 1.4, 2.5]}
+              link="https://www.linkedin.com/in/slavakittel/"
+              model="./glb-models/linkedin-logo.glb"
+            />
+            <SocialNetworkLogo
+              position={[-23, 1.4, -2.5]}
+              link="https://github.com/SlavaKittel"
+              model="./glb-models/github-logo.glb"
+            />
             <VideoBlock
               position={[-55, 0, 0]}
               onClick={() => setIsVideoBlock(!isVideoBlock)}
             />
+
+            <VideoSliderShaderBlock />
 
             {/* Web-site boundary */}
             <RigidBody colliders="cuboid" type="fixed">

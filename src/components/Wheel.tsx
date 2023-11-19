@@ -1,7 +1,6 @@
-import React from "react";
 import { Mesh, MeshStandardMaterial } from "three";
 
-import WheelURl from "../../public/glb-models/bmwe30wheel2.glb?url";
+import WheelURl from "../../public/glb-models/bmwe30wheels.glb?url";
 import { GLTF } from "three-stdlib";
 import { useGLTF } from "@react-three/drei";
 

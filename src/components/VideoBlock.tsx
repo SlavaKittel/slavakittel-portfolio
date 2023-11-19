@@ -144,7 +144,7 @@ const VideoBlock = ({ position, onClick }: VideoBlockProps) => {
       >
         <planeGeometry args={[18, 13.5, 1]} />
         <meshStandardMaterial>
-          <RenderTexture attach="map" anisotropy={36} sourceFile={undefined}>
+          <RenderTexture attach="map" anisotropy={36}>
             <PerspectiveCamera
               makeDefault
               manual
