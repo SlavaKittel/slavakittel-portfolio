@@ -8,9 +8,9 @@ type PointLightSpecProp = {
 };
 
 const Lights = ({}: LightsProps) => {
-  const pointLighCount = 14;
-  const pointLighWidth = 40;
-  const pointLighIntensity = 0.32;
+  const pointLighCount = 10;
+  const pointLighWidth = 30;
+  const pointLighIntensity = 0.35;
 
   const pointLightsSpec = useMemo(() => {
     const specification: PointLightSpecProp[] = [];
