@@ -158,7 +158,6 @@ export default function Vehicle({
     // chassis translation
     newChassisTranslation.copy(chassis.current.translation() as Vector3);
 
-    const { offset } = scroll;
     const speedAnimation = 1.0 - Math.pow(0.005, delta);
     const ratioScreen = window.innerHeight / window.innerWidth;
     const calculatedCoefficientScale = () => {
@@ -173,7 +172,7 @@ export default function Vehicle({
       if (ratioScreen > 1 && ratioScreen < 2) return 24 * ratioScreen;
       return 27 * ratioScreen;
     };
-    const scrollPosition = isVideoBlock ? -65 : offset * 2 * 100 - 100;
+    const scrollPosition = isVideoBlock ? -65 : scroll.offset * 2 * 100 - 100;
 
     // axises calculation
     const videoBlockX = isVideoBlock ? 0.01 : 20;
@@ -185,7 +184,7 @@ export default function Vehicle({
       isKeydown && !isVideoBlock ? 0.3 * newChassisTranslation.z : 0;
 
     // set current scroll
-    setCurrentScroll(offset);
+    setCurrentScroll(scroll.range(0, 0));
 
     // newCameraPosition
     newCameraPosition.set(videoBlockX, videoBlockY, 0);

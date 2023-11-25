@@ -64,18 +64,17 @@ export default function App() {
   //Joystik Control
   const [maxForceMobile, setMaxForceMobile] = useState<number>(0);
   const [steeringMobile, setSteeringMobile] = useState(0);
-  // TODO naming??
-  const maxForce = 100;
-  const maxSteer = 0.5;
+  const maxForceJoystik = 100;
+  const maxSteerJoystik = 0.5;
 
   const moveHandler = (event: IJoystickUpdateEvent) => {
     if (!event.y || !event.x) return;
     const getMaxForceMobile = (y: number) => {
       if (y > 0 && y < 0.75) return 90;
-      return maxForce * y;
+      return maxForceJoystik * y;
     };
     setMaxForceMobile(getMaxForceMobile(event?.y));
-    setSteeringMobile(maxSteer * -event?.x);
+    setSteeringMobile(maxSteerJoystik * -event?.x);
     setKeydown(true);
   };
 
@@ -167,95 +166,96 @@ export default function App() {
           Good examples, what we expect by 3d web user interaction
         </Text>
 
-        <ScrollControls pages={2} damping={0.005}>
-          <Physics
-            timeStep={1 / 400}
-            updatePriority={-50}
-            gravity={[0, -9.08, 0]}
-            debug={debug}
-            maxStabilizationIterations={8}
-          >
-            {/* Lights */}
-            <Lights />
+        <Physics
+          timeStep={1 / 400}
+          updatePriority={-50}
+          gravity={[0, -9.08, 0]}
+          debug={debug}
+          maxStabilizationIterations={8}
+        >
+          {/* Lights */}
+          <Lights />
 
-            {/* Main text */}
-            <MainText />
+          {/* Main text */}
+          <MainText />
 
+          <ScrollControls pages={2} damping={0.005}>
             {/* Vehicle with Camera and Controls hooks */}
             <Vehicle
               isKeydown={isKeydown}
               maxForceMobile={maxForceMobile}
               steeringMobile={steeringMobile}
-              setCurrentScroll={setCurrentScroll}
               isVideoBlock={isVideoBlock}
+              setCurrentScroll={setCurrentScroll}
             />
+          </ScrollControls>
 
-            <SocialNetworkLogo
-              position={[-23, 1.4, 2.5]}
-              link="https://www.linkedin.com/in/slavakittel/"
-              model="./glb-models/linkedin-logo.glb"
-            />
-            <SocialNetworkLogo
-              position={[-23, 1.4, -2.5]}
-              link="https://github.com/SlavaKittel"
-              model="./glb-models/github-logo.glb"
-            />
-            <VideoBlock
-              position={[-55, 0, 0]}
-              onClick={() => setIsVideoBlock(!isVideoBlock)}
-            />
+          <SocialNetworkLogo
+            position={[-23, 1.4, 2.5]}
+            link="https://www.linkedin.com/in/slavakittel/"
+            model="./glb-models/linkedin-logo.glb"
+          />
+          <SocialNetworkLogo
+            position={[-23, 1.4, -2.5]}
+            link="https://github.com/SlavaKittel"
+            model="./glb-models/github-logo.glb"
+          />
+          <VideoBlock
+            position={[-55, 0, 0]}
+            onClick={() => setIsVideoBlock(!isVideoBlock)}
+          />
 
-            <VideoSliderShaderBlock />
+          <VideoSliderShaderBlock />
 
-            {/* Web-site boundary */}
-            <RigidBody colliders="cuboid" type="fixed">
-              <mesh position={[1, 0, 9]} rotation-x={0.1}>
-                <boxGeometry args={[200, 3, 0.1]} />
-                <meshStandardMaterial color="#1d4446" />
-              </mesh>
-              <mesh position={[1, 0, -9]} rotation-x={-0.1}>
-                <boxGeometry args={[200, 3, 0.1]} />
-                <meshStandardMaterial color="#1d4446" />
-              </mesh>
-            </RigidBody>
+          {/* Web-site boundary */}
+          <RigidBody colliders="cuboid" type="fixed">
+            <mesh position={[1, 0, 9]} rotation-x={0.1}>
+              <boxGeometry args={[200, 3, 0.1]} />
+              <meshStandardMaterial color="#1d4446" />
+            </mesh>
+            <mesh position={[1, 0, -9]} rotation-x={-0.1}>
+              <boxGeometry args={[200, 3, 0.1]} />
+              <meshStandardMaterial color="#1d4446" />
+            </mesh>
+          </RigidBody>
 
-            {/* Fun Zone and Test Performance */}
-            <FunZone />
+          {/* Fun Zone and Test Performance */}
+          <FunZone />
 
-            {/* Ground */}
-            <RigidBody
-              type="fixed"
-              colliders={false}
-              friction={1}
-              position={[0, -0.51, 0]}
-              restitution={0.3}
-            >
-              <CuboidCollider args={[100, 0.5, 9]} />
-              <mesh rotation-x={-Math.PI / 2} position={[0, 0.5, 0]}>
-                <planeGeometry args={[200, 18]} />
-                {/* TODO need to choose for best performance */}
-                <MeshReflectorMaterial
-                  envMapIntensity={0}
-                  normalMap={normal}
-                  roughnessMap={roughness}
-                  aoMap={aoMap}
-                  // normalScale={[0.8, 0.8]}
-                  dithering={true}
-                  color={[0.021, 0.025, 0.028]}
-                  roughness={0.9}
-                  metalness={0.1}
-                  blur={[2000, 2000]} // Blur ground reflections (width, heigt), 0 skips blur
-                  mixBlur={30} // How much blur mixes with surface roughness (default = 1)
-                  mixStrength={80} // Strength of the reflections
-                  mixContrast={1} // Contrast of the reflections
-                  resolution={isMobile ? 80 : 250} // Off-buffer resolution, lower=faster, higher=better quality, slower
-                  mirror={0} // Mirror environment, 0 = texture colors, 1 = pick up env colors
-                  depthScale={0.01} // Scale the depth factor (0 = no depth, default = 0)
-                  minDepthThreshold={0.8} // Lower edge for the depthTexture interpolation (default = 0)
-                  maxDepthThreshold={1} // Upper edge for the depthTexture interpolation (default = 0)
-                  depthToBlurRatioBias={0.2} // Adds a bias factor to the depthTexture before calculating the blur amount [blurFactor = blurTexture * (depthTexture + bias)]. It accepts values between 0 and 1, default is 0.25. An amount > 0 of bias makes sure that the blurTexture is not too sharp because of the multiplication with the depthTexture
-                />
-                {/* <MeshReflectorMaterial
+          {/* Ground */}
+          <RigidBody
+            type="fixed"
+            colliders={false}
+            friction={1}
+            position={[0, -0.51, 0]}
+            restitution={0.3}
+          >
+            <CuboidCollider args={[100, 0.5, 9]} />
+            <mesh rotation-x={-Math.PI / 2} position={[0, 0.5, 0]}>
+              <planeGeometry args={[200, 18]} />
+              {/* TODO need to choose for best performance */}
+              <MeshReflectorMaterial
+                envMapIntensity={0}
+                normalMap={normal}
+                roughnessMap={roughness}
+                aoMap={aoMap}
+                // normalScale={[0.8, 0.8]}
+                dithering={true}
+                color={[0.021, 0.025, 0.028]}
+                roughness={0.9}
+                metalness={0.1}
+                blur={[2000, 2000]} // Blur ground reflections (width, heigt), 0 skips blur
+                mixBlur={30} // How much blur mixes with surface roughness (default = 1)
+                mixStrength={80} // Strength of the reflections
+                mixContrast={1} // Contrast of the reflections
+                resolution={isMobile ? 80 : 250} // Off-buffer resolution, lower=faster, higher=better quality, slower
+                mirror={0} // Mirror environment, 0 = texture colors, 1 = pick up env colors
+                depthScale={0.01} // Scale the depth factor (0 = no depth, default = 0)
+                minDepthThreshold={0.8} // Lower edge for the depthTexture interpolation (default = 0)
+                maxDepthThreshold={1} // Upper edge for the depthTexture interpolation (default = 0)
+                depthToBlurRatioBias={0.2} // Adds a bias factor to the depthTexture before calculating the blur amount [blurFactor = blurTexture * (depthTexture + bias)]. It accepts values between 0 and 1, default is 0.25. An amount > 0 of bias makes sure that the blurTexture is not too sharp because of the multiplication with the depthTexture
+              />
+              {/* <MeshReflectorMaterial
                   blur={[500, 500]}
                   resolution={250}
                   mixBlur={1}
@@ -268,11 +268,10 @@ export default function App() {
                   metalness={0.9}
                   mirror={0}
                 /> */}
-                {/* <meshStandardMaterial roughness={0} metalness={1} color="blue" /> */}
-              </mesh>
-            </RigidBody>
-          </Physics>
-        </ScrollControls>
+              {/* <meshStandardMaterial roughness={0} metalness={1} color="blue" /> */}
+            </mesh>
+          </RigidBody>
+        </Physics>
       </Canvas>
     </AppStyled>
   );
@@ -324,7 +323,7 @@ export const ScrollDownWrapperStyled = styled.div<{
 }>`
   position: absolute;
   top: ${({ $currentScroll, $isVideoBlock }) =>
-    ($currentScroll && $currentScroll > 0.1) || $isVideoBlock
+    ($currentScroll && $currentScroll > 0) || $isVideoBlock
       ? "calc(100%)"
       : "calc(100% - 50px)"};
   transition: top 0.5s ease-in-out;
