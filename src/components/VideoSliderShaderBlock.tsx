@@ -44,7 +44,7 @@ export const VideoFadeMaterial = shaderMaterial(
 
 extend({ VideoFadeMaterial });
 
-// trick how to add type in typescript for extend 
+// trick how to add type in typescript for extend
 declare global {
   namespace JSX {
     interface IntrinsicElements {
@@ -53,30 +53,54 @@ declare global {
   }
 }
 
-const VideoSliderShaderBlock = () => {
+type VideoSliderShaderProps = {
+  position: [number, number, number];
+  video1: string;
+  video2: string;
+  onClick: () => void;
+  toggleSlider: boolean;
+  setToggleSlider: (toggleSliderOne: boolean) => void;
+  isKeydown: boolean;
+};
+
+const VideoSliderShaderBlock = ({
+  position,
+  video1,
+  video2,
+  onClick,
+  toggleSlider,
+  setToggleSlider,
+  isKeydown,
+}: VideoSliderShaderProps) => {
   const ref = useRef<any>();
   const [dispTexture] = useTexture(["/img/slider-shader.jpeg"]);
-  const [hovered, setHover] = useState(false);
   useFrame(() => {
     ref.current.dispFactor = THREE.MathUtils.lerp(
       ref.current.dispFactor,
-      hovered ? 1 : 0,
+      toggleSlider ? 1 : 0,
       0.1
     );
   });
   return (
     <mesh
-      onPointerOver={() => setHover(true)}
-      onPointerOut={() => setHover(false)}
-      position={[-40, 0, 0]}
+      onPointerOver={() => {
+        if (!isKeydown) return setToggleSlider(true);
+      }}
+      onPointerOut={() => {
+        if (!isKeydown) return setToggleSlider(false);
+      }}
+      position={position}
       scale={[17.5, 13.125, 10]}
       rotation={[-Math.PI / 2, 0, Math.PI / 2]}
+      onClick={onClick}
+      onPointerEnter={() => (document.body.style.cursor = "pointer")}
+      onPointerLeave={() => (document.body.style.cursor = "default")}
     >
       <planeGeometry />
       <videoFadeMaterial
         ref={ref}
-        video={useVideoTexture("video/skate1200x900.mp4")}
-        video2={useVideoTexture("video/top-view1200x900.mp4")}
+        video={useVideoTexture(video1)}
+        video2={useVideoTexture(video2)}
         distorTexture={dispTexture}
         toneMapped={false}
       />

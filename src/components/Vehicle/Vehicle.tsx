@@ -17,7 +17,9 @@ type VehicleProps = {
   maxForceMobile: number;
   steeringMobile: number;
   setCurrentScroll: (currentScroll: number) => void;
-  isVideoBlock: boolean;
+  setToggleSliderOne: (toggleSliderOne: boolean) => void;
+  setToggleSliderTwo: (toggleSliderOne: boolean) => void;
+  isVideoBlock: number;
 };
 
 export default function Vehicle({
@@ -26,6 +28,8 @@ export default function Vehicle({
   steeringMobile,
   setCurrentScroll,
   isVideoBlock,
+  setToggleSliderOne,
+  setToggleSliderTwo,
 }: VehicleProps) {
   const { cameraMode } = useLeva("camera", {
     cameraMode: {
@@ -158,6 +162,33 @@ export default function Vehicle({
     // chassis translation
     newChassisTranslation.copy(chassis.current.translation() as Vector3);
 
+    // toggle slider when vehicle on sliders
+    // TODO maybe will made function?
+    if (
+      isKeydown &&
+      newChassisTranslation.x > -63 &&
+      newChassisTranslation.x < -46.5
+    )
+      setToggleSliderOne(true);
+    if (
+      isKeydown &&
+      (newChassisTranslation.x < -63 || newChassisTranslation.x > -46.5)
+    )
+      setToggleSliderOne(false);
+
+    if (
+      isKeydown &&
+      newChassisTranslation.x > -45 &&
+      newChassisTranslation.x < -28.3
+    )
+      setToggleSliderTwo(true);
+    if (
+      isKeydown &&
+      (newChassisTranslation.x < -45 || newChassisTranslation.x > -28.3)
+    )
+      setToggleSliderTwo(false);
+
+
     const speedAnimation = 1.0 - Math.pow(0.005, delta);
     const ratioScreen = window.innerHeight / window.innerWidth;
     const calculatedCoefficientScale = () => {
@@ -172,14 +203,18 @@ export default function Vehicle({
       if (ratioScreen > 1 && ratioScreen < 2) return 24 * ratioScreen;
       return 27 * ratioScreen;
     };
-    const scrollPosition = isVideoBlock ? -65 : scroll.offset * 2 * 100 - 100;
+    const scrollPosition = () => {
+      if (isVideoBlock === 1) return -65;
+      if (isVideoBlock === 2) return -47;
+      return scroll.offset * 2 * 100 - 100;
+    };
 
     // axises calculation
     const videoBlockX = isVideoBlock ? 0.01 : 20;
     const videoBlockY = isVideoBlock ? calcVideoBlockByRatioY() : 20;
     const ratioScreenY = ratioScreen > 1 ? 9 : 3;
     const scrollOrVehiclePositionX =
-      isKeydown && !isVideoBlock ? newChassisTranslation.x : scrollPosition;
+      isKeydown && !isVideoBlock ? newChassisTranslation.x : scrollPosition();
     const scrollOrVehiclePositionZ =
       isKeydown && !isVideoBlock ? 0.3 * newChassisTranslation.z : 0;
 

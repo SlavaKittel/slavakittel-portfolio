@@ -30,7 +30,9 @@ export default function App() {
   });
   const [isKeydown, setKeydown] = useState(true);
   const [currentScroll, setCurrentScroll] = useState(0);
-  const [isVideoBlock, setIsVideoBlock] = useState(false);
+  const [isVideoBlock, setIsVideoBlock] = useState(0);
+  const [toggleSliderOne, setToggleSliderOne] = useState(false);
+  const [toggleSliderTwo, setToggleSliderTwo] = useState(false);
 
   // Scroll and key controll listener
   useEffect(() => {
@@ -179,17 +181,33 @@ export default function App() {
           {/* Main text */}
           <MainText />
 
-          <ScrollControls pages={2} damping={0.005}>
-            {/* Vehicle with Camera and Controls hooks */}
-            <Vehicle
-              isKeydown={isKeydown}
-              maxForceMobile={maxForceMobile}
-              steeringMobile={steeringMobile}
-              isVideoBlock={isVideoBlock}
-              setCurrentScroll={setCurrentScroll}
-            />
-          </ScrollControls>
+          {/* Video Examples */}
+          <VideoSliderShaderBlock
+            position={[-55, 0, 0]}
+            video1="video/skate1200x900.mp4"
+            video2="video/furniture1200x900.mp4"
+            toggleSlider={toggleSliderOne}
+            setToggleSlider={setToggleSliderOne}
+            onClick={() => {
+              if (!!isVideoBlock) return setIsVideoBlock(0);
+              return setIsVideoBlock(1);
+            }}
+            isKeydown={isKeydown}
+          />
+          <VideoSliderShaderBlock
+            position={[-37, 0, 0]}
+            video1="video/top-view1200x90.mp4"
+            video2="video/scooter1200x900.mp4"
+            toggleSlider={toggleSliderTwo}
+            setToggleSlider={setToggleSliderTwo}
+            onClick={() => {
+              if (!!isVideoBlock) return setIsVideoBlock(0);
+              return setIsVideoBlock(2);
+            }}
+            isKeydown={isKeydown}
+          />
 
+          {/* Social links */}
           <SocialNetworkLogo
             position={[-23, 1.4, 2.5]}
             link="https://www.linkedin.com/in/slavakittel/"
@@ -200,12 +218,23 @@ export default function App() {
             link="https://github.com/SlavaKittel"
             model="./glb-models/github-logo.glb"
           />
-          <VideoBlock
-            position={[-55, 0, 0]}
-            onClick={() => setIsVideoBlock(!isVideoBlock)}
-          />
 
-          <VideoSliderShaderBlock />
+          {/* Fun Zone and Test Performance */}
+          <FunZone />
+
+          {/* Main camera with scroll and Vehicle */}
+          <ScrollControls pages={2} damping={0.005}>
+            {/* Vehicle with Camera and Controls hooks */}
+            <Vehicle
+              isKeydown={isKeydown}
+              maxForceMobile={maxForceMobile}
+              steeringMobile={steeringMobile}
+              isVideoBlock={isVideoBlock}
+              setCurrentScroll={setCurrentScroll}
+              setToggleSliderOne={setToggleSliderOne}
+              setToggleSliderTwo={setToggleSliderTwo}
+            />
+          </ScrollControls>
 
           {/* Web-site boundary */}
           <RigidBody colliders="cuboid" type="fixed">
@@ -218,9 +247,6 @@ export default function App() {
               <meshStandardMaterial color="#1d4446" />
             </mesh>
           </RigidBody>
-
-          {/* Fun Zone and Test Performance */}
-          <FunZone />
 
           {/* Ground */}
           <RigidBody
@@ -277,7 +303,7 @@ export default function App() {
   );
 }
 
-export const AppStyled = styled.div<{ $isVideoBlock: boolean }>`
+export const AppStyled = styled.div<{ $isVideoBlock: number }>`
   position: fixed;
   top: 0;
   left: 0;
@@ -286,7 +312,7 @@ export const AppStyled = styled.div<{ $isVideoBlock: boolean }>`
   overflow: hidden;
   & > div > div > div {
     overflow: ${({ $isVideoBlock }) =>
-      $isVideoBlock ? "hidden !important;" : "unset"};
+      !!$isVideoBlock ? "hidden !important;" : "unset"};
   }
 `;
 
@@ -319,11 +345,11 @@ const jumpInfinite = keyframes`
  `;
 export const ScrollDownWrapperStyled = styled.div<{
   $currentScroll?: number;
-  $isVideoBlock?: boolean;
+  $isVideoBlock?: number;
 }>`
   position: absolute;
   top: ${({ $currentScroll, $isVideoBlock }) =>
-    ($currentScroll && $currentScroll > 0) || $isVideoBlock
+    ($currentScroll && $currentScroll > 0) || !!$isVideoBlock
       ? "calc(100%)"
       : "calc(100% - 50px)"};
   transition: top 0.5s ease-in-out;
