@@ -149,7 +149,7 @@ export class RapierRaycastVehicle {
   private updateFriction_relPos = new Vector3();
 
   private updateWheelRotation_hitNormalWorldScaledWithProj = new Vector3();
-  private updateWheelRotation_fwd = new Vector3();
+  public updateWheelRotation_fwd = new Vector3();
   private updateWheelRotation_vel = new Vector3();
 
   constructor({

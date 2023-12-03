@@ -93,7 +93,7 @@ const VehicleModel = forwardRef<VehicleRef, VehicleModelProps>(function Car(
     customSlidingRotationalSpeed: -30,
     useCustomSlidingRotationalSpeed: true,
 
-    forwardAcceleration: 1,
+    forwardAcceleration: 5,
     sideAcceleration: 3,
 
     vehicleWidth: 1.7,

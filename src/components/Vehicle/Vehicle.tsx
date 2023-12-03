@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import { isMobile } from "react-device-detect";
 
@@ -15,7 +15,7 @@ import VehicleModel, { VehicleRef } from "./components/VihecleModel";
 type VehicleProps = {
   isKeydown: boolean;
   maxForceMobile: number;
-  steeringMobile: number;
+  angleOfJoystik: number;
   setCurrentScroll: (currentScroll: number) => void;
   setToggleSliderOne: (toggleSliderOne: boolean) => void;
   setToggleSliderTwo: (toggleSliderOne: boolean) => void;
@@ -25,7 +25,7 @@ type VehicleProps = {
 export default function Vehicle({
   isKeydown,
   maxForceMobile,
-  steeringMobile,
+  angleOfJoystik,
   setCurrentScroll,
   isVideoBlock,
   setToggleSliderOne,
@@ -37,6 +37,7 @@ export default function Vehicle({
       options: ["drive", "orbit"],
     },
   });
+  const [brakeMobile, setBrakeMobile] = useState(false);
   const controls = useControls();
   const scroll = useScroll();
 
@@ -54,6 +55,12 @@ export default function Vehicle({
 
   const stepSteer = 0.002;
   let steer = 0;
+
+  const getAngle = (y: number, x: number) => {
+    const angleOf180 = (Math.atan2(y, x) * 180) / Math.PI;
+    const angleOf360 = angleOf180 < 0 ? angleOf180 + 360 : angleOf180;
+    return angleOf360;
+  };
 
   useBeforePhysicsStep((world) => {
     if (
@@ -73,9 +80,43 @@ export default function Vehicle({
     let engineForce = 0;
     let steering = 0;
 
+    const angleOfVehicle = getAngle(
+      -raycastVehicle.current?.rapierRaycastVehicle.current
+        .updateWheelRotation_fwd.x,
+      -raycastVehicle.current?.rapierRaycastVehicle.current
+        .updateWheelRotation_fwd.z
+    );
+
+    const calcSteeringMobile = () => {
+      if (angleOfJoystik === 0) return 0;
+      if (angleOfJoystik - 180 > angleOfVehicle)
+        return ((angleOfJoystik - 360 - angleOfVehicle) / 360) * 2;
+      if (angleOfVehicle - 180 > angleOfJoystik)
+        return ((angleOfJoystik + 360 - angleOfVehicle) / 360) * 2;
+      return ((angleOfJoystik - angleOfVehicle) / 360) * 2;
+    };
+    
+    const limitedCalcSteeringMobile = () => {
+      if (calcSteeringMobile() > 0.7) return 0.7;
+      if (calcSteeringMobile() < -0.7) return -0.7;
+      return calcSteeringMobile();
+    };
+
+    const engineForceMobile = () => {
+      if (
+        maxForceMobile === -50 &&
+        vehicle.state.currentVehicleSpeedKmHour < -5
+      ) {
+        setBrakeMobile(true);
+        return 0;
+      }
+      setBrakeMobile(false);
+      return maxForceMobile * 0.85;
+    };
+
     if (isMobile) {
-      engineForce += maxForceMobile;
-      steering += steeringMobile;
+      engineForce += engineForceMobile();
+      steering += limitedCalcSteeringMobile();
     } else {
       if (controls.current.forward) {
         engineForce += maxForce;
@@ -113,7 +154,7 @@ export default function Vehicle({
       }
     }
 
-    const brakeForce = controls.current.brake ? maxBrake : 0;
+    const brakeForce = controls.current.brake || brakeMobile ? maxBrake : 0;
 
     for (let i = 0; i < vehicle.wheels.length; i++) {
       vehicle.setBrakeValue(brakeForce, i);

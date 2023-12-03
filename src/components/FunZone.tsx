@@ -7,10 +7,10 @@ type FunZoneProps = {};
 const FunZone = ({}: FunZoneProps) => {
   const count = isMobile ? 25 : 100;
 
-  const instances = useMemo(() => {
-    const instances: InstancedRigidBodyProps[] = [];
+  const cubes = useMemo(() => {
+    const newCubes: InstancedRigidBodyProps[] = [];
     for (let i = 0; i < count; i += 1) {
-      instances.push({
+      newCubes.push({
         key: "instance_" + Math.random(),
         position: [
           Math.random() * 10 + 20,
@@ -20,12 +20,12 @@ const FunZone = ({}: FunZoneProps) => {
         rotation: [Math.random(), Math.random(), Math.random()],
       });
     }
-    return instances;
+    return newCubes;
   }, []);
 
-  return instances.map((instant) => (
-    <RigidBody colliders="cuboid" friction={1} mass={200} key={instant.key}>
-      <mesh position={instant.position} rotation={instant.rotation}>
+  return cubes.map((cube) => (
+    <RigidBody colliders="cuboid" friction={1} mass={200} key={cube.key}>
+      <mesh position={cube.position} rotation={cube.rotation}>
         <boxGeometry args={[1, 1, 1]} />
         <meshStandardMaterial color="#e40f0f" roughness={0.1} metalness={0.6} />
       </mesh>

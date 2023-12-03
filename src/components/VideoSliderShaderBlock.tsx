@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import * as THREE from "three";
+import { isMobile } from "react-device-detect";
 
 import { useFrame, extend } from "@react-three/fiber";
 import { useTexture, shaderMaterial, useVideoTexture } from "@react-three/drei";
@@ -84,10 +85,10 @@ const VideoSliderShaderBlock = ({
   return (
     <mesh
       onPointerOver={() => {
-        if (!isKeydown) return setToggleSlider(true);
+        if (!isKeydown && !isMobile) return setToggleSlider(true);
       }}
       onPointerOut={() => {
-        if (!isKeydown) return setToggleSlider(false);
+        if (!isKeydown && !isMobile) return setToggleSlider(false);
       }}
       position={position}
       scale={[17.5, 13.125, 10]}

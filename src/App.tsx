@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from "react";
-import { Canvas, useLoader, useFrame, extend } from "@react-three/fiber";
+import { useState, useEffect } from "react";
+import { Canvas, useLoader } from "@react-three/fiber";
 import styled, { keyframes } from "styled-components";
 import { isMobile } from "react-device-detect";
 import { TextureLoader } from "three/src/loaders/TextureLoader";
@@ -19,7 +19,6 @@ import Vehicle from "./components/Vehicle/Vehicle";
 import MainText from "./components/MainText";
 import FunZone from "./components/FunZone";
 import SocialNetworkLogo from "./components/SocialNetworkLogo";
-import VideoBlock from "./components/VideoBlock";
 import VideoSliderShaderBlock from "./components/VideoSliderShaderBlock";
 import Lights from "./components/Lights";
 
@@ -65,24 +64,27 @@ export default function App() {
 
   //Joystik Control
   const [maxForceMobile, setMaxForceMobile] = useState<number>(0);
-  const [steeringMobile, setSteeringMobile] = useState(0);
-  const maxForceJoystik = 100;
-  const maxSteerJoystik = 0.5;
+  const [angleOfJoystik, setAngleOfJoystik] = useState(0);
 
   const moveHandler = (event: IJoystickUpdateEvent) => {
-    if (!event.y || !event.x) return;
-    const getMaxForceMobile = (y: number) => {
-      if (y > 0 && y < 0.75) return 90;
-      return maxForceJoystik * y;
+    if (!event.y || !event.x || !event.distance) return;
+
+    const getAngle = (y: number, x: number) => {
+      const angleOf180 = (Math.atan2(y, x) * 180) / Math.PI;
+      const angleOf360 = angleOf180 < 0 ? angleOf180 + 360 : angleOf180;
+      return angleOf360;
     };
-    setMaxForceMobile(getMaxForceMobile(event?.y));
-    setSteeringMobile(maxSteerJoystik * -event?.x);
+
+    const angleOfJoystikValue = getAngle(event.y, event.x);
+
+    setMaxForceMobile(event.distance);
+    setAngleOfJoystik(angleOfJoystikValue);
     setKeydown(true);
   };
 
   const moveHandlerStop = () => {
-    setMaxForceMobile(0);
-    setSteeringMobile(0);
+    setMaxForceMobile(-50);
+    setAngleOfJoystik(0);
   };
 
   //Ground Texture
@@ -183,7 +185,7 @@ export default function App() {
 
           {/* Video Examples */}
           <VideoSliderShaderBlock
-            position={[-55, 0, 0]}
+            position={[-55, 0.01, 0]}
             video1="video/skate1200x900.mp4"
             video2="video/furniture1200x900.mp4"
             toggleSlider={toggleSliderOne}
@@ -195,7 +197,7 @@ export default function App() {
             isKeydown={isKeydown}
           />
           <VideoSliderShaderBlock
-            position={[-37, 0, 0]}
+            position={[-37, 0.01, 0]}
             video1="video/top-view1200x90.mp4"
             video2="video/scooter1200x900.mp4"
             toggleSlider={toggleSliderTwo}
@@ -228,7 +230,7 @@ export default function App() {
             <Vehicle
               isKeydown={isKeydown}
               maxForceMobile={maxForceMobile}
-              steeringMobile={steeringMobile}
+              angleOfJoystik={angleOfJoystik}
               isVideoBlock={isVideoBlock}
               setCurrentScroll={setCurrentScroll}
               setToggleSliderOne={setToggleSliderOne}
