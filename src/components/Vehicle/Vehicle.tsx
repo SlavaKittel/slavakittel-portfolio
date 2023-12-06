@@ -17,9 +17,12 @@ type VehicleProps = {
   maxForceMobile: number;
   angleOfJoystik: number;
   setCurrentScroll: (currentScroll: number) => void;
+  isVideoBlock: number;
   setToggleSliderOne: (toggleSliderOne: boolean) => void;
   setToggleSliderTwo: (toggleSliderOne: boolean) => void;
-  isVideoBlock: number;
+  setIsCubesFlying: (isCubesFlying: boolean) => void;
+  isCubesFalled: boolean;
+  isCubesFlying: boolean;
 };
 
 export default function Vehicle({
@@ -30,6 +33,9 @@ export default function Vehicle({
   isVideoBlock,
   setToggleSliderOne,
   setToggleSliderTwo,
+  setIsCubesFlying,
+  isCubesFalled,
+  isCubesFlying,
 }: VehicleProps) {
   const { cameraMode } = useLeva("camera", {
     cameraMode: {
@@ -95,7 +101,7 @@ export default function Vehicle({
         return ((angleOfJoystik + 360 - angleOfVehicle) / 360) * 2;
       return ((angleOfJoystik - angleOfVehicle) / 360) * 2;
     };
-    
+
     const limitedCalcSteeringMobile = () => {
       if (calcSteeringMobile() > 0.7) return 0.7;
       if (calcSteeringMobile() < -0.7) return -0.7;
@@ -154,7 +160,12 @@ export default function Vehicle({
       }
     }
 
-    const brakeForce = controls.current.brake || brakeMobile ? maxBrake : 0;
+    const brakeForce =
+      controls.current.brake ||
+      brakeMobile ||
+      (isMobile && isCubesFlying && !isCubesFalled)
+        ? maxBrake
+        : 0;
 
     for (let i = 0; i < vehicle.wheels.length; i++) {
       vehicle.setBrakeValue(brakeForce, i);
@@ -229,6 +240,25 @@ export default function Vehicle({
     )
       setToggleSliderTwo(false);
 
+      
+    // is cubes fall
+    const positionX = 10; // var from funZone
+    
+    if (
+      newChassisTranslation.x > positionX + 4.8 &&
+      newChassisTranslation.x < positionX + 5.8 &&
+      newChassisTranslation.z > -0.5 &&
+      newChassisTranslation.z < 0.5
+    )
+      setIsCubesFlying(true);
+    if (
+      !isCubesFalled &&
+      (newChassisTranslation.x < positionX + 4.8 ||
+        newChassisTranslation.x > positionX + 5.8 ||
+        newChassisTranslation.z < -0.5 ||
+        newChassisTranslation.z > 0.5)
+    )
+      setIsCubesFlying(false);
 
     const speedAnimation = 1.0 - Math.pow(0.005, delta);
     const ratioScreen = window.innerHeight / window.innerWidth;

@@ -30,8 +30,12 @@ export default function App() {
   const [isKeydown, setKeydown] = useState(true);
   const [currentScroll, setCurrentScroll] = useState(0);
   const [isVideoBlock, setIsVideoBlock] = useState(0);
+
   const [toggleSliderOne, setToggleSliderOne] = useState(false);
   const [toggleSliderTwo, setToggleSliderTwo] = useState(false);
+
+  const [isCubesFalled, setIsCubesFalled] = useState(false);
+  const [isCubesFlying, setIsCubesFlying] = useState(false);
 
   // Scroll and key controll listener
   useEffect(() => {
@@ -222,7 +226,11 @@ export default function App() {
           />
 
           {/* Fun Zone and Test Performance */}
-          <FunZone />
+          <FunZone
+            positionX={10}
+            isCubesFlying={isCubesFlying}
+            setIsCubesFalled={setIsCubesFalled}
+          />
 
           {/* Main camera with scroll and Vehicle */}
           <ScrollControls pages={2} damping={0.005}>
@@ -235,6 +243,9 @@ export default function App() {
               setCurrentScroll={setCurrentScroll}
               setToggleSliderOne={setToggleSliderOne}
               setToggleSliderTwo={setToggleSliderTwo}
+              setIsCubesFlying={setIsCubesFlying}
+              isCubesFalled={isCubesFalled}
+              isCubesFlying={isCubesFlying}
             />
           </ScrollControls>
 
