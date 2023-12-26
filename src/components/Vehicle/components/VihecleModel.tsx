@@ -11,7 +11,6 @@ import { Group, Object3D, Vector3 } from "three";
 
 import Wheel from "../../Wheel";
 
-import { useControls as useLeva } from "leva";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { useLoader } from "@react-three/fiber";
 
@@ -57,50 +56,32 @@ const VehicleModel = forwardRef<VehicleRef, VehicleModelProps>(function Car(
 
   const bmwE30Chassis = useLoader(GLTFLoader, "./glb-models/bmwe30ORIGINAL.glb");
 
-  const {
-    indexRightAxis,
-    indexForwardAxis,
-    indexUpAxis,
-    directionLocal: directionLocalArray,
-    axleLocal: axleLocalArray,
-    vehicleWidth,
-    vehicleHeight,
-    vehicleFront,
-    vehicleBack,
-    ...levaWheelOptions
-  } = useLeva("wheel-options", {
+  const indexRightAxis = 2;
+  const indexForwardAxis = 0;
+  const indexUpAxis = 1;
+  const directionLocalArray = [0, -1.3, 0];
+  const axleLocalArray = [0, 0, 1];
+  const vehicleWidth = 1.7;
+  const vehicleHeight = -0.35;
+  const vehicleFront =-1.38;
+  const vehicleBack = 1.45;
+
+  const levaWheelOptions = {
     radius: 0.4,
-
-    indexRightAxis: 2,
-    indexForwardAxis: 0,
-    indexUpAxis: 1,
-
-    directionLocal: [0, -1.3, 0],
-    axleLocal: [0, 0, 1],
-
     suspensionStiffness: 30,
     suspensionRestLength: 0.3,
     maxSuspensionForce: 100000,
     maxSuspensionTravel: 0.3,
-
     sideFrictionStiffness: 1,
     frictionSlip: 1.4,
     dampingRelaxation: 2.3,
     dampingCompression: 4.4,
-
     rollInfluence: 0.01,
-
     customSlidingRotationalSpeed: -30,
     useCustomSlidingRotationalSpeed: true,
-
     forwardAcceleration: 5,
     sideAcceleration: 3,
-
-    vehicleWidth: 1.7,
-    vehicleHeight: -0.35,
-    vehicleFront: -1.38,
-    vehicleBack: 1.45,
-  });
+  }
 
   const directionLocal = useMemo(
     () => new Vector3(...directionLocalArray),

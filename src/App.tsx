@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { Canvas, useLoader } from "@react-three/fiber";
 import styled, { keyframes } from "styled-components";
 import { isMobile } from "react-device-detect";
@@ -21,6 +21,7 @@ import FunZone from "./components/FunZone";
 import SocialNetworkLogo from "./components/SocialNetworkLogo";
 import VideoSliderShaderBlock from "./components/VideoSliderShaderBlock";
 import Lights from "./components/Lights";
+import LoadingScreen from "./components/LoadingScreen";
 
 export default function App() {
   const { perfVisible, debug } = useLeva({
@@ -66,9 +67,9 @@ export default function App() {
     };
   }, []);
 
-  //Joystik Control
+  //Joystick Control
   const [maxForceMobile, setMaxForceMobile] = useState<number>(0);
-  const [angleOfJoystik, setAngleOfJoystik] = useState(0);
+  const [angleOfJoystick, setAngleOfJoystick] = useState(0);
 
   const moveHandler = (event: IJoystickUpdateEvent) => {
     if (!event.y || !event.x || !event.distance) return;
@@ -79,16 +80,16 @@ export default function App() {
       return angleOf360;
     };
 
-    const angleOfJoystikValue = getAngle(event.y, event.x);
+    const angleOfJoystickValue = getAngle(event.y, event.x);
 
     setMaxForceMobile(event.distance);
-    setAngleOfJoystik(angleOfJoystikValue);
+    setAngleOfJoystick(angleOfJoystickValue);
     setKeydown(true);
   };
 
   const moveHandlerStop = () => {
     setMaxForceMobile(-50);
-    setAngleOfJoystik(0);
+    setAngleOfJoystick(0);
   };
 
   //Ground Texture
@@ -112,17 +113,21 @@ export default function App() {
   repeatTextures(normal);
   repeatTextures(aoMap);
 
+  //TODO delete
+  const start = true;
+
   return (
     <AppStyled $isVideoBlock={isVideoBlock}>
       <Leva collapsed />
       {isMobile && (
-        <JoystikStyled>
+        <JoystickStyled>
           <Joystick size={100} move={moveHandler} stop={moveHandlerStop} />
-        </JoystikStyled>
+        </JoystickStyled>
       )}
       <ScrollDownWrapperStyled
         $currentScroll={currentScroll}
         $isVideoBlock={isVideoBlock}
+        $isMobile={isMobile}
       >
         <div className="text">Scroll Down</div>
       </ScrollDownWrapperStyled>
@@ -147,13 +152,13 @@ export default function App() {
         <color args={["#6b7272"]} attach="background" />
 
         <Text
-          color="#bababa"
-          fontSize={1.3}
-          font="/fonts/Barlow_Condensed/BarlowCondensed-SemiBold.ttf"
+          color="#e8e8e8"
+          fontSize={1}
+          font="/fonts/FjallaOne-Regular.ttf"
           position={[-74, 0, 0]}
           rotation={[Math.PI / 2, Math.PI, -Math.PI / 2]}
           maxWidth={17}
-          lineHeight={1.0}
+          lineHeight={1.2}
           textAlign="center"
         >
           I'm Slava, and my mission is to lead the way in 3D web user
@@ -162,9 +167,9 @@ export default function App() {
           interaction for your success.
         </Text>
         <Text
-          color="#bababa"
+          color="#e8e8e8"
           fontSize={1}
-          font="/fonts/Barlow_Condensed/BarlowCondensed-SemiBold.ttf"
+          font="/fonts/FjallaOne-Regular.ttf"
           position={[-63, 0, 0]}
           rotation={[Math.PI / 2, Math.PI, -Math.PI / 2]}
           maxWidth={17}
@@ -235,18 +240,24 @@ export default function App() {
           {/* Main camera with scroll and Vehicle */}
           <ScrollControls pages={2} damping={0.005}>
             {/* Vehicle with Camera and Controls hooks */}
-            <Vehicle
-              isKeydown={isKeydown}
-              maxForceMobile={maxForceMobile}
-              angleOfJoystik={angleOfJoystik}
-              isVideoBlock={isVideoBlock}
-              setCurrentScroll={setCurrentScroll}
-              setToggleSliderOne={setToggleSliderOne}
-              setToggleSliderTwo={setToggleSliderTwo}
-              setIsCubesFlying={setIsCubesFlying}
-              isCubesFalled={isCubesFalled}
-              isCubesFlying={isCubesFlying}
-            />
+
+            {/* TODO need to set up Suspense for all loading models */}
+            <Suspense fallback={null}>
+              {start && (
+                <Vehicle
+                  isKeydown={isKeydown}
+                  maxForceMobile={maxForceMobile}
+                  angleOfJoystick={angleOfJoystick}
+                  isVideoBlock={isVideoBlock}
+                  setCurrentScroll={setCurrentScroll}
+                  setToggleSliderOne={setToggleSliderOne}
+                  setToggleSliderTwo={setToggleSliderTwo}
+                  setIsCubesFlying={setIsCubesFlying}
+                  isCubesFalled={isCubesFalled}
+                  isCubesFlying={isCubesFlying}
+                />
+              )}
+            </Suspense>
           </ScrollControls>
 
           {/* Web-site boundary */}
@@ -312,6 +323,8 @@ export default function App() {
           </RigidBody>
         </Physics>
       </Canvas>
+
+      <LoadingScreen />
     </AppStyled>
   );
 }
@@ -323,13 +336,19 @@ export const AppStyled = styled.div<{ $isVideoBlock: number }>`
   width: 100%;
   height: 100%;
   overflow: hidden;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   & > div > div > div {
     overflow: ${({ $isVideoBlock }) =>
       !!$isVideoBlock ? "hidden !important;" : "unset"};
   }
 `;
 
-export const JoystikStyled = styled.div`
+export const JoystickStyled = styled.div`
   display: flex;
   position: absolute;
   bottom: 60px;
@@ -339,37 +358,38 @@ export const JoystikStyled = styled.div`
   transform: translate(-50%, 0);
   z-index: 1;
   & > div {
-    background: rgba(189, 241, 243, 0.2) !important;
-    border: 1px solid gray;
+    background: transparent !important;
+    border: 2px solid #ffffff79;
     & > button {
-      background: rgba(53, 66, 152, 0.5) !important;
-      border: 1px solid #ffffffce !important;
+      background: url("/img/joystick-logo.jpg") no-repeat center !important;
+      background-size: 180% !important;
+      opacity: 0.98;
     }
   }
 `;
 
 const jumpInfinite = keyframes`
-  0% { transform: skewX(-15deg); }
-  2% { transform: skewX(15deg); }
-  4% { transform: skewX(-15deg); }
-  6% { transform: skewX(15deg); }
+  0% { transform: skewX(-40deg); }
+  2% { transform: skewX(40deg); }
+  4% { transform: skewX(-40deg); }
+  6% { transform: skewX(40deg); }
   8% { transform: skewX(0deg); }
   100% { transform: skewX(0deg); }  
  `;
 export const ScrollDownWrapperStyled = styled.div<{
   $currentScroll?: number;
   $isVideoBlock?: number;
+  $isMobile?: boolean;
 }>`
   position: absolute;
   top: ${({ $currentScroll, $isVideoBlock }) =>
-    ($currentScroll && $currentScroll > 0) || !!$isVideoBlock
-      ? "calc(100%)"
-      : "calc(100% - 50px)"};
-  transition: top 0.5s ease-in-out;
+    ($currentScroll && $currentScroll > 0) || !!$isVideoBlock ? "-50" : "20"}px;
+  transition: top 0.2s ease-in-out;
   left: 50%;
-  font-family: Barlow;
+  font-family: "Fjalla One";
+  font-weight: 900;
   font-size: 18px;
-  color: white;
+  color: #212121;
   transform: translate(-50%, 0);
   z-index: 1;
   .text {

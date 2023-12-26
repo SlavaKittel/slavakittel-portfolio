@@ -15,7 +15,7 @@ import VehicleModel, { VehicleRef } from "./components/VihecleModel";
 type VehicleProps = {
   isKeydown: boolean;
   maxForceMobile: number;
-  angleOfJoystik: number;
+  angleOfJoystick: number;
   setCurrentScroll: (currentScroll: number) => void;
   isVideoBlock: number;
   setToggleSliderOne: (toggleSliderOne: boolean) => void;
@@ -28,7 +28,7 @@ type VehicleProps = {
 export default function Vehicle({
   isKeydown,
   maxForceMobile,
-  angleOfJoystik,
+  angleOfJoystick,
   setCurrentScroll,
   isVideoBlock,
   setToggleSliderOne,
@@ -94,12 +94,12 @@ export default function Vehicle({
     );
 
     const calcSteeringMobile = () => {
-      if (angleOfJoystik === 0) return 0;
-      if (angleOfJoystik - 180 > angleOfVehicle)
-        return ((angleOfJoystik - 360 - angleOfVehicle) / 360) * 2;
-      if (angleOfVehicle - 180 > angleOfJoystik)
-        return ((angleOfJoystik + 360 - angleOfVehicle) / 360) * 2;
-      return ((angleOfJoystik - angleOfVehicle) / 360) * 2;
+      if (angleOfJoystick === 0) return 0;
+      if (angleOfJoystick - 180 > angleOfVehicle)
+        return ((angleOfJoystick - 360 - angleOfVehicle) / 360) * 2;
+      if (angleOfVehicle - 180 > angleOfJoystick)
+        return ((angleOfJoystick + 360 - angleOfVehicle) / 360) * 2;
+      return ((angleOfJoystick - angleOfVehicle) / 360) * 2;
     };
 
     const limitedCalcSteeringMobile = () => {

@@ -125,7 +125,7 @@ const FunZone = ({
       <Text
         color={isCubesFlying ? "#50e7d7" : "#5eb0a8"}
         fontSize={1}
-        font="/fonts/Barlow_Condensed/BarlowCondensed-SemiBold.ttf"
+        font="/fonts/FjallaOne-Regular.ttf"
         position={[positionX, 0, 0]}
         rotation={[Math.PI / 2, Math.PI, -Math.PI / 2]}
         maxWidth={17}
