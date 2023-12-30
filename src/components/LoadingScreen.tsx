@@ -10,7 +10,7 @@ const LoadingScreen = ({}: LoadingScreenProps) => {
 
   const { progress } = useProgress();
 
-  //TODO delete, for check on build
+  // TODO delete, for check on build
   console.log(progress);
 
   const handleClick = () => {
@@ -18,7 +18,7 @@ const LoadingScreen = ({}: LoadingScreenProps) => {
   };
 
   return (
-    <LoadingScreenStyled $loaded={loaded} $progress={progress}>
+    <LoadingScreenStyled $loaded={loaded} $progress={Number(progress.toFixed(0))}>
       <div className="start-loader" onClick={handleClick}>
         <div className="start-button-wrapper">
           <div className="start-button"></div>
