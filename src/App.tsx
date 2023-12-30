@@ -113,219 +113,209 @@ export default function App() {
   repeatTextures(normal);
   repeatTextures(aoMap);
 
-  //TODO delete
-  const start = true;
-
   return (
-    <AppStyled $isVideoBlock={isVideoBlock}>
-      <Leva collapsed />
-      {isMobile && (
-        <JoystickStyled>
-          <Joystick size={100} move={moveHandler} stop={moveHandlerStop} />
-        </JoystickStyled>
-      )}
-      <ScrollDownWrapperStyled
-        $currentScroll={currentScroll}
-        $isVideoBlock={isVideoBlock}
-        $isMobile={isMobile}
-      >
-        <div className="text">Scroll Down</div>
-      </ScrollDownWrapperStyled>
-
-      <Canvas
-        gl={{ antialias: true, toneMapping: THREE.NoToneMapping }}
-        onCreated={({ gl }) => {
-          gl.toneMapping = THREE.NoToneMapping;
-        }}
-        // TODO need to apply true srgb color
-        // frameloop="demand"
-        // shadowMap={{ enabled: true, type: "BasicShadowMap"}}
-        dpr={[1, 2]} // default pixelRatio //TODO need?
-        camera={{
-          fov: 35,
-        }}
-        id="appCanvas"
-        linear // TODO need to apply true srgb color
-        legacy // TODO need to apply true srgb color
-      >
-        {perfVisible && <Perf position="top-left" />}
-        <color args={["#6b7272"]} attach="background" />
-
-        <Text
-          color="#e8e8e8"
-          fontSize={1}
-          font="/fonts/FjallaOne-Regular.ttf"
-          position={[-74, 0, 0]}
-          rotation={[Math.PI / 2, Math.PI, -Math.PI / 2]}
-          maxWidth={17}
-          lineHeight={1.2}
-          textAlign="center"
-        >
-          I'm Slava, and my mission is to lead the way in 3D web user
-          interaction. Now, you can buy my products and services to transform
-          your digital presence. Together, we'll shape the future of web
-          interaction for your success.
-        </Text>
-        <Text
-          color="#e8e8e8"
-          fontSize={1}
-          font="/fonts/FjallaOne-Regular.ttf"
-          position={[-63, 0, 0]}
-          rotation={[Math.PI / 2, Math.PI, -Math.PI / 2]}
-          maxWidth={17}
-          lineHeight={1.0}
-          textAlign="center"
-        >
-          Good examples, what we expect by 3d web user interaction
-        </Text>
-
-        <Physics
-          timeStep={1 / 400}
-          updatePriority={-50}
-          gravity={[0, -9.08, 0]}
-          debug={debug}
-          maxStabilizationIterations={8}
-        >
-          {/* Lights */}
-          <Lights />
-
-          {/* Main text */}
-          <MainText />
-
-          {/* Video Examples */}
-          <VideoSliderShaderBlock
-            position={[-55, 0.01, 0]}
-            video1="video/skate1200x900.mp4"
-            video2="video/furniture1200x900.mp4"
-            toggleSlider={toggleSliderOne}
-            setToggleSlider={setToggleSliderOne}
-            onClick={() => {
-              if (!!isVideoBlock) return setIsVideoBlock(0);
-              return setIsVideoBlock(1);
-            }}
-            isKeydown={isKeydown}
-          />
-          <VideoSliderShaderBlock
-            position={[-37, 0.01, 0]}
-            video1="video/top-view1200x90.mp4"
-            video2="video/scooter1200x900.mp4"
-            toggleSlider={toggleSliderTwo}
-            setToggleSlider={setToggleSliderTwo}
-            onClick={() => {
-              if (!!isVideoBlock) return setIsVideoBlock(0);
-              return setIsVideoBlock(2);
-            }}
-            isKeydown={isKeydown}
-          />
-
-          {/* Social links */}
-          <SocialNetworkLogo
-            position={[-23, 1.4, 2.5]}
-            link="https://www.linkedin.com/in/slavakittel/"
-            model="./glb-models/linkedin-logo.glb"
-          />
-          <SocialNetworkLogo
-            position={[-23, 1.4, -2.5]}
-            link="https://github.com/SlavaKittel"
-            model="./glb-models/github-logo.glb"
-          />
-
-          {/* Fun Zone and Test Performance */}
-          <FunZone
-            positionX={10}
-            isCubesFlying={isCubesFlying}
-            setIsCubesFalled={setIsCubesFalled}
-          />
-
-          {/* Main camera with scroll and Vehicle */}
-          <ScrollControls pages={2} damping={0.005}>
-            {/* Vehicle with Camera and Controls hooks */}
-
-            {/* TODO need to set up Suspense for all loading models */}
-            <Suspense fallback={null}>
-              {start && (
-                <Vehicle
-                  isKeydown={isKeydown}
-                  maxForceMobile={maxForceMobile}
-                  angleOfJoystick={angleOfJoystick}
-                  isVideoBlock={isVideoBlock}
-                  setCurrentScroll={setCurrentScroll}
-                  setToggleSliderOne={setToggleSliderOne}
-                  setToggleSliderTwo={setToggleSliderTwo}
-                  setIsCubesFlying={setIsCubesFlying}
-                  isCubesFalled={isCubesFalled}
-                  isCubesFlying={isCubesFlying}
+    <>
+      <Suspense fallback={null}>
+        {
+          <AppStyled $isVideoBlock={isVideoBlock}>
+            <Leva collapsed />
+            {isMobile && (
+              <JoystickStyled>
+                <Joystick
+                  size={100}
+                  move={moveHandler}
+                  stop={moveHandlerStop}
                 />
-              )}
-            </Suspense>
-          </ScrollControls>
-
-          {/* Web-site boundary */}
-          <RigidBody colliders="cuboid" type="fixed">
-            <mesh position={[1, 0, 9]} rotation-x={0.1}>
-              <boxGeometry args={[200, 3, 0.1]} />
-              <meshStandardMaterial color="#1d4446" />
-            </mesh>
-            <mesh position={[1, 0, -9]} rotation-x={-0.1}>
-              <boxGeometry args={[200, 3, 0.1]} />
-              <meshStandardMaterial color="#1d4446" />
-            </mesh>
-          </RigidBody>
-
-          {/* Ground */}
-          <RigidBody
-            type="fixed"
-            colliders={false}
-            friction={1}
-            position={[0, -0.51, 0]}
-            restitution={0.3}
-          >
-            <CuboidCollider args={[100, 0.5, 9]} />
-            <mesh rotation-x={-Math.PI / 2} position={[0, 0.5, 0]}>
-              <planeGeometry args={[200, 18]} />
-              {/* TODO need to choose for best performance */}
-              <MeshReflectorMaterial
-                envMapIntensity={0}
-                normalMap={normal}
-                roughnessMap={roughness}
-                aoMap={aoMap}
-                // normalScale={[0.8, 0.8]}
-                dithering={true}
-                color={[0.021, 0.025, 0.028]}
-                roughness={0.9}
-                metalness={0.1}
-                blur={[2000, 2000]} // Blur ground reflections (width, heigt), 0 skips blur
-                mixBlur={30} // How much blur mixes with surface roughness (default = 1)
-                mixStrength={80} // Strength of the reflections
-                mixContrast={1} // Contrast of the reflections
-                resolution={isMobile ? 80 : 250} // Off-buffer resolution, lower=faster, higher=better quality, slower
-                mirror={0} // Mirror environment, 0 = texture colors, 1 = pick up env colors
-                depthScale={0.01} // Scale the depth factor (0 = no depth, default = 0)
-                minDepthThreshold={0.8} // Lower edge for the depthTexture interpolation (default = 0)
-                maxDepthThreshold={1} // Upper edge for the depthTexture interpolation (default = 0)
-                depthToBlurRatioBias={0.2} // Adds a bias factor to the depthTexture before calculating the blur amount [blurFactor = blurTexture * (depthTexture + bias)]. It accepts values between 0 and 1, default is 0.25. An amount > 0 of bias makes sure that the blurTexture is not too sharp because of the multiplication with the depthTexture
-              />
-              {/* <MeshReflectorMaterial
-                  blur={[500, 500]}
-                  resolution={250}
-                  mixBlur={1}
-                  mixStrength={50}
-                  roughness={0.8}
-                  depthScale={0.4}
-                  minDepthThreshold={1}
-                  maxDepthThreshold={1.4}
-                  color="#050708"
-                  metalness={0.9}
-                  mirror={0}
-                /> */}
-              {/* <meshStandardMaterial roughness={0} metalness={1} color="blue" /> */}
-            </mesh>
-          </RigidBody>
-        </Physics>
-      </Canvas>
-
+              </JoystickStyled>
+            )}
+            <ScrollDownWrapperStyled
+              $currentScroll={currentScroll}
+              $isVideoBlock={isVideoBlock}
+              $isMobile={isMobile}
+            >
+              <div className="text">Scroll Down</div>
+            </ScrollDownWrapperStyled>
+            <Canvas
+              gl={{ antialias: true, toneMapping: THREE.NoToneMapping }}
+              onCreated={({ gl }) => {
+                gl.toneMapping = THREE.NoToneMapping;
+              }}
+              // TODO need to apply true srgb color
+              // frameloop="demand"
+              // shadowMap={{ enabled: true, type: "BasicShadowMap"}}
+              dpr={[1, 2]} // default pixelRatio //TODO need?
+              camera={{
+                fov: 35,
+              }}
+              id="appCanvas"
+              linear // TODO need to apply true srgb color
+              legacy // TODO need to apply true srgb color
+            >
+              {perfVisible && <Perf position="top-left" />}
+              <color args={["#6b7272"]} attach="background" />
+              <Text
+                color="#e8e8e8"
+                fontSize={1}
+                font="/fonts/FjallaOne-Regular.ttf"
+                position={[-74, 0, 0]}
+                rotation={[Math.PI / 2, Math.PI, -Math.PI / 2]}
+                maxWidth={17}
+                lineHeight={1.2}
+                textAlign="center"
+              >
+                I'm Slava, and my mission is to lead the way in 3D web user
+                interaction. Now, you can buy my products and services to
+                transform your digital presence. Together, we'll shape the
+                future of web interaction for your success.
+              </Text>
+              <Text
+                color="#e8e8e8"
+                fontSize={1}
+                font="/fonts/FjallaOne-Regular.ttf"
+                position={[-63, 0, 0]}
+                rotation={[Math.PI / 2, Math.PI, -Math.PI / 2]}
+                maxWidth={17}
+                lineHeight={1.0}
+                textAlign="center"
+              >
+                Good examples, what we expect by 3d web user interaction
+              </Text>
+              <Physics
+                timeStep={1 / 400}
+                updatePriority={-50}
+                gravity={[0, -9.08, 0]}
+                debug={debug}
+                maxStabilizationIterations={8}
+              >
+                {/* Lights */}
+                <Lights />
+                {/* Main text */}
+                <MainText />
+                {/* Video Examples */}
+                <VideoSliderShaderBlock
+                  position={[-55, 0.01, 0]}
+                  video1="video/skate1200x900.mp4"
+                  video2="video/furniture1200x900.mp4"
+                  toggleSlider={toggleSliderOne}
+                  setToggleSlider={setToggleSliderOne}
+                  onClick={() => {
+                    if (!!isVideoBlock) return setIsVideoBlock(0);
+                    return setIsVideoBlock(1);
+                  }}
+                  isKeydown={isKeydown}
+                />
+                <VideoSliderShaderBlock
+                  position={[-37, 0.01, 0]}
+                  video1="video/top-view1200x90.mp4"
+                  video2="video/scooter1200x900.mp4"
+                  toggleSlider={toggleSliderTwo}
+                  setToggleSlider={setToggleSliderTwo}
+                  onClick={() => {
+                    if (!!isVideoBlock) return setIsVideoBlock(0);
+                    return setIsVideoBlock(2);
+                  }}
+                  isKeydown={isKeydown}
+                />
+                {/* Social links */}
+                <SocialNetworkLogo
+                  position={[-23, 1.4, 2.5]}
+                  link="https://www.linkedin.com/in/slavakittel/"
+                  model="./glb-models/linkedin-logo.glb"
+                />
+                <SocialNetworkLogo
+                  position={[-23, 1.4, -2.5]}
+                  link="https://github.com/SlavaKittel"
+                  model="./glb-models/github-logo.glb"
+                />
+                {/* Fun Zone and Test Performance */}
+                <FunZone
+                  positionX={10}
+                  isCubesFlying={isCubesFlying}
+                  setIsCubesFalled={setIsCubesFalled}
+                />
+                {/* Main camera with scroll and Vehicle */}
+                <ScrollControls pages={2} damping={0.005}>
+                  {/* Vehicle with Camera and Controls hooks */}
+                  <Vehicle
+                    isKeydown={isKeydown}
+                    maxForceMobile={maxForceMobile}
+                    angleOfJoystick={angleOfJoystick}
+                    isVideoBlock={isVideoBlock}
+                    setCurrentScroll={setCurrentScroll}
+                    setToggleSliderOne={setToggleSliderOne}
+                    setToggleSliderTwo={setToggleSliderTwo}
+                    setIsCubesFlying={setIsCubesFlying}
+                    isCubesFalled={isCubesFalled}
+                    isCubesFlying={isCubesFlying}
+                  />
+                </ScrollControls>
+                {/* Web-site boundary */}
+                <RigidBody colliders="cuboid" type="fixed">
+                  <mesh position={[1, 0, 9]} rotation-x={0.1}>
+                    <boxGeometry args={[200, 3, 0.1]} />
+                    <meshStandardMaterial color="#1d4446" />
+                  </mesh>
+                  <mesh position={[1, 0, -9]} rotation-x={-0.1}>
+                    <boxGeometry args={[200, 3, 0.1]} />
+                    <meshStandardMaterial color="#1d4446" />
+                  </mesh>
+                </RigidBody>
+                {/* Ground */}
+                <RigidBody
+                  type="fixed"
+                  colliders={false}
+                  friction={1}
+                  position={[0, -0.51, 0]}
+                  restitution={0.3}
+                >
+                  <CuboidCollider args={[100, 0.5, 9]} />
+                  <mesh rotation-x={-Math.PI / 2} position={[0, 0.5, 0]}>
+                    <planeGeometry args={[200, 18]} />
+                    {/* TODO need to choose for best performance */}
+                    <MeshReflectorMaterial
+                      envMapIntensity={0}
+                      normalMap={normal}
+                      roughnessMap={roughness}
+                      aoMap={aoMap}
+                      // normalScale={[0.8, 0.8]}
+                      dithering={true}
+                      color={[0.021, 0.025, 0.028]}
+                      roughness={0.9}
+                      metalness={0.1}
+                      blur={[2000, 2000]} // Blur ground reflections (width, heigt), 0 skips blur
+                      mixBlur={30} // How much blur mixes with surface roughness (default = 1)
+                      mixStrength={80} // Strength of the reflections
+                      mixContrast={1} // Contrast of the reflections
+                      resolution={isMobile ? 80 : 250} // Off-buffer resolution, lower=faster, higher=better quality, slower
+                      mirror={0} // Mirror environment, 0 = texture colors, 1 = pick up env colors
+                      depthScale={0.01} // Scale the depth factor (0 = no depth, default = 0)
+                      minDepthThreshold={0.8} // Lower edge for the depthTexture interpolation (default = 0)
+                      maxDepthThreshold={1} // Upper edge for the depthTexture interpolation (default = 0)
+                      depthToBlurRatioBias={0.2} // Adds a bias factor to the depthTexture before calculating the blur amount [blurFactor = blurTexture * (depthTexture + bias)]. It accepts values between 0 and 1, default is 0.25. An amount > 0 of bias makes sure that the blurTexture is not too sharp because of the multiplication with the depthTexture
+                    />
+                    {/* <MeshReflectorMaterial
+                      blur={[500, 500]}
+                      resolution={250}
+                      mixBlur={1}
+                      mixStrength={50}
+                      roughness={0.8}
+                      depthScale={0.4}
+                      minDepthThreshold={1}
+                      maxDepthThreshold={1.4}
+                      color="#050708"
+                      metalness={0.9}
+                      mirror={0}
+                    /> */}
+                    {/* <meshStandardMaterial roughness={0} metalness={1} color="blue" /> */}
+                  </mesh>
+                </RigidBody>
+              </Physics>
+            </Canvas>
+          </AppStyled>
+        }
+      </Suspense>
       <LoadingScreen />
-    </AppStyled>
+    </>
   );
 }
 
