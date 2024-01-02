@@ -200,7 +200,7 @@ const VehicleModel = forwardRef<VehicleRef, VehicleModelProps>(function Car(
           object={bmwE30Chassis.scene}
           scale={0.7}
         />
-        <CuboidCollider args={[2.3, 0.7, 1]} position={[0, 0, 0]} mass={50} />
+        <CuboidCollider args={[2.39, 0.67, 1]} position={[-0.1, -0.09, 0]} mass={50} />
         {children}
       </RigidBody>
 

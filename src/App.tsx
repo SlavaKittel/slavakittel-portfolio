@@ -93,12 +93,15 @@ export default function App() {
   };
 
   //Ground Texture
-  const [roughness, normal, aoMap] = useLoader(TextureLoader, [
-    "./texture/MetalBronzeWorn001_ROUGHNESS_1K_METALNESS.png",
-    "./texture/MetalBronzeWorn001_NRM_1K_METALNESS.png",
-    "./texture/MetalBronzeWorn001_DISP16_1K_METALNESS.png",
-  ]);
-  const repeatTextures = (texture: {
+  const [groundRoughness, groundNormal, groundAoMap] = useLoader(
+    TextureLoader,
+    [
+      "./texture/MetalBronzeWorn001/MetalBronzeWorn001_ROUGHNESS_1K_METALNESS.png",
+      "./texture/MetalBronzeWorn001/MetalBronzeWorn001_NRM_1K_METALNESS.png",
+      "./texture/MetalBronzeWorn001/MetalBronzeWorn001_DISP16_1K_METALNESS.png",
+    ]
+  );
+  const repeatGorundTextures = (texture: {
     wrapS: number;
     wrapT: number;
     repeat: { x: number; y: number };
@@ -109,9 +112,44 @@ export default function App() {
     texture.repeat.x = repeat;
     texture.repeat.y = repeat * 0.1;
   };
-  repeatTextures(roughness);
-  repeatTextures(normal);
-  repeatTextures(aoMap);
+  repeatGorundTextures(groundRoughness);
+  repeatGorundTextures(groundNormal);
+  repeatGorundTextures(groundAoMap);
+
+  // Boundary Texture
+  const nameBoundaryTexture = (type: string) =>
+    `./texture/BricksLongThinRunningExtruded001/BricksLongThinRunningExtruded001_${type}_1K_METALNESS.png`;
+  const [
+    boundaryColorMap,
+    boundaryDisplacementMap,
+    boundaryNormalMap,
+    boundaryRoughnessMap,
+    boundaryAoMap,
+  ] = useLoader(TextureLoader, [
+    nameBoundaryTexture("COL"),
+    nameBoundaryTexture("DISP"),
+    nameBoundaryTexture("NRM"),
+    nameBoundaryTexture("ROUGHNESS"),
+    nameBoundaryTexture("AO"),
+  ]);
+
+  const repeatBoundaryTextures = (texture: {
+    wrapS: number;
+    wrapT: number;
+    repeat: { x: number; y: number };
+  }) => {
+    const repeat = 0.4;
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.x = repeat * 20;
+    texture.repeat.y = repeat * 1;
+  };
+
+  repeatBoundaryTextures(boundaryColorMap);
+  repeatBoundaryTextures(boundaryDisplacementMap);
+  repeatBoundaryTextures(boundaryNormalMap);
+  repeatBoundaryTextures(boundaryRoughnessMap);
+  repeatBoundaryTextures(boundaryAoMap);
 
   return (
     <>
@@ -152,7 +190,7 @@ export default function App() {
               legacy // TODO need to apply true srgb color
             >
               {perfVisible && <Perf position="top-left" />}
-              <color args={["#6b7272"]} attach="background" />
+              <color args={["#153030"]} attach="background" />
               <Text
                 color="#e8e8e8"
                 fontSize={1}
@@ -163,10 +201,10 @@ export default function App() {
                 lineHeight={1.2}
                 textAlign="center"
               >
-                I'm Slava, and my mission is to lead the way in 3D web user
-                interaction. Now, you can buy my products and services to
-                transform your digital presence. Together, we'll shape the
-                future of web interaction for your success.
+                Hello! My name is Slava, and my mission is to lead the way in 3D
+                web user interaction. You can now hire me to transform or create
+                your digital presence of your 3D website. Choose me and I'll
+                help you build the future of web interaction for your success.
               </Text>
               <Text
                 color="#e8e8e8"
@@ -178,7 +216,8 @@ export default function App() {
                 lineHeight={1.0}
                 textAlign="center"
               >
-                Good examples, what we expect by 3d web user interaction
+                Some great examples of what you can expect by a 3D web user
+                interaction:
               </Text>
               <Physics
                 timeStep={1 / 400}
@@ -189,8 +228,10 @@ export default function App() {
               >
                 {/* Lights */}
                 <Lights />
+
                 {/* Main text */}
                 <MainText />
+
                 {/* Video Examples */}
                 <VideoSliderShaderBlock
                   position={[-55, 0.01, 0]}
@@ -216,6 +257,7 @@ export default function App() {
                   }}
                   isKeydown={isKeydown}
                 />
+
                 {/* Social links */}
                 <SocialNetworkLogo
                   position={[-23, 1.4, 2.5]}
@@ -227,12 +269,14 @@ export default function App() {
                   link="https://github.com/SlavaKittel"
                   model="./glb-models/github-logo.glb"
                 />
+
                 {/* Fun Zone and Test Performance */}
                 <FunZone
-                  positionX={10}
+                  positionX={0}
                   isCubesFlying={isCubesFlying}
                   setIsCubesFalled={setIsCubesFalled}
                 />
+
                 {/* Main camera with scroll and Vehicle */}
                 <ScrollControls pages={2} damping={0.005}>
                   {/* Vehicle with Camera and Controls hooks */}
@@ -249,17 +293,47 @@ export default function App() {
                     isCubesFlying={isCubesFlying}
                   />
                 </ScrollControls>
+
                 {/* Web-site boundary */}
-                <RigidBody colliders="cuboid" type="fixed">
-                  <mesh position={[1, 0, 9]} rotation-x={0.1}>
-                    <boxGeometry args={[200, 3, 0.1]} />
-                    <meshStandardMaterial color="#1d4446" />
+                <RigidBody colliders={false} type="fixed">
+                  <mesh position={[-38, 1.45, 9.3]} rotation-x={0.1}>
+                    <CuboidCollider
+                      args={[122 / 2, 3 / 2, 0.3 / 2]}
+                      position={[0, 0, 0]}
+                    />
+                    <boxGeometry args={[122, 3, 0.3]} />
+                    <meshStandardMaterial
+                      displacementScale={0}
+                      displacementBias={0}
+                      map={boundaryColorMap}
+                      displacementMap={boundaryDisplacementMap}
+                      normalMap={boundaryNormalMap}
+                      roughnessMap={boundaryRoughnessMap}
+                      aoMap={boundaryAoMap}
+                      metalness={0.65}
+                      roughness={0.5}
+                    />
                   </mesh>
-                  <mesh position={[1, 0, -9]} rotation-x={-0.1}>
-                    <boxGeometry args={[200, 3, 0.1]} />
-                    <meshStandardMaterial color="#1d4446" />
+                  <mesh position={[-38, 1.45, -9.3]} rotation-x={-0.1}>
+                    <CuboidCollider
+                      args={[122 / 2, 3 / 2, 0.3 / 2]}
+                      position={[0, 0, 0]}
+                    />
+                    <boxGeometry args={[122, 3, 0.3]} />
+                    <meshStandardMaterial
+                      displacementScale={0}
+                      displacementBias={0}
+                      map={boundaryColorMap}
+                      displacementMap={boundaryDisplacementMap}
+                      normalMap={boundaryNormalMap}
+                      roughnessMap={boundaryRoughnessMap}
+                      aoMap={boundaryAoMap}
+                      metalness={0.65}
+                      roughness={0.5}
+                    />
                   </mesh>
                 </RigidBody>
+
                 {/* Ground */}
                 <RigidBody
                   type="fixed"
@@ -268,45 +342,29 @@ export default function App() {
                   position={[0, -0.51, 0]}
                   restitution={0.3}
                 >
-                  <CuboidCollider args={[100, 0.5, 9]} />
-                  <mesh rotation-x={-Math.PI / 2} position={[0, 0.5, 0]}>
-                    <planeGeometry args={[200, 18]} />
-                    {/* TODO need to choose for best performance */}
+                  <CuboidCollider args={[61, 0.5, 9]} position={[-38, 0, 0]} />
+                  <mesh rotation-x={-Math.PI / 2} position={[-38, 0.5, 0]}>
+                    <planeGeometry args={[122, 18]} />
                     <MeshReflectorMaterial
                       envMapIntensity={0}
-                      normalMap={normal}
-                      roughnessMap={roughness}
-                      aoMap={aoMap}
-                      // normalScale={[0.8, 0.8]}
+                      normalMap={groundNormal}
+                      roughnessMap={groundRoughness}
+                      aoMap={groundAoMap}
                       dithering={true}
                       color={[0.021, 0.025, 0.028]}
                       roughness={0.9}
                       metalness={0.1}
-                      blur={[2000, 2000]} // Blur ground reflections (width, heigt), 0 skips blur
-                      mixBlur={30} // How much blur mixes with surface roughness (default = 1)
-                      mixStrength={80} // Strength of the reflections
-                      mixContrast={1} // Contrast of the reflections
-                      resolution={isMobile ? 80 : 250} // Off-buffer resolution, lower=faster, higher=better quality, slower
-                      mirror={0} // Mirror environment, 0 = texture colors, 1 = pick up env colors
-                      depthScale={0.01} // Scale the depth factor (0 = no depth, default = 0)
-                      minDepthThreshold={0.8} // Lower edge for the depthTexture interpolation (default = 0)
-                      maxDepthThreshold={1} // Upper edge for the depthTexture interpolation (default = 0)
-                      depthToBlurRatioBias={0.2} // Adds a bias factor to the depthTexture before calculating the blur amount [blurFactor = blurTexture * (depthTexture + bias)]. It accepts values between 0 and 1, default is 0.25. An amount > 0 of bias makes sure that the blurTexture is not too sharp because of the multiplication with the depthTexture
-                    />
-                    {/* <MeshReflectorMaterial
-                      blur={[500, 500]}
-                      resolution={250}
-                      mixBlur={1}
-                      mixStrength={50}
-                      roughness={0.8}
-                      depthScale={0.4}
-                      minDepthThreshold={1}
-                      maxDepthThreshold={1.4}
-                      color="#050708"
-                      metalness={0.9}
+                      blur={[2000, 2000]}
+                      mixBlur={30}
+                      mixStrength={80}
+                      mixContrast={1}
+                      resolution={isMobile ? 80 : 250}
                       mirror={0}
-                    /> */}
-                    {/* <meshStandardMaterial roughness={0} metalness={1} color="blue" /> */}
+                      depthScale={0.01}
+                      minDepthThreshold={0.8}
+                      maxDepthThreshold={1}
+                      depthToBlurRatioBias={0.2}
+                    />
                   </mesh>
                 </RigidBody>
               </Physics>
@@ -379,7 +437,7 @@ export const ScrollDownWrapperStyled = styled.div<{
   font-family: "Fjalla One";
   font-weight: 900;
   font-size: 18px;
-  color: #212121;
+  color: white;
   transform: translate(-50%, 0);
   z-index: 1;
   .text {

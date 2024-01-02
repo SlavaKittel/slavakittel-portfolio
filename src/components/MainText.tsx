@@ -30,7 +30,7 @@ const MainText = ({}: TextProps) => {
       return -(index * 1.3 - 7.5);
     };
     const nameTexture = (type: string) =>
-      `./texture/DiamondPlate008B_1K-JPG_${type}.jpg`;
+      `./texture/DiamondPlate008B/DiamondPlate008B_1K-JPG_${type}.jpg`;
     const [colorMap, displacementMap, normalMap, roughnessMap, aoMap] =
       useLoader(TextureLoader, [
         nameTexture("Color"),
@@ -130,11 +130,11 @@ const MainText = ({}: TextProps) => {
       "34A09C_6EE5E3_5CD7D3_4EC9C6",
       256
     );
-    const positionLetterByZ = index === 1 ? -0.5 : 2;
+    const positionLetterByZ = index === 1 ? 0 : 2.5;
     return (
       <RigidBody
         colliders="cuboid"
-        position={[-12, 5.74, positionLetterByZ]}
+        position={[-8, 5.74, positionLetterByZ]}
         rotation-z={Math.PI * 0.5}
         rotation-x={Math.PI * 1.5}
         key={`${index}-${letter}`}

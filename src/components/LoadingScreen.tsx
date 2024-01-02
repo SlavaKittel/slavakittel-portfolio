@@ -2,31 +2,65 @@ import { useState } from "react";
 import { useProgress } from "@react-three/drei";
 import styled from "styled-components";
 
-type LoadingScreenProps = {
-};
+import { isMobile } from "react-device-detect";
+
+import WASDButtons from "../../public/img/WASDButtons";
+import ArrowButtons from "../../public/img/ArrowButtons";
+import SpaceButton from "../../public/img/SpaceButton";
+
+type LoadingScreenProps = {};
 
 const LoadingScreen = ({}: LoadingScreenProps) => {
   const [loaded, setLoaded] = useState(false);
 
   const { progress } = useProgress();
 
-  // TODO delete, for check on build
-  console.log(progress);
-
   const handleClick = () => {
     if (progress === 100) setLoaded(true);
   };
 
+  const getInstructionContent = () => {
+    if (isMobile) {
+      return (
+        <div className="instruction-mobile-content">
+          <div className="move-around-block" >
+            <div className="joystick-img" />
+            <div className="move-around-text">- to move around</div>
+          </div>
+          <div className="scroll-text">* use touch scroll for scroll page</div>
+        </div>
+      );
+    }
+    return (
+      <div className="instruction-desktop-content">
+        <div className="move-around-block">
+          <WASDButtons />
+          <div className="move-around-text">- to move around</div>
+        </div>
+        <div className="move-around-block">
+          <ArrowButtons />
+          <div className="move-around-text">- to move around</div>
+        </div>
+        <div className="space-block">
+          <SpaceButton />
+          <div className="space-text">- to brake</div>
+        </div>
+        <div className="scroll-text">* use mouse wheel for scroll page</div>
+      </div>
+    );
+  };
+
   return (
-    <LoadingScreenStyled $loaded={loaded} $progress={Number(progress.toFixed(0))}>
+    <LoadingScreenStyled
+      $loaded={loaded}
+      $progress={Number(progress.toFixed(0))}
+    >
       <div className="start-loader" onClick={handleClick}>
         <div className="start-button-wrapper">
           <div className="start-button"></div>
         </div>
       </div>
-      {/* TODO add icons and mobile version */}
-      <div className="instruction-text">use WASD or Arrow Keys for move</div>
-      <div className="instruction-text">SPACE for stop</div>
+      {getInstructionContent()}
     </LoadingScreenStyled>
   );
 };
@@ -54,31 +88,92 @@ export const LoadingScreenStyled = styled.div<{
     display: flex;
     width: 254px;
     .start-button-wrapper {
-      background-color: ${({ $progress }) => $progress === 100 ? '#50e7d7' : `#5eb0a8`};
+      background-color: ${({ $progress }) =>
+        $progress === 100 ? "#50e7d7" : `#5eb0a8`};
       width: ${({ $progress }) => $progress}%;
       border-radius: 4px;
       .start-button {
         color: black;
         width: 250px;
-        border: 2px solid ${({ $progress }) => $progress === 100 ? '#50e7d7' : `#5eb0a8`};
+        border: 2px solid
+          ${({ $progress }) => ($progress === 100 ? "#50e7d7" : `#5eb0a8`)};
         border-radius: 4px;
 
         &:after {
           padding-left: 20px;
-          content: "${({ $progress }) => $progress === 100 ? 'START' : `${$progress}%`}";
+          content: "${({ $progress }) => $progress === 100 ? "START" : `${$progress}%`}";
           display: block;
           text-align: center;
           font-size: 30px;
           padding: 10px 20px;
-          color: ${({ $progress }) => $progress === 100 ? '#50e7d7' : `#5eb0a8`};
+          color: ${({ $progress }) =>
+            $progress === 100 ? "#50e7d7" : `#5eb0a8`};
           mix-blend-mode: difference;
         }
       }
     }
   }
-  .instruction-text {
-    margin-top: 10px;
-    color: white;
+
+  .instruction-desktop-content {
     font-size: 18px;
+    .move-around-block {
+      margin: 20px 0 20px 3px;
+      display: flex;
+      .move-around-text {
+        margin-top: 40px;
+        padding: 0 10px;
+        color: white;
+      }
+    }
+    .space-block {
+      margin: 10px 0 10px 2px;
+      display: flex;
+      .space-text {
+        margin-top: 13px;
+        padding: 0 10px;
+        color: white;
+      }
+    }
+    .scroll-text {
+      color: white;
+      margin: 20px 0 0 6px;
+    }
+  }
+
+  .instruction-mobile-content {
+    font-size: 18px;
+    .move-around-block {
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      .joystick-img {
+        background-color: white;
+        height: 20px;
+        width: 20px;
+        border-radius: 10px;
+        &:after {
+          content: "";
+          height: 30px;
+          width: 30px;
+          background-color: transparent;
+          display: flex;
+          border-radius: 20px;
+          border: 2px solid white;
+          position: relative;
+          left: -7px;
+          top: -7px;
+
+        }
+      }
+      .move-around-text {
+        margin: 10px 0 10px 15px;
+        color: white;
+      }
+    }
+    .scroll-text {
+      color: white;
+      margin: 20px 0 0 6px;
+    }
   }
 `;

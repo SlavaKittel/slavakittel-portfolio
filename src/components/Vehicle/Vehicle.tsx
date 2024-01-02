@@ -79,7 +79,6 @@ export default function Vehicle({
     const {
       wheels,
       rapierRaycastVehicle: { current: vehicle },
-      setBraking,
     } = raycastVehicle.current;
 
     // update wheels from controls
@@ -191,18 +190,6 @@ export default function Vehicle({
       wheelObject.position.copy(wheelState.worldTransform.position);
       wheelObject.quaternion.copy(wheelState.worldTransform.quaternion);
     }
-
-    // TODO need to brake or speed text?
-    // update speed text
-    // if (currentSpeedTextDiv.current) {
-    //     const km = Math.abs(
-    //         vehicle.state.currentVehicleSpeedKmHour
-    //     ).toFixed()
-    //     currentSpeedTextDiv.current.innerText = `${km} km/h`
-    // }
-
-    // update brake lights
-    // setBraking(brakeForce > 0);
   });
 
   useFrame((state, delta) => {
@@ -242,7 +229,7 @@ export default function Vehicle({
 
       
     // is cubes fall
-    const positionX = 10; // var from funZone
+    const positionX = 0; // var from funZone
     
     if (
       newChassisTranslation.x > positionX + 4.8 &&
@@ -277,7 +264,7 @@ export default function Vehicle({
     const scrollPosition = () => {
       if (isVideoBlock === 1) return -65;
       if (isVideoBlock === 2) return -47;
-      return scroll.offset * 2 * 100 - 100;
+      return scroll.offset * 2 * 54 - 88;
     };
 
     // axises calculation
