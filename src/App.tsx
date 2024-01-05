@@ -19,11 +19,11 @@ import Vehicle from "./components/Vehicle/Vehicle";
 import MainText from "./components/MainText";
 import FunZone from "./components/FunZone";
 import SocialNetworkLogo from "./components/SocialNetworkLogo";
-import VideoSliderShaderBlock from "./components/VideoSliderShaderBlock";
 import Lights from "./components/Lights";
 import LoadingScreen from "./components/LoadingScreen";
 
 export default function App() {
+  const VideoSliderShaderBlock = lazy(() => import("./components/VideoSliderShaderBlock"));
   const { perfVisible, debug } = useLeva({
     perfVisible: true,
     debug: false,
@@ -151,44 +151,6 @@ export default function App() {
   repeatBoundaryTextures(boundaryRoughnessMap);
   repeatBoundaryTextures(boundaryAoMap);
 
-  const VideoSliderShaderBlockFirst = lazy(() =>
-    Promise.resolve({
-      default: () => (
-        <VideoSliderShaderBlock
-          position={[-55, 0.01, 0]}
-          video1="video/skate1200x900.mp4"
-          video2="video/furniture1200x900.mp4"
-          toggleSlider={toggleSliderOne}
-          setToggleSlider={setToggleSliderOne}
-          onClick={() => {
-            if (!!isVideoBlock) return setIsVideoBlock(0);
-            return setIsVideoBlock(1);
-          }}
-          isKeydown={isKeydown}
-        />
-      ),
-    })
-  );
-
-  const VideoSliderShaderBlockSecond = lazy(() =>
-    Promise.resolve({
-      default: () => (
-        <VideoSliderShaderBlock
-          position={[-37, 0.01, 0]}
-          video1="video/top-view1200x90.mp4"
-          video2="video/scooter1200x900.mp4"
-          toggleSlider={toggleSliderTwo}
-          setToggleSlider={setToggleSliderTwo}
-          onClick={() => {
-            if (!!isVideoBlock) return setIsVideoBlock(0);
-            return setIsVideoBlock(2);
-          }}
-          isKeydown={isKeydown}
-        />
-      ),
-    })
-  );
-
   return (
     <>
       <Suspense fallback={null}>
@@ -268,11 +230,31 @@ export default function App() {
                 <Lights />
                 {/* Main text */}
                 <MainText />
-                
                 {/* Video Examples */}
-                <VideoSliderShaderBlockFirst />
-                <VideoSliderShaderBlockSecond />
-
+                <VideoSliderShaderBlock
+                  position={[-55, 0.01, 0]}
+                  video1="video/skate1200x900.mp4"
+                  video2="video/furniture1200x900.mp4"
+                  toggleSlider={toggleSliderOne}
+                  setToggleSlider={setToggleSliderOne}
+                  onClick={() => {
+                    if (!!isVideoBlock) return setIsVideoBlock(0);
+                    return setIsVideoBlock(1);
+                  }}
+                  isKeydown={isKeydown}
+                />
+                <VideoSliderShaderBlock
+                  position={[-37, 0.01, 0]}
+                  video1="video/top-view1200x90.mp4"
+                  video2="video/scooter1200x900.mp4"
+                  toggleSlider={toggleSliderTwo}
+                  setToggleSlider={setToggleSliderTwo}
+                  onClick={() => {
+                    if (!!isVideoBlock) return setIsVideoBlock(0);
+                    return setIsVideoBlock(2);
+                  }}
+                  isKeydown={isKeydown}
+                />
                 {/* Social links */}
                 <SocialNetworkLogo
                   position={[-23, 1.4, 2.5]}
