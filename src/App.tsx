@@ -96,9 +96,9 @@ export default function App() {
   const [groundRoughness, groundNormal, groundAoMap] = useLoader(
     TextureLoader,
     [
-      "./texture/MetalBronzeWorn001/MetalBronzeWorn001_ROUGHNESS_1K_METALNESS.png",
-      "./texture/MetalBronzeWorn001/MetalBronzeWorn001_NRM_1K_METALNESS.png",
-      "./texture/MetalBronzeWorn001/MetalBronzeWorn001_DISP16_1K_METALNESS.png",
+      "./texture/MetalBronzeWorn001/MetalBronzeWorn001_ROUGHNESS_1K_METALNESS.jpg",
+      "./texture/MetalBronzeWorn001/MetalBronzeWorn001_NRM_1K_METALNESS.jpg",
+      "./texture/MetalBronzeWorn001/MetalBronzeWorn001_DISP16_1K_METALNESS.jpg",
     ]
   );
   const repeatGorundTextures = (texture: {
@@ -118,7 +118,7 @@ export default function App() {
 
   // Boundary Texture
   const nameBoundaryTexture = (type: string) =>
-    `./texture/BricksLongThinRunningExtruded001/BricksLongThinRunningExtruded001_${type}_1K_METALNESS.png`;
+    `./texture/BricksLongThinRunningExtruded001/BricksLongThinRunningExtruded001_${type}_1K_METALNESS.jpg`;
   const [
     boundaryColorMap,
     boundaryDisplacementMap,
