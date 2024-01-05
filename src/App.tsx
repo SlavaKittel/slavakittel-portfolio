@@ -1,4 +1,4 @@
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { Canvas, useLoader } from "@react-three/fiber";
 import styled, { keyframes } from "styled-components";
 import { isMobile } from "react-device-detect";
@@ -21,6 +21,7 @@ import FunZone from "./components/FunZone";
 import SocialNetworkLogo from "./components/SocialNetworkLogo";
 import VideoSliderShaderBlock from "./components/VideoSliderShaderBlock";
 import Lights from "./components/Lights";
+import LoadingScreen from "./components/LoadingScreen";
 
 export default function App() {
   const { perfVisible, debug } = useLeva({
@@ -150,218 +151,240 @@ export default function App() {
   repeatBoundaryTextures(boundaryRoughnessMap);
   repeatBoundaryTextures(boundaryAoMap);
 
+  const VideoSliderShaderBlockFirst = lazy(() =>
+    Promise.resolve({
+      default: () => (
+        <VideoSliderShaderBlock
+          position={[-55, 0.01, 0]}
+          video1="video/skate1200x900.mp4"
+          video2="video/furniture1200x900.mp4"
+          toggleSlider={toggleSliderOne}
+          setToggleSlider={setToggleSliderOne}
+          onClick={() => {
+            if (!!isVideoBlock) return setIsVideoBlock(0);
+            return setIsVideoBlock(1);
+          }}
+          isKeydown={isKeydown}
+        />
+      ),
+    })
+  );
+
+  const VideoSliderShaderBlockSecond = lazy(() =>
+    Promise.resolve({
+      default: () => (
+        <VideoSliderShaderBlock
+          position={[-37, 0.01, 0]}
+          video1="video/top-view1200x90.mp4"
+          video2="video/scooter1200x900.mp4"
+          toggleSlider={toggleSliderTwo}
+          setToggleSlider={setToggleSliderTwo}
+          onClick={() => {
+            if (!!isVideoBlock) return setIsVideoBlock(0);
+            return setIsVideoBlock(2);
+          }}
+          isKeydown={isKeydown}
+        />
+      ),
+    })
+  );
+
   return (
-    <AppStyled $isVideoBlock={isVideoBlock}>
-      <Leva collapsed />
-      {isMobile && (
-        <JoystickStyled>
-          <Joystick size={100} move={moveHandler} stop={moveHandlerStop} />
-        </JoystickStyled>
-      )}
-      <ScrollDownWrapperStyled
-        $currentScroll={currentScroll}
-        $isVideoBlock={isVideoBlock}
-        $isMobile={isMobile}
-      >
-        <div className="text">Scroll Down</div>
-      </ScrollDownWrapperStyled>
-      <Canvas
-        gl={{ antialias: true, toneMapping: THREE.NoToneMapping }}
-        onCreated={({ gl }) => {
-          gl.toneMapping = THREE.NoToneMapping;
-        }}
-        // TODO need to apply true srgb color
-        // frameloop="demand"
-        // shadowMap={{ enabled: true, type: "BasicShadowMap"}}
-        dpr={[1, 2]} // default pixelRatio //TODO need?
-        camera={{
-          fov: 35,
-        }}
-        id="appCanvas"
-        linear // TODO need to apply true srgb color
-        legacy // TODO need to apply true srgb color
-      >
-        {perfVisible && <Perf position="top-left" />}
-        <color args={["#153030"]} attach="background" />
-        <Text
-          color="#e8e8e8"
-          fontSize={1}
-          font="/fonts/FjallaOne-Regular.ttf"
-          position={[-74, 0, 0]}
-          rotation={[Math.PI / 2, Math.PI, -Math.PI / 2]}
-          maxWidth={17}
-          lineHeight={1.2}
-          textAlign="center"
-        >
-          Hello! My name is Slava, and my mission is to lead the way in 3D web
-          user interaction. You can now hire me to transform or create your
-          digital presence of your 3D website. Choose me and I'll help you build
-          the future of web interaction for your success.
-        </Text>
-        <Text
-          color="#e8e8e8"
-          fontSize={1}
-          font="/fonts/FjallaOne-Regular.ttf"
-          position={[-63, 0, 0]}
-          rotation={[Math.PI / 2, Math.PI, -Math.PI / 2]}
-          maxWidth={17}
-          lineHeight={1.0}
-          textAlign="center"
-        >
-          Some great examples of what you can expect by a 3D web user
-          interaction:
-        </Text>
-        <Physics
-          timeStep={1 / 400}
-          updatePriority={-50}
-          gravity={[0, -9.08, 0]}
-          debug={debug}
-          maxStabilizationIterations={8}
-        >
-          {/* Lights */}
-          <Lights />
+    <>
+      <Suspense fallback={null}>
+        {
+          <AppStyled $isVideoBlock={isVideoBlock}>
+            <Leva collapsed />
+            {isMobile && (
+              <JoystickStyled>
+                <Joystick
+                  size={100}
+                  move={moveHandler}
+                  stop={moveHandlerStop}
+                />
+              </JoystickStyled>
+            )}
+            <ScrollDownWrapperStyled
+              $currentScroll={currentScroll}
+              $isVideoBlock={isVideoBlock}
+              $isMobile={isMobile}
+            >
+              <div className="text">Scroll Down</div>
+            </ScrollDownWrapperStyled>
+            <Canvas
+              gl={{ antialias: true, toneMapping: THREE.NoToneMapping }}
+              onCreated={({ gl }) => {
+                gl.toneMapping = THREE.NoToneMapping;
+              }}
+              // TODO need to apply true srgb color
+              // frameloop="demand"
+              // shadowMap={{ enabled: true, type: "BasicShadowMap"}}
+              dpr={[1, 2]} // default pixelRatio //TODO need?
+              camera={{
+                fov: 35,
+              }}
+              id="appCanvas"
+              linear // TODO need to apply true srgb color
+              legacy // TODO need to apply true srgb color
+            >
+              {perfVisible && <Perf position="top-left" />}
+              <color args={["#153030"]} attach="background" />
+              <Text
+                color="#e8e8e8"
+                fontSize={1}
+                font="/fonts/FjallaOne-Regular.ttf"
+                position={[-74, 0, 0]}
+                rotation={[Math.PI / 2, Math.PI, -Math.PI / 2]}
+                maxWidth={17}
+                lineHeight={1.2}
+                textAlign="center"
+              >
+                Hello! My name is Slava, and my mission is to lead the way in 3D
+                web user interaction. You can now hire me to transform or create
+                your digital presence of your 3D website. Choose me and I'll
+                help you build the future of web interaction for your success.
+              </Text>
+              <Text
+                color="#e8e8e8"
+                fontSize={1}
+                font="/fonts/FjallaOne-Regular.ttf"
+                position={[-63, 0, 0]}
+                rotation={[Math.PI / 2, Math.PI, -Math.PI / 2]}
+                maxWidth={17}
+                lineHeight={1.0}
+                textAlign="center"
+              >
+                Some great examples of what you can expect by a 3D web user
+                interaction:
+              </Text>
+              <Physics
+                timeStep={1 / 400}
+                updatePriority={-50}
+                gravity={[0, -9.08, 0]}
+                debug={debug}
+                maxStabilizationIterations={8}
+              >
+                {/* Lights */}
+                <Lights />
+                {/* Main text */}
+                <MainText />
+                
+                {/* Video Examples */}
+                <VideoSliderShaderBlockFirst />
+                <VideoSliderShaderBlockSecond />
 
-          {/* Main text */}
-          <MainText />
-
-          {/* Video Examples */}
-          <VideoSliderShaderBlock
-            position={[-55, 0.01, 0]}
-            video1="video/skate1200x900.mp4"
-            video2="video/furniture1200x900.mp4"
-            toggleSlider={toggleSliderOne}
-            setToggleSlider={setToggleSliderOne}
-            onClick={() => {
-              if (!!isVideoBlock) return setIsVideoBlock(0);
-              return setIsVideoBlock(1);
-            }}
-            isKeydown={isKeydown}
-          />
-          <VideoSliderShaderBlock
-            position={[-37, 0.01, 0]}
-            video1="video/top-view1200x90.mp4"
-            video2="video/scooter1200x900.mp4"
-            toggleSlider={toggleSliderTwo}
-            setToggleSlider={setToggleSliderTwo}
-            onClick={() => {
-              if (!!isVideoBlock) return setIsVideoBlock(0);
-              return setIsVideoBlock(2);
-            }}
-            isKeydown={isKeydown}
-          />
-
-          {/* Social links */}
-          <SocialNetworkLogo
-            position={[-23, 1.4, 2.5]}
-            link="https://www.linkedin.com/in/slavakittel/"
-            model="./glb-models/linkedin-logo.glb"
-          />
-          <SocialNetworkLogo
-            position={[-23, 1.4, -2.5]}
-            link="https://github.com/SlavaKittel"
-            model="./glb-models/github-logo.glb"
-          />
-
-          {/* Fun Zone and Test Performance */}
-          <FunZone
-            positionX={0}
-            isCubesFlying={isCubesFlying}
-            setIsCubesFalled={setIsCubesFalled}
-          />
-
-          {/* Main camera with scroll and Vehicle */}
-          <ScrollControls pages={2} damping={0.005}>
-            {/* Vehicle with Camera and Controls hooks */}
-            <Vehicle
-              isKeydown={isKeydown}
-              maxForceMobile={maxForceMobile}
-              angleOfJoystick={angleOfJoystick}
-              isVideoBlock={isVideoBlock}
-              setCurrentScroll={setCurrentScroll}
-              setToggleSliderOne={setToggleSliderOne}
-              setToggleSliderTwo={setToggleSliderTwo}
-              setIsCubesFlying={setIsCubesFlying}
-              isCubesFalled={isCubesFalled}
-              isCubesFlying={isCubesFlying}
-            />
-          </ScrollControls>
-
-          {/* Web-site boundary */}
-          <RigidBody colliders={false} type="fixed">
-            <mesh position={[-38, 1.45, 9.3]} rotation-x={0.1}>
-              <CuboidCollider
-                args={[122 / 2, 3 / 2, 0.3 / 2]}
-                position={[0, 0, 0]}
-              />
-              <boxGeometry args={[122, 3, 0.3]} />
-              <meshStandardMaterial
-                displacementScale={0}
-                displacementBias={0}
-                map={boundaryColorMap}
-                displacementMap={boundaryDisplacementMap}
-                normalMap={boundaryNormalMap}
-                roughnessMap={boundaryRoughnessMap}
-                aoMap={boundaryAoMap}
-                metalness={0.65}
-                roughness={0.5}
-              />
-            </mesh>
-            <mesh position={[-38, 1.45, -9.3]} rotation-x={-0.1}>
-              <CuboidCollider
-                args={[122 / 2, 3 / 2, 0.3 / 2]}
-                position={[0, 0, 0]}
-              />
-              <boxGeometry args={[122, 3, 0.3]} />
-              <meshStandardMaterial
-                displacementScale={0}
-                displacementBias={0}
-                map={boundaryColorMap}
-                displacementMap={boundaryDisplacementMap}
-                normalMap={boundaryNormalMap}
-                roughnessMap={boundaryRoughnessMap}
-                aoMap={boundaryAoMap}
-                metalness={0.65}
-                roughness={0.5}
-              />
-            </mesh>
-          </RigidBody>
-
-          {/* Ground */}
-          <RigidBody
-            type="fixed"
-            colliders={false}
-            friction={1}
-            position={[0, -0.51, 0]}
-            restitution={0.3}
-          >
-            <CuboidCollider args={[61, 0.5, 9]} position={[-38, 0, 0]} />
-            <mesh rotation-x={-Math.PI / 2} position={[-38, 0.5, 0]}>
-              <planeGeometry args={[122, 18]} />
-              <MeshReflectorMaterial
-                envMapIntensity={0}
-                normalMap={groundNormal}
-                roughnessMap={groundRoughness}
-                aoMap={groundAoMap}
-                dithering={true}
-                color={[0.021, 0.025, 0.028]}
-                roughness={0.9}
-                metalness={0.1}
-                blur={[2000, 2000]}
-                mixBlur={30}
-                mixStrength={80}
-                mixContrast={1}
-                resolution={isMobile ? 80 : 250}
-                mirror={0}
-                depthScale={0.01}
-                minDepthThreshold={0.8}
-                maxDepthThreshold={1}
-                depthToBlurRatioBias={0.2}
-              />
-            </mesh>
-          </RigidBody>
-        </Physics>
-      </Canvas>
-    </AppStyled>
+                {/* Social links */}
+                <SocialNetworkLogo
+                  position={[-23, 1.4, 2.5]}
+                  link="https://www.linkedin.com/in/slavakittel/"
+                  model="./glb-models/linkedin-logo.glb"
+                />
+                <SocialNetworkLogo
+                  position={[-23, 1.4, -2.5]}
+                  link="https://github.com/SlavaKittel"
+                  model="./glb-models/github-logo.glb"
+                />
+                {/* Fun Zone and Test Performance */}
+                <FunZone
+                  positionX={0}
+                  isCubesFlying={isCubesFlying}
+                  setIsCubesFalled={setIsCubesFalled}
+                />
+                {/* Main camera with scroll and Vehicle */}
+                <ScrollControls pages={2} damping={0.005}>
+                  {/* Vehicle with Camera and Controls hooks */}
+                  <Vehicle
+                    isKeydown={isKeydown}
+                    maxForceMobile={maxForceMobile}
+                    angleOfJoystick={angleOfJoystick}
+                    isVideoBlock={isVideoBlock}
+                    setCurrentScroll={setCurrentScroll}
+                    setToggleSliderOne={setToggleSliderOne}
+                    setToggleSliderTwo={setToggleSliderTwo}
+                    setIsCubesFlying={setIsCubesFlying}
+                    isCubesFalled={isCubesFalled}
+                    isCubesFlying={isCubesFlying}
+                  />
+                </ScrollControls>
+                {/* Web-site boundary */}
+                <RigidBody colliders={false} type="fixed">
+                  <mesh position={[-38, 1.45, 9.3]} rotation-x={0.1}>
+                    <CuboidCollider
+                      args={[122 / 2, 3 / 2, 0.3 / 2]}
+                      position={[0, 0, 0]}
+                    />
+                    <boxGeometry args={[122, 3, 0.3]} />
+                    <meshStandardMaterial
+                      displacementScale={0}
+                      displacementBias={0}
+                      map={boundaryColorMap}
+                      displacementMap={boundaryDisplacementMap}
+                      normalMap={boundaryNormalMap}
+                      roughnessMap={boundaryRoughnessMap}
+                      aoMap={boundaryAoMap}
+                      metalness={0.65}
+                      roughness={0.5}
+                    />
+                  </mesh>
+                  <mesh position={[-38, 1.45, -9.3]} rotation-x={-0.1}>
+                    <CuboidCollider
+                      args={[122 / 2, 3 / 2, 0.3 / 2]}
+                      position={[0, 0, 0]}
+                    />
+                    <boxGeometry args={[122, 3, 0.3]} />
+                    <meshStandardMaterial
+                      displacementScale={0}
+                      displacementBias={0}
+                      map={boundaryColorMap}
+                      displacementMap={boundaryDisplacementMap}
+                      normalMap={boundaryNormalMap}
+                      roughnessMap={boundaryRoughnessMap}
+                      aoMap={boundaryAoMap}
+                      metalness={0.65}
+                      roughness={0.5}
+                    />
+                  </mesh>
+                </RigidBody>
+                {/* Ground */}
+                <RigidBody
+                  type="fixed"
+                  colliders={false}
+                  friction={1}
+                  position={[0, -0.51, 0]}
+                  restitution={0.3}
+                >
+                  <CuboidCollider args={[61, 0.5, 9]} position={[-38, 0, 0]} />
+                  <mesh rotation-x={-Math.PI / 2} position={[-38, 0.5, 0]}>
+                    <planeGeometry args={[122, 18]} />
+                    <MeshReflectorMaterial
+                      envMapIntensity={0}
+                      normalMap={groundNormal}
+                      roughnessMap={groundRoughness}
+                      aoMap={groundAoMap}
+                      dithering={true}
+                      color={[0.021, 0.025, 0.028]}
+                      roughness={0.9}
+                      metalness={0.1}
+                      blur={[2000, 2000]}
+                      mixBlur={30}
+                      mixStrength={80}
+                      mixContrast={1}
+                      resolution={isMobile ? 80 : 250}
+                      mirror={0}
+                      depthScale={0.01}
+                      minDepthThreshold={0.8}
+                      maxDepthThreshold={1}
+                      depthToBlurRatioBias={0.2}
+                    />
+                  </mesh>
+                </RigidBody>
+              </Physics>
+            </Canvas>
+          </AppStyled>
+        }
+      </Suspense>
+      <LoadingScreen />
+    </>
   );
 }
 
