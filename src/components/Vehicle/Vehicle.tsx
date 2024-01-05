@@ -44,6 +44,7 @@ export default function Vehicle({
     },
   });
   const [brakeMobile, setBrakeMobile] = useState(false);
+  const [resetVechicle, setResetVehicle] = useState(false);
   const controls = useControls();
   const scroll = useScroll();
 
@@ -201,8 +202,11 @@ export default function Vehicle({
     // chassis translation
     newChassisTranslation.copy(chassis.current.translation() as Vector3);
 
+    // set for reset vehicle
+    if (newChassisTranslation.y < -5) setResetVehicle(true);
+    if (newChassisTranslation.y > -5) setResetVehicle(false);
+
     // toggle slider when vehicle on sliders
-    // TODO maybe will made function?
     if (
       isKeydown &&
       newChassisTranslation.x > -63 &&
@@ -305,7 +309,7 @@ export default function Vehicle({
   return (
     <>
       {cameraMode === "orbit" && <OrbitControls />}
-      <VehicleModel ref={raycastVehicle} />
+      <VehicleModel ref={raycastVehicle} resetVechicle={resetVechicle}/>
     </>
   );
 }

@@ -19,7 +19,6 @@ import {
   RigidBody,
   useRapier,
   RapierRigidBody,
-  RigidBodyProps,
 } from "@react-three/rapier";
 import {
   RapierRaycastVehicle,
@@ -31,7 +30,9 @@ type RaycastVehicleWheel = {
   object: RefObject<Object3D>;
 };
 
-export type VehicleModelProps = RigidBodyProps;
+export type VehicleModelProps = {
+  resetVechicle: boolean;
+};
 
 export type VehicleRef = {
   chassisRigidBody: RefObject<RapierRigidBody>;
@@ -40,8 +41,12 @@ export type VehicleRef = {
   setBraking: (braking: boolean) => void;
 };
 
-const VehicleModel = forwardRef<VehicleRef, VehicleModelProps>(function Car(
-  { children },
+export type VehicleProps = {
+  resetVechicle: boolean;
+};
+
+const VehicleModel = forwardRef<VehicleRef, VehicleModelProps>(function VehicleModel(
+  { resetVechicle },
   ref
 ) {
   const rapier = useRapier();
@@ -54,7 +59,7 @@ const VehicleModel = forwardRef<VehicleRef, VehicleModelProps>(function Car(
   const bottomLeftWheelObject = useRef<Group>(null!);
   const bottomRightWheelObject = useRef<Group>(null!);
 
-  const bmwE30Chassis = useLoader(GLTFLoader, "./glb-models/bmwe30ORIGINAL.glb");
+  const bmwE30Chassis = useLoader(GLTFLoader, "./glb-models/bmwE30.glb");
 
   const indexRightAxis = 2;
   const indexForwardAxis = 0;
@@ -185,14 +190,23 @@ const VehicleModel = forwardRef<VehicleRef, VehicleModelProps>(function Car(
     levaWheelOptions,
   ]);
 
+  const vehiclePositionY = () => {
+    if (resetVechicle) return 4
+    return 3.9
+  };
+  const vehicleRotationX = () => {
+    if (resetVechicle) return 0
+    return 0.1
+  };
+
   return (
     <>
       {/* Chassis */}
       <RigidBody
         ref={chassisRigidBodyRef}
         colliders={false}
-        position={[-90, 4, 0]}
-        rotation={[-0.1, 0.2, 0]}
+        position={[-90, vehiclePositionY(), 0]}
+        rotation={[vehicleRotationX(), 0.2, 0]}
       >
         <primitive
           position={[0, -0.89, 0]}
@@ -201,7 +215,6 @@ const VehicleModel = forwardRef<VehicleRef, VehicleModelProps>(function Car(
           scale={0.7}
         />
         <CuboidCollider args={[2.39, 0.67, 1]} position={[-0.1, -0.09, 0]} mass={50} />
-        {children}
       </RigidBody>
 
       {/* Wheels */}

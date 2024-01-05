@@ -94,10 +94,6 @@ const MainText = ({}: TextProps) => {
   });
   
   const mainTextPortfolio = lettersArrayBeCreaive.map((letter, index) => {
-    const [matcapTexture] = useMatcapTexture(
-      "34A09C_6EE5E3_5CD7D3_4EC9C6",
-      256
-    );
     const positionLetterByZ = index === 1 ? -5 : -3;
     return (
       <RigidBody
@@ -119,17 +115,13 @@ const MainText = ({}: TextProps) => {
           bevelSegments={5}
         >
           {letter}
-          <meshMatcapMaterial matcap={matcapTexture} />
+          <meshStandardMaterial color="#50e7d7" roughness={0.5} metalness={0.6} />
         </Text3D>
       </RigidBody>
     );
   });
 
   const funZoneText = lettersArrayFunZone.map((letter, index) => {
-    const [matcapTexture] = useMatcapTexture(
-      "34A09C_6EE5E3_5CD7D3_4EC9C6",
-      256
-    );
     const positionLetterByZ = index === 1 ? 0 : 2.5;
     return (
       <RigidBody
@@ -151,7 +143,7 @@ const MainText = ({}: TextProps) => {
           bevelSegments={5}
         >
           {letter}
-          <meshMatcapMaterial matcap={matcapTexture} />
+          <meshStandardMaterial color="#50e7d7" roughness={0.5} metalness={0.6} />
         </Text3D>
       </RigidBody>
     );
