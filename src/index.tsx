@@ -1,9 +1,11 @@
-import React, { StrictMode } from "react";
+import React, { StrictMode, Suspense } from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
+import LoadingScreen from "./components/LoadingScreen";
 
 ReactDOM.createRoot(document.querySelector("#root")!).render(
   <StrictMode>
-    <App />
+    <Suspense fallback={null}>{<App />}</Suspense>
+    <LoadingScreen />
   </StrictMode>
 );
