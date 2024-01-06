@@ -5,11 +5,7 @@ import { isMobile } from "react-device-detect";
 import { TextureLoader } from "three/src/loaders/TextureLoader";
 import * as THREE from "three";
 
-import { Leva } from "leva";
-
-import { Perf } from "r3f-perf";
 import { Physics, RigidBody, CuboidCollider } from "@react-three/rapier";
-import { useControls as useLeva } from "leva";
 import { ScrollControls, MeshReflectorMaterial, Text } from "@react-three/drei";
 
 import { Joystick } from "react-joystick-component";
@@ -24,10 +20,6 @@ import Lights from "./components/Lights";
 import LoadingScreen from "./components/LoadingScreen";
 
 export default function App() {
-  const { perfVisible, debug } = useLeva({
-    perfVisible: true,
-    debug: false,
-  });
   const [isKeydown, setKeydown] = useState(true);
   const [currentScroll, setCurrentScroll] = useState(0);
   const [isVideoBlock, setIsVideoBlock] = useState(0);
@@ -156,7 +148,6 @@ export default function App() {
       <Suspense fallback={null}>
         {
           <AppStyled $isVideoBlock={isVideoBlock}>
-            <Leva collapsed />
             {isMobile && (
               <JoystickStyled>
                 <Joystick
@@ -178,18 +169,14 @@ export default function App() {
               onCreated={({ gl }) => {
                 gl.toneMapping = THREE.NoToneMapping;
               }}
-              // TODO need to apply true srgb color
-              // frameloop="demand"
-              // shadowMap={{ enabled: true, type: "BasicShadowMap"}}
               dpr={[1, 2]} // default pixelRatio //TODO need?
               camera={{
                 fov: 35,
               }}
               id="appCanvas"
-              linear // TODO need to apply true srgb color
-              legacy // TODO need to apply true srgb color
+              linear
+              legacy
             >
-              {perfVisible && <Perf position="top-left" />}
               <color args={["#153030"]} attach="background" />
               <Text
                 color="#e8e8e8"
@@ -223,7 +210,6 @@ export default function App() {
                 timeStep={1 / 400}
                 updatePriority={-50}
                 gravity={[0, -9.08, 0]}
-                debug={debug}
                 maxStabilizationIterations={8}
               >
                 {/* Lights */}
