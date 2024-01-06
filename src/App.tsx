@@ -24,8 +24,6 @@ import Lights from "./components/Lights";
 import LoadingScreen from "./components/LoadingScreen";
 
 export default function App() {
-  // TODO delete, for test
-  // const VideoSliderShaderBlock = lazy(() => import("./components/VideoSliderShaderBlock"));
   const { perfVisible, debug } = useLeva({
     perfVisible: true,
     debug: false,
@@ -430,7 +428,6 @@ export const ScrollDownWrapperStyled = styled.div<{
   transition: top 0.2s ease-in-out;
   left: 50%;
   font-family: "Fjalla One";
-  font-weight: 900;
   font-size: 18px;
   color: white;
   transform: translate(-50%, 0);
