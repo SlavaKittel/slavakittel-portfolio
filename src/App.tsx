@@ -19,11 +19,13 @@ import Vehicle from "./components/Vehicle/Vehicle";
 import MainText from "./components/MainText";
 import FunZone from "./components/FunZone";
 import SocialNetworkLogo from "./components/SocialNetworkLogo";
+import VideoSliderShaderBlock from "./components/VideoSliderShaderBlock";
 import Lights from "./components/Lights";
 import LoadingScreen from "./components/LoadingScreen";
 
 export default function App() {
-  const VideoSliderShaderBlock = lazy(() => import("./components/VideoSliderShaderBlock"));
+  // TODO delete, for test
+  // const VideoSliderShaderBlock = lazy(() => import("./components/VideoSliderShaderBlock"));
   const { perfVisible, debug } = useLeva({
     perfVisible: true,
     debug: false,
