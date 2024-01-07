@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import * as THREE from "three";
 import { isMobile } from "react-device-detect";
 

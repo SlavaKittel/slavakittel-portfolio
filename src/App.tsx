@@ -19,9 +19,12 @@ import Vehicle from "./components/Vehicle/Vehicle";
 import MainText from "./components/MainText";
 import FunZone from "./components/FunZone";
 import SocialNetworkLogo from "./components/SocialNetworkLogo";
-import VideoSliderShaderBlock from "./components/VideoSliderShaderBlock";
+// TODO tes delete
+// import VideoSliderShaderBlock from "./components/VideoSliderShaderBlock";
 import Lights from "./components/Lights";
 import LoadingScreen from "./components/LoadingScreen";
+
+const VideoSliderShaderBlock = lazy(() => import('./components/VideoSliderShaderBlock'));
 
 export default function App() {
   const { perfVisible, debug } = useLeva({
@@ -151,6 +154,11 @@ export default function App() {
   repeatBoundaryTextures(boundaryRoughnessMap);
   repeatBoundaryTextures(boundaryAoMap);
 
+  const joystickSize = () => {
+    if (window.innerHeight < 800) return 75
+    return 100;
+  }
+
   return (
     <>
       <Suspense fallback={null}>
@@ -160,7 +168,7 @@ export default function App() {
             {isMobile && (
               <JoystickStyled>
                 <Joystick
-                  size={100}
+                  size={joystickSize()}
                   move={moveHandler}
                   stop={moveHandlerStop}
                 />
@@ -400,11 +408,11 @@ export const JoystickStyled = styled.div`
   z-index: 1;
   & > div {
     background: transparent !important;
-    border: 2px solid #ffffff79;
+    border: 2px solid #ffffff75;
     & > button {
       background: url("/img/joystick-logo.jpg") no-repeat center !important;
       background-size: 180% !important;
-      opacity: 0.98;
+      opacity: 0.75;
     }
   }
 `;
