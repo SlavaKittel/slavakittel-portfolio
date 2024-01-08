@@ -15,16 +15,21 @@ import { ScrollControls, MeshReflectorMaterial, Text } from "@react-three/drei";
 import { Joystick } from "react-joystick-component";
 import { IJoystickUpdateEvent } from "react-joystick-component/build/lib/Joystick";
 
-import Vehicle from "./components/Vehicle/Vehicle";
-import MainText from "./components/MainText";
-import FunZone from "./components/FunZone";
-import SocialNetworkLogo from "./components/SocialNetworkLogo";
-// TODO tes delete
+// TODO test delete !!
+// import Vehicle from "./components/Vehicle/Vehicle";
+// import MainText from "./components/MainText";
+// import FunZone from "./components/FunZone";
+// import SocialNetworkLogo from "./components/SocialNetworkLogo";
 // import VideoSliderShaderBlock from "./components/VideoSliderShaderBlock";
-import Lights from "./components/Lights";
+// import Lights from "./components/Lights";
 import LoadingScreen from "./components/LoadingScreen";
 
 const VideoSliderShaderBlock = lazy(() => import('./components/VideoSliderShaderBlock'));
+const MainText = lazy(() => import('./components/MainText'));
+const FunZone = lazy(() => import('./components/FunZone'));
+const SocialNetworkLogo = lazy(() => import('./components/SocialNetworkLogo'));
+const Lights = lazy(() => import('./components/Lights'));
+const Vehicle = lazy(() => import('./components/Vehicle/Vehicle'));
 
 export default function App() {
   const { perfVisible, debug } = useLeva({
