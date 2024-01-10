@@ -52,7 +52,7 @@ const SocialNetworkLogo = ({
           position={position}
           object={logoModel.scene}
           onClick={(e: { stopPropagation: () => any }) => (
-            (window.location.href = link), e.stopPropagation()
+            (window.open(link)), e.stopPropagation()
           )}
           onPointerDown={() => setMouseDown(true)}
           onPointerUp={() => setMouseDown(false)}

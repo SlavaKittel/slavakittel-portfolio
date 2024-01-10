@@ -190,14 +190,6 @@ const VehicleModel = forwardRef<VehicleRef, VehicleModelProps>(function VehicleM
     levaWheelOptions,
   ]);
 
-  const vehiclePositionY = () => {
-    if (resetVechicle) return 4
-    return 3.9
-  };
-  const vehicleRotationX = () => {
-    if (resetVechicle) return 0
-    return 0.1
-  };
 
   return (
     <>
@@ -205,8 +197,8 @@ const VehicleModel = forwardRef<VehicleRef, VehicleModelProps>(function VehicleM
       <RigidBody
         ref={chassisRigidBodyRef}
         colliders={false}
-        position={[-90, vehiclePositionY(), 0]}
-        rotation={[vehicleRotationX(), 0.2, 0]}
+        position={[-90, 4, 0]}
+        rotation={[0, 0.2, 0]}
       >
         <primitive
           position={[0, -0.89, 0]}

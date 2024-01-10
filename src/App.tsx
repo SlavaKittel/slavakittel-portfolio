@@ -1,4 +1,4 @@
-import { useState, useEffect, lazy, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { Canvas, useLoader } from "@react-three/fiber";
 import styled, { keyframes } from "styled-components";
 import { isMobile } from "react-device-detect";
@@ -15,21 +15,14 @@ import { ScrollControls, MeshReflectorMaterial, Text } from "@react-three/drei";
 import { Joystick } from "react-joystick-component";
 import { IJoystickUpdateEvent } from "react-joystick-component/build/lib/Joystick";
 
-// TODO test delete !!
-// import Vehicle from "./components/Vehicle/Vehicle";
-// import MainText from "./components/MainText";
-// import FunZone from "./components/FunZone";
-// import SocialNetworkLogo from "./components/SocialNetworkLogo";
-// import VideoSliderShaderBlock from "./components/VideoSliderShaderBlock";
-// import Lights from "./components/Lights";
+import Vehicle from "./components/Vehicle/Vehicle";
+import MainText from "./components/MainText";
+import InfoText from "./components/InfoText";
+import FunZone from "./components/FunZone";
+import SocialNetworkLogo from "./components/SocialNetworkLogo";
+import VideoSliderShaderBlock from "./components/VideoSliderShaderBlock";
+import Lights from "./components/Lights";
 import LoadingScreen from "./components/LoadingScreen";
-
-const VideoSliderShaderBlock = lazy(() => import('./components/VideoSliderShaderBlock'));
-const MainText = lazy(() => import('./components/MainText'));
-const FunZone = lazy(() => import('./components/FunZone'));
-const SocialNetworkLogo = lazy(() => import('./components/SocialNetworkLogo'));
-const Lights = lazy(() => import('./components/Lights'));
-const Vehicle = lazy(() => import('./components/Vehicle/Vehicle'));
 
 export default function App() {
   const { perfVisible, debug } = useLeva({
@@ -50,9 +43,17 @@ export default function App() {
   useEffect(() => {
     const clickListener = (e: { code: string; preventDefault: () => void }) => {
       if (
-        ["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(
-          e.code
-        ) > -1
+        [
+          "Space",
+          "ArrowUp",
+          "ArrowDown",
+          "ArrowLeft",
+          "ArrowRight",
+          "KeyW",
+          "KeyA",
+          "KeyS",
+          "KeyD",
+        ].includes(e.code)
       ) {
         setKeydown(true);
         e.preventDefault();
@@ -160,9 +161,9 @@ export default function App() {
   repeatBoundaryTextures(boundaryAoMap);
 
   const joystickSize = () => {
-    if (window.innerHeight < 800) return 75
+    if (window.innerHeight < 800) return 80;
     return 100;
-  }
+  };
 
   return (
     <>
@@ -191,47 +192,44 @@ export default function App() {
               onCreated={({ gl }) => {
                 gl.toneMapping = THREE.NoToneMapping;
               }}
-              // TODO need to apply true srgb color
-              // frameloop="demand"
-              // shadowMap={{ enabled: true, type: "BasicShadowMap"}}
               dpr={[1, 2]} // default pixelRatio //TODO need?
               camera={{
                 fov: 35,
               }}
               id="appCanvas"
-              linear // TODO need to apply true srgb color
-              legacy // TODO need to apply true srgb color
+              linear
+              legacy
             >
               {perfVisible && <Perf position="top-left" />}
               <color args={["#153030"]} attach="background" />
-              <Text
-                color="#e8e8e8"
-                fontSize={1}
-                font="/fonts/FjallaOne-Regular.ttf"
-                position={[-74, 0, 0]}
-                rotation={[Math.PI / 2, Math.PI, -Math.PI / 2]}
-                maxWidth={17}
-                lineHeight={1.2}
-                textAlign="center"
-              >
-                Hello! My name is Slava, and my mission is to lead the way in 3D
-                web user interaction. You can now hire me to transform or create
-                your digital presence of your 3D website. Choose me and I'll
-                help you build the future of web interaction for your success.
-              </Text>
-              <Text
-                color="#e8e8e8"
-                fontSize={1}
-                font="/fonts/FjallaOne-Regular.ttf"
-                position={[-63, 0, 0]}
-                rotation={[Math.PI / 2, Math.PI, -Math.PI / 2]}
-                maxWidth={17}
-                lineHeight={1.0}
-                textAlign="center"
-              >
-                Some great examples of what you can expect by a 3D web user
-                interaction:
-              </Text>
+              <InfoText />
+              {/* Lights */}
+              <Lights />
+              {/* Video Examples */}
+              <VideoSliderShaderBlock
+                position={[-55, 0.01, 0]}
+                video1="video/skate1200x900.mp4"
+                video2="video/furniture1200x900.mp4"
+                toggleSlider={toggleSliderOne}
+                setToggleSlider={setToggleSliderOne}
+                onClick={() => {
+                  if (!!isVideoBlock) return setIsVideoBlock(0);
+                  return setIsVideoBlock(1);
+                }}
+                isKeydown={isKeydown}
+              />
+              <VideoSliderShaderBlock
+                position={[-37, 0.01, 0]}
+                video1="video/top-view1200x90.mp4"
+                video2="video/scooter1200x900.mp4"
+                toggleSlider={toggleSliderTwo}
+                setToggleSlider={setToggleSliderTwo}
+                onClick={() => {
+                  if (!!isVideoBlock) return setIsVideoBlock(0);
+                  return setIsVideoBlock(2);
+                }}
+                isKeydown={isKeydown}
+              />
               <Physics
                 timeStep={1 / 400}
                 updatePriority={-50}
@@ -239,43 +237,16 @@ export default function App() {
                 debug={debug}
                 maxStabilizationIterations={8}
               >
-                {/* Lights */}
-                <Lights />
                 {/* Main text */}
                 <MainText />
-                {/* Video Examples */}
-                <VideoSliderShaderBlock
-                  position={[-55, 0.01, 0]}
-                  video1="video/skate1200x900.mp4"
-                  video2="video/furniture1200x900.mp4"
-                  toggleSlider={toggleSliderOne}
-                  setToggleSlider={setToggleSliderOne}
-                  onClick={() => {
-                    if (!!isVideoBlock) return setIsVideoBlock(0);
-                    return setIsVideoBlock(1);
-                  }}
-                  isKeydown={isKeydown}
-                />
-                <VideoSliderShaderBlock
-                  position={[-37, 0.01, 0]}
-                  video1="video/top-view1200x90.mp4"
-                  video2="video/scooter1200x900.mp4"
-                  toggleSlider={toggleSliderTwo}
-                  setToggleSlider={setToggleSliderTwo}
-                  onClick={() => {
-                    if (!!isVideoBlock) return setIsVideoBlock(0);
-                    return setIsVideoBlock(2);
-                  }}
-                  isKeydown={isKeydown}
-                />
                 {/* Social links */}
                 <SocialNetworkLogo
-                  position={[-23, 1.4, 2.5]}
+                  position={[-18, 1.4, 2.5]}
                   link="https://www.linkedin.com/in/slavakittel/"
                   model="./glb-models/linkedin-logo.glb"
                 />
                 <SocialNetworkLogo
-                  position={[-23, 1.4, -2.5]}
+                  position={[-18, 1.4, -2.5]}
                   link="https://github.com/SlavaKittel"
                   model="./glb-models/github-logo.glb"
                 />
