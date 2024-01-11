@@ -30,6 +30,7 @@ type RaycastVehicleWheel = {
   object: RefObject<Object3D>;
 };
 
+// TODO delete
 export type VehicleModelProps = {
   resetVechicle: boolean;
 };
@@ -39,10 +40,6 @@ export type VehicleRef = {
   rapierRaycastVehicle: RefObject<RapierRaycastVehicle>;
   wheels: RaycastVehicleWheel[];
   setBraking: (braking: boolean) => void;
-};
-
-export type VehicleProps = {
-  resetVechicle: boolean;
 };
 
 const VehicleModel = forwardRef<VehicleRef, VehicleModelProps>(function VehicleModel(

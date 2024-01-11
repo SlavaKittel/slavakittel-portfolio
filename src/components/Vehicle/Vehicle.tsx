@@ -203,9 +203,10 @@ export default function Vehicle({
     newChassisTranslation.copy(chassis.current.translation() as Vector3);
 
     // set for reset vehicle
-    if (newChassisTranslation.y < -8)
-      setResetVehicle(false)
-      setTimeout(() => setResetVehicle(true), 500);
+    if (newChassisTranslation.y < -8) (
+      setResetVehicle(false),
+      setTimeout(() => setResetVehicle(true), 100)
+    )
 
     // toggle slider when vehicle on sliders
     if (
