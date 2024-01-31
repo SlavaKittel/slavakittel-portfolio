@@ -23,9 +23,13 @@ const LoadingScreen = ({}: LoadingScreenProps) => {
     if (isMobile) {
       return (
         <div className="instruction-mobile-content">
-          <div className="move-around-block" >
-            <div className="joystick-img" />
+          <div className="move-around-block">
+            <div className="joystick-icon" />
             <div className="move-around-text">- to move around</div>
+          </div>
+          <div className="move-back-block">
+            <div className="back-icon">R</div>
+            <div className="move-back-text">- to move back</div>
           </div>
           <div className="scroll-text">* use touch scroll for scroll page</div>
         </div>
@@ -147,7 +151,7 @@ export const LoadingScreenStyled = styled.div<{
       display: flex;
       align-items: center;
       justify-content: center;
-      .joystick-img {
+      .joystick-icon {
         background-color: white;
         height: 20px;
         width: 20px;
@@ -163,7 +167,6 @@ export const LoadingScreenStyled = styled.div<{
           position: relative;
           left: -7px;
           top: -7px;
-
         }
       }
       .move-around-text {
@@ -171,9 +174,31 @@ export const LoadingScreenStyled = styled.div<{
         color: white;
       }
     }
+    .move-back-block {
+      margin: 10px 24px 0 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      .back-icon {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-family: "Fjalla One";
+        font-size: 15px;
+        width: 30px;
+        height: 30px;
+        border: 2px solid white;
+        border-radius: 20px;
+      }
+      .move-back-text {
+        margin: 10px 0 10px 8px;
+        color: white;
+      }
+    }
     .scroll-text {
       color: white;
-      margin: 20px 0 0 6px;
+      margin: 15px 0 0 6px;
     }
   }
 `;

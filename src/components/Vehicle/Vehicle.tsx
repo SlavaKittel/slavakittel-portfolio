@@ -23,6 +23,7 @@ type VehicleProps = {
   setIsCubesFlying: (isCubesFlying: boolean) => void;
   isCubesFalled: boolean;
   isCubesFlying: boolean;
+  isVehicleBack: boolean;
 };
 
 export default function Vehicle({
@@ -110,14 +111,17 @@ export default function Vehicle({
 
     const engineForceMobile = () => {
       if (
-        maxForceMobile === -50 &&
-        vehicle.state.currentVehicleSpeedKmHour < -5
+        (maxForceMobile === 0 &&
+          vehicle.state.currentVehicleSpeedKmHour < -1) ||
+        (!controls.current.backward &&
+          maxForceMobile === 0 &&
+          vehicle.state.currentVehicleSpeedKmHour > 1)
       ) {
         setBrakeMobile(true);
         return 0;
       }
       setBrakeMobile(false);
-      return maxForceMobile * 0.85;
+      return maxForceMobile * 0.75;
     };
 
     if (isMobile) {
@@ -160,12 +164,7 @@ export default function Vehicle({
       }
     }
 
-    const brakeForce =
-      controls.current.brake ||
-      brakeMobile ||
-      (isMobile && isCubesFlying && !isCubesFalled)
-        ? maxBrake
-        : 0;
+    const brakeForce = controls.current.brake || brakeMobile ? maxBrake : 0;
 
     for (let i = 0; i < vehicle.wheels.length; i++) {
       vehicle.setBrakeValue(brakeForce, i);
@@ -203,12 +202,10 @@ export default function Vehicle({
     newChassisTranslation.copy(chassis.current.translation() as Vector3);
 
     // set for reset vehicle
-    if (newChassisTranslation.y < -8) (
-      setResetVehicle(false),
-      setTimeout(() => setResetVehicle(true), 100)
-    )
+    if (newChassisTranslation.y < -8)
+      setResetVehicle(false), setTimeout(() => setResetVehicle(true), 100);
 
-    // toggle slider when vehicle on sliders
+    // toggle slider-video when vehicle on sliders
     if (
       isKeydown &&
       newChassisTranslation.x > -63 &&
@@ -310,7 +307,9 @@ export default function Vehicle({
   return (
     <>
       {cameraMode === "orbit" && <OrbitControls />}
-      {resetVechicle && <VehicleModel ref={raycastVehicle} resetVechicle={resetVechicle} />}
+      {resetVechicle && (
+        <VehicleModel ref={raycastVehicle} resetVechicle={resetVechicle} />
+      )}
     </>
   );
 }

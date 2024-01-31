@@ -1,4 +1,4 @@
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense, useCallback } from "react";
 import { Canvas, useLoader } from "@react-three/fiber";
 import styled, { keyframes } from "styled-components";
 import { isMobile } from "react-device-detect";
@@ -30,6 +30,9 @@ export default function App() {
     debug: false,
   });
   const [isKeydown, setKeydown] = useState(true);
+  const [isVehicleBack, setVehicleBack] = useState(false);
+  const [isJoystikStart, setJoystikStart] = useState(false);
+
   const [currentScroll, setCurrentScroll] = useState(0);
   const [isVideoBlock, setIsVideoBlock] = useState(0);
 
@@ -55,8 +58,8 @@ export default function App() {
           "KeyD",
         ].includes(e.code)
       ) {
-        setKeydown(true);
         e.preventDefault();
+        setKeydown(true);
       }
     };
     document.addEventListener("keydown", clickListener);
@@ -64,23 +67,58 @@ export default function App() {
     return () => document.removeEventListener("keydown", clickListener);
   }, []);
 
+  const moveBackStartHandler = (e: any) => {
+    setKeydown(true);
+    setVehicleBack(true);
+    setMaxForceMobile(-100);
+  };
+  const moveBackEndHandler = (e: any) => {
+    setVehicleBack(false);
+    if (isJoystikStart) return setMaxForceMobile(100);
+    setMaxForceMobile(0);
+  };
+
   useEffect(() => {
     const appCanvas = document.getElementById("appCanvas");
-    const clickListener = () => setKeydown(false);
-    document.addEventListener("wheel", clickListener);
-    appCanvas?.addEventListener("touchmove", clickListener);
-
-    return () => {
-      document.removeEventListener("wheel", clickListener);
-      appCanvas?.removeEventListener("touchmove", clickListener);
+    const keydownHandler = () => {
+      setKeydown(false);
     };
-  }, []);
+    const joystikStartHandler = () => {
+      setJoystikStart(true);
+      !isVehicleBack && setMaxForceMobile(100);
+    };
+    const joystikEndHandler = () => {
+      setJoystikStart(false);
+      !isVehicleBack && setMaxForceMobile(0);
+    };
 
-  //Joystick Control
+    document.addEventListener("wheel", keydownHandler);
+    appCanvas?.addEventListener("touchstart", keydownHandler);
+
+    document
+      .querySelector('div[data-testid="joystick-base"]')
+      ?.addEventListener("touchstart", joystikStartHandler);
+    document
+      .querySelector('div[data-testid="joystick-base"]')
+      ?.addEventListener("touchend", joystikEndHandler);
+    return () => {
+      document.removeEventListener("wheel", keydownHandler);
+      appCanvas?.removeEventListener("touchstart", keydownHandler);
+
+      document
+        .querySelector('div[data-testid="joystick-base"]')
+        ?.removeEventListener("touchstart", joystikStartHandler);
+      document
+        .querySelector('div[data-testid="joystick-base"]')
+        ?.removeEventListener("touchend", joystikEndHandler);
+    };
+  }, [isVehicleBack]);
+
+  // Vehicle mobile control: Joystick
   const [maxForceMobile, setMaxForceMobile] = useState<number>(0);
   const [angleOfJoystick, setAngleOfJoystick] = useState(0);
 
-  const moveHandler = (event: IJoystickUpdateEvent) => {
+  const moveHandler = useCallback((event: IJoystickUpdateEvent) => {
     if (!event.y || !event.x || !event.distance) return;
 
     const getAngle = (y: number, x: number) => {
@@ -88,17 +126,19 @@ export default function App() {
       const angleOf360 = angleOf180 < 0 ? angleOf180 + 360 : angleOf180;
       return angleOf360;
     };
-
     const angleOfJoystickValue = getAngle(event.y, event.x);
 
-    setMaxForceMobile(event.distance);
     setAngleOfJoystick(angleOfJoystickValue);
     setKeydown(true);
-  };
+  }, []);
 
   const moveHandlerStop = () => {
-    setMaxForceMobile(-50);
     setAngleOfJoystick(0);
+  };
+
+  const joystickSize = () => {
+    if (window.innerHeight < 800) return 80;
+    return 100;
   };
 
   //Ground Texture
@@ -160,11 +200,6 @@ export default function App() {
   repeatBoundaryTextures(boundaryRoughnessMap);
   repeatBoundaryTextures(boundaryAoMap);
 
-  const joystickSize = () => {
-    if (window.innerHeight < 800) return 80;
-    return 100;
-  };
-
   return (
     <>
       <Suspense fallback={null}>
@@ -172,13 +207,25 @@ export default function App() {
           <AppStyled $isVideoBlock={isVideoBlock}>
             <Leva collapsed />
             {isMobile && (
-              <JoystickStyled>
-                <Joystick
-                  size={joystickSize()}
-                  move={moveHandler}
-                  stop={moveHandlerStop}
-                />
-              </JoystickStyled>
+              <ControlStyled $joystikSmall={joystickSize() === 80}>
+                <div className="joystik-block">
+                  <Joystick
+                    size={joystickSize()}
+                    move={moveHandler}
+                    stop={moveHandlerStop}
+                  />
+                </div>
+                <div
+                  tabIndex={0}
+                  id="move-back"
+                  className="move-back-block"
+                  onTouchStart={moveBackStartHandler}
+                  onTouchEnd={moveBackEndHandler}
+                  onTouchCancel={moveBackEndHandler}
+                >
+                  <div className="revers-back-button">R</div>
+                </div>
+              </ControlStyled>
             )}
             <ScrollDownWrapperStyled
               $currentScroll={currentScroll}
@@ -270,6 +317,7 @@ export default function App() {
                     setIsCubesFlying={setIsCubesFlying}
                     isCubesFalled={isCubesFalled}
                     isCubesFlying={isCubesFlying}
+                    isVehicleBack={isVehicleBack}
                   />
                 </ScrollControls>
                 {/* Web-site boundary */}
@@ -367,28 +415,62 @@ export const AppStyled = styled.div<{ $isVideoBlock: number }>`
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  touch-action: none;
+
+  /* blocked zoom out and zoom in on iOS, 
+  we did it inside ScrollControls to block touchmove on axis x */
+  #appCanvas {
+    & > div > div {
+      & > div {
+        touch-action: pan-y;
+      }
+    }
+  }
+  /* blocked scrollng when we click on VideoBlock */
   & > div > div > div {
     overflow: ${({ $isVideoBlock }) =>
       !!$isVideoBlock ? "hidden !important;" : "unset"};
   }
 `;
 
-export const JoystickStyled = styled.div`
-  display: flex;
-  position: absolute;
-  bottom: 60px;
-  margin-right: auto;
-  margin-left: auto;
-  left: 50%;
-  transform: translate(-50%, 0);
-  z-index: 1;
-  & > div {
-    background: transparent !important;
-    border: 2px solid #ffffff75;
-    & > button {
-      background: url("/img/joystick-logo.jpg") no-repeat center !important;
-      background-size: 180% !important;
-      opacity: 0.75;
+export const ControlStyled = styled.div<{ $joystikSmall: boolean }>`
+  .joystik-block {
+    display: flex;
+    position: absolute;
+    bottom: ${({ $joystikSmall }) => $joystikSmall ? "70px" : "60px"};
+    right: 80px;
+    z-index: 1;
+    & > div {
+      background: transparent !important;
+      border: 2px solid #ffffff75;
+      & > button {
+        background: url("/img/joystick-logo.jpg") no-repeat center !important;
+        background-size: 180% !important;
+        opacity: 0.75;
+      }
+    }
+  }
+  .move-back-block {
+    position: absolute;
+    left: 70px;
+    bottom: 76px;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .revers-back-button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #ffffff3c;
+      color: #ffffffd4;
+      font-family: "Fjalla One";
+      -webkit-text-stroke: 2px black;
+      font-size: 34px;
+      width: 66px;
+      height: 66px;
+      border: 2px solid #ffffff75;
+      border-radius: 35px;
     }
   }
 `;
