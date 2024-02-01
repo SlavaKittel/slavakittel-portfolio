@@ -1,5 +1,7 @@
 ### Hi there 👋
 
+Go to the https://www.slavakittel.com/ 
+
 start project: npm run dev
 
 start build: npm run build
