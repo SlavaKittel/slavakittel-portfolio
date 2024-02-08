@@ -255,10 +255,10 @@ export default function App() {
                 radius={2}
                 depth={7}
                 count={300}
-                factor={2.5}
+                factor={isMobile ? 2.1 : 1}
                 saturation={500}
                 fade
-                speed={0.2}
+                speed={0.9}
               />
               {perfVisible && <Perf position="top-left" />}
               <color args={["#153030"]} attach="background" />
