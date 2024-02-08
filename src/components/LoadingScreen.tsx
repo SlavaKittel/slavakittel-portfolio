@@ -93,14 +93,14 @@ export const LoadingScreenStyled = styled.div<{
     width: 254px;
     .start-button-wrapper {
       background-color: ${({ $progress }) =>
-        $progress === 100 ? "#50e7d7" : `#5eb0a8`};
+        $progress === 100 ? "#50e7d7" : "#5eb0a8"};
       width: ${({ $progress }) => $progress}%;
       border-radius: 4px;
       .start-button {
         color: black;
         width: 250px;
         border: 2px solid
-          ${({ $progress }) => ($progress === 100 ? "#50e7d7" : `#5eb0a8`)};
+          ${({ $progress }) => ($progress === 100 ? "#50e7d7" : "#5eb0a8")};
         border-radius: 4px;
 
         &:after {
@@ -111,11 +111,18 @@ export const LoadingScreenStyled = styled.div<{
           font-size: 30px;
           padding: 10px 20px;
           color: ${({ $progress }) =>
-            $progress === 100 ? "#50e7d7" : `#5eb0a8`};
+            $progress === 100 ? "#50e7d7" : "#5eb0a8"};
           mix-blend-mode: difference;
         }
       }
     }
+  }
+
+  .start-button-wrapper:hover {
+    background: #0df9e1;
+  }
+  .start-button-wrapper:active {
+    background: #57948d;
   }
 
   .instruction-desktop-content {

@@ -38,8 +38,10 @@ export function useVideoTexture(
           (texture as any).colorSpace = (gl as any).outputColorSpace;
         else (texture as any).encoding = gl.outputEncoding;
 
+        // this event listeners need to force play video in low power mode for iOS and macOS
         document.addEventListener("click", () => video.play());
         document.addEventListener("touchstart", () => video.play());
+
         video.addEventListener(unsuspend, () => res(texture));
       }),
     [src]
