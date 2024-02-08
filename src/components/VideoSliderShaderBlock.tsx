@@ -3,7 +3,9 @@ import * as THREE from "three";
 import { isMobile } from "react-device-detect";
 
 import { useFrame, extend } from "@react-three/fiber";
-import { useTexture, shaderMaterial, useVideoTexture } from "@react-three/drei";
+import { useTexture, shaderMaterial } from "@react-three/drei";
+
+import { useVideoTexture } from "../hooks/use-video-texture";
 
 export const VideoFadeMaterial = shaderMaterial(
   {

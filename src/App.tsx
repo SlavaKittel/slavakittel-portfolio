@@ -10,7 +10,11 @@ import { Leva } from "leva";
 import { Perf } from "r3f-perf";
 import { Physics, RigidBody, CuboidCollider } from "@react-three/rapier";
 import { useControls as useLeva } from "leva";
-import { ScrollControls, MeshReflectorMaterial, Text } from "@react-three/drei";
+import {
+  ScrollControls,
+  MeshReflectorMaterial,
+  Stars,
+} from "@react-three/drei";
 
 import { Joystick } from "react-joystick-component";
 import { IJoystickUpdateEvent } from "react-joystick-component/build/lib/Joystick";
@@ -247,6 +251,15 @@ export default function App() {
               linear
               legacy
             >
+              <Stars
+                radius={2}
+                depth={7}
+                count={300}
+                factor={2.5}
+                saturation={500}
+                fade
+                speed={0.2}
+              />
               {perfVisible && <Perf position="top-left" />}
               <color args={["#153030"]} attach="background" />
               <InfoText />
@@ -437,7 +450,7 @@ export const ControlStyled = styled.div<{ $joystikSmall: boolean }>`
   .joystik-block {
     display: flex;
     position: absolute;
-    bottom: ${({ $joystikSmall }) => $joystikSmall ? "70px" : "60px"};
+    bottom: ${({ $joystikSmall }) => ($joystikSmall ? "70px" : "60px")};
     right: 80px;
     z-index: 1;
     & > div {
