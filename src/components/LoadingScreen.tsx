@@ -95,6 +95,7 @@ export const LoadingScreenStyled = styled.div<{
       background-color: ${({ $progress }) =>
         $progress === 100 ? "#50e7d7" : "#5eb0a8"};
       width: ${({ $progress }) => $progress}%;
+      transition: width 0.3s ease;
       border-radius: 4px;
       .start-button {
         color: black;
@@ -105,7 +106,7 @@ export const LoadingScreenStyled = styled.div<{
 
         &:after {
           padding-left: 20px;
-          content: "${({ $progress }) => $progress === 100 ? "START" : `${$progress}%`}";
+          content: "${({ $progress }) => $progress === 100 ? "START" : "Loading..."}";
           display: block;
           text-align: center;
           font-size: 30px;

@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import * as THREE from "three";
 import { isMobile } from "react-device-detect";
 
@@ -62,8 +62,6 @@ type VideoSliderShaderProps = {
   video2: string;
   onClick: () => void;
   toggleSlider: boolean;
-  setToggleSlider: (toggleSliderOne: boolean) => void;
-  isKeydown: boolean;
 };
 
 const VideoSliderShaderBlock = ({
@@ -72,25 +70,24 @@ const VideoSliderShaderBlock = ({
   video2,
   onClick,
   toggleSlider,
-  setToggleSlider,
-  isKeydown,
 }: VideoSliderShaderProps) => {
   const ref = useRef<any>();
   const [dispTexture] = useTexture(["/img/slider-shader.jpeg"]);
+  const [toggleSliderMouse, setToggleSliderMouse] = useState(false);
   useFrame(() => {
     ref.current.dispFactor = THREE.MathUtils.lerp(
       ref.current.dispFactor,
-      toggleSlider ? 1 : 0,
+      toggleSlider || toggleSliderMouse ? 1 : 0,
       0.1
     );
   });
   return (
     <mesh
       onPointerOver={() => {
-        if (!isKeydown && !isMobile) return setToggleSlider(true);
+        if (!isMobile) return setToggleSliderMouse(true);
       }}
       onPointerOut={() => {
-        if (!isKeydown && !isMobile) return setToggleSlider(false);
+        if (!isMobile) return setToggleSliderMouse(false);
       }}
       position={position}
       scale={[17.5, 13.125, 10]}

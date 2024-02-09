@@ -19,10 +19,9 @@ type VehicleProps = {
   setCurrentScroll: (currentScroll: number) => void;
   isVideoBlock: number;
   setToggleSliderOne: (toggleSliderOne: boolean) => void;
-  setToggleSliderTwo: (toggleSliderOne: boolean) => void;
+  setToggleSliderTwo: (toggleSliderTwo: boolean) => void;
   setIsCubesFlying: (isCubesFlying: boolean) => void;
   isCubesFalled: boolean;
-  isCubesFlying: boolean;
   isVehicleBack: boolean;
 };
 
@@ -36,7 +35,6 @@ export default function Vehicle({
   setToggleSliderTwo,
   setIsCubesFlying,
   isCubesFalled,
-  isCubesFlying,
 }: VehicleProps) {
   const { cameraMode } = useLeva("camera", {
     cameraMode: {

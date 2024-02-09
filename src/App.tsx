@@ -271,24 +271,20 @@ export default function App() {
                 video1="video/skate1200x900.mp4"
                 video2="video/furniture1200x900.mp4"
                 toggleSlider={toggleSliderOne}
-                setToggleSlider={setToggleSliderOne}
                 onClick={() => {
                   if (!!isVideoBlock) return setIsVideoBlock(0);
                   return setIsVideoBlock(1);
                 }}
-                isKeydown={isKeydown}
               />
               <VideoSliderShaderBlock
                 position={[-37, 0.01, 0]}
                 video1="video/top-view1200x90.mp4"
                 video2="video/scooter1200x900.mp4"
                 toggleSlider={toggleSliderTwo}
-                setToggleSlider={setToggleSliderTwo}
                 onClick={() => {
                   if (!!isVideoBlock) return setIsVideoBlock(0);
                   return setIsVideoBlock(2);
                 }}
-                isKeydown={isKeydown}
               />
               <Physics
                 timeStep={1 / 400}
@@ -329,7 +325,6 @@ export default function App() {
                     setToggleSliderTwo={setToggleSliderTwo}
                     setIsCubesFlying={setIsCubesFlying}
                     isCubesFalled={isCubesFalled}
-                    isCubesFlying={isCubesFlying}
                     isVehicleBack={isVehicleBack}
                   />
                 </ScrollControls>
