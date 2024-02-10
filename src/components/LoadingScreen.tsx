@@ -106,7 +106,7 @@ export const LoadingScreenStyled = styled.div<{
 
         &:after {
           padding-left: 20px;
-          content: "${({ $progress }) => $progress === 100 ? "START" : "Loading..."}";
+          content: "${({ $progress }) => $progress === 100 ? "START!" : "Loading..."}";
           display: block;
           text-align: center;
           font-size: 30px;
