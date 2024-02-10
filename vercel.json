@@ -11,5 +11,11 @@
       "use": "@vercel/node",
       "config": { "includeFiles": "dist/**" }
     }
+  ],
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
   ]
 }
