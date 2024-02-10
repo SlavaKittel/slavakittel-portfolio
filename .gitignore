@@ -32,3 +32,4 @@ src/contracts/*/*
 /public/charts.js
 /public/charts.js.LICENSE.txt
 /public/charts.js.map
+.vercel
