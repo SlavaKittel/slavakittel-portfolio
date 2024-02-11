@@ -18,7 +18,7 @@ export default {
     },
     build:
     {
-        outDir: '../build',
+        outDir: '../dist',
         emptyOutDir: true,
         sourcemap: true
     }

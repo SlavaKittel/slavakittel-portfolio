@@ -5,8 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "deploy": "vercel --prod"
+    "build": "vite build"
   },
   "devDependencies": {
     "@types/react-dom": "^18.2.7",
@@ -31,7 +30,6 @@
     "react-dom": "18.2",
     "react-joystick-component": "^6.2.1",
     "styled-components": "^6.0.8",
-    "three": "^0.153.0",
-    "vercel": "^33.5.0"
+    "three": "^0.153.0"
   }
 }
