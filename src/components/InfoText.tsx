@@ -55,6 +55,20 @@ const InfoText = ({}: TextProps) => {
       >
         Some great examples:
       </Text>
+      {/* TODO delete */}
+      <Text
+        color="#f0755a"
+        fontSize={1}
+        font="/fonts/FjallaOne-Regular.ttf"
+        position={[-65, 0, 0]}
+        rotation={[Math.PI / 2, Math.PI, -Math.PI / 2]}
+        maxWidth={17}
+        lineHeight={1.0}
+        textAlign="center"
+        onClick={() => window.open("/gsap", "_self")}
+      >
+        {`My Examples <= Click here`}
+      </Text>
       <Text
         color="#e8e8e8"
         fontSize={1}
