@@ -8,6 +8,7 @@ import ParticlesBlock from "./components/ParticlesBlock";
 
 
 export default function ParticlesApp() {
+  //TODO not working investigate!
   function Loader() {
     console.log("LODAER");
     const { active, progress, errors, item, loaded, total } = useProgress();
@@ -17,6 +18,8 @@ export default function ParticlesApp() {
     return <Html center>{progress} % loaded</Html>;
   }
 
+  // TODO need to create Particles
+  // const circleParticle = useLoader(THREE.TextureLoader, circleImg);
 
   return (
     <ParticlesAppStyled>
@@ -43,7 +46,7 @@ export default function ParticlesApp() {
           >
             <ambientLight intensity={0.5} />
             <pointLight position={[0, 20, 20]} intensity={2} />
-            <ParticlesBlock position={[0, 0, 0]} />
+            <ParticlesBlock position={[0, 0, 0]}/>
           </Canvas>
         </CanvasStyled>
       </Suspense>

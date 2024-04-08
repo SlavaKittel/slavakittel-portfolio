@@ -9,7 +9,7 @@ type ParticlesBlockProps = {
   position: [number, number, number];
 };
 
-export default function ParticlesBlock({ ...props }: ParticlesBlockProps) {
+export default function ParticlesBlock({ position }: ParticlesBlockProps) {
   const [hovered, setHover] = useState(false);
   const [clicked, setClick] = useState(false);
   const particlesContainer = useRef<Mesh>(null);
@@ -32,7 +32,7 @@ export default function ParticlesBlock({ ...props }: ParticlesBlockProps) {
 
   return (
     <mesh
-      {...props}
+      position={position}
       scale={clicked ? 1.5 : 1}
       onClick={() => setClick(!clicked)}
       onPointerOver={() => setHover(true)}
