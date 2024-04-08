@@ -14,11 +14,11 @@ const router = createBrowserRouter([
     element: <App />,
   },
   {
-    path: "gsap",
+    path: "/gsap",
     element: <GsapApp />,
   },
   {
-    path: "particles",
+    path: "/particles",
     element: <ParticlesApp />,
   },
 ]);
