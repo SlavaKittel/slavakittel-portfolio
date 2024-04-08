@@ -11,21 +11,16 @@ import ParticlesApp from "./ParticlesApp";
 const router = createBrowserRouter([
   {
     path: "/",
-    // element: <App />,
-    children: [
-      {path: '', element: <App />, },
-      {path: 'gsap', element: <GsapApp />, },
-      {path: 'particles', element: <ParticlesApp /> },
-    ],
+    element: <App />,
   },
-  // {
-  //   path: "/gsap",
-  //   element: <GsapApp />,
-  // },
-  // {
-  //   path: "/particles",
-  //   element: <ParticlesApp />,
-  // },
+  {
+    path: "/gsap",
+    element: <GsapApp />,
+  },
+  {
+    path: "/particles",
+    element: <ParticlesApp />,
+  },
 ]);
 
 ReactDOM.createRoot(document.querySelector("#root")!).render(
