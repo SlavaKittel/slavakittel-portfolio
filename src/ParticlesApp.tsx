@@ -6,7 +6,6 @@ import * as THREE from "three";
 import { Html, useProgress } from "@react-three/drei";
 import ParticlesBlock from "./components/ParticlesBlock";
 
-
 export default function ParticlesApp() {
   //TODO not working investigate!
   function Loader() {
