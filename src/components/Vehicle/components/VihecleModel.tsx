@@ -56,7 +56,8 @@ const VehicleModel = forwardRef<VehicleRef, VehicleModelProps>(function VehicleM
   const bottomLeftWheelObject = useRef<Group>(null!);
   const bottomRightWheelObject = useRef<Group>(null!);
 
-  const bmwE30Chassis = useLoader(GLTFLoader, "./glb-models/bmwE30.glb");
+  // TODO add types
+  const bmwE30Chassis = useLoader<any, any, any>(GLTFLoader, "./glb-models/bmwE30.glb");
 
   const indexRightAxis = 2;
   const indexForwardAxis = 0;

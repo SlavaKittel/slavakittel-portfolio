@@ -6,7 +6,7 @@ import {
 } from "react-router-dom";
 import App from "./App";
 import GsapApp from "./GsapApp";
-import ParticlesApp from "./ParticlesApp";
+import ParticlesHeartApp from "./ParticlesHeartApp";
 
 const router = createBrowserRouter([
   {
@@ -18,8 +18,8 @@ const router = createBrowserRouter([
     element: <GsapApp />,
   },
   {
-    path: "/particles",
-    element: <ParticlesApp />,
+    path: "/heart",
+    element: <ParticlesHeartApp />,
   },
 ]);
 

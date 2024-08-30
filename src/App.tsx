@@ -1,5 +1,5 @@
 import { useState, useEffect, Suspense, useCallback } from "react";
-import { Canvas, useLoader } from "@react-three/fiber";
+import { Canvas, useLoader, LoaderProto } from "@react-three/fiber";
 import styled, { keyframes } from "styled-components";
 import { isMobile } from "react-device-detect";
 import { TextureLoader } from "three/src/loaders/TextureLoader";
@@ -147,7 +147,7 @@ export default function App() {
 
   //Ground Texture
   const [groundRoughness, groundNormal, groundAoMap] = useLoader(
-    TextureLoader,
+    TextureLoader as any,
     [
       "./texture/MetalBronzeWorn001/MetalBronzeWorn001_ROUGHNESS_1K_METALNESS.jpg",
       "./texture/MetalBronzeWorn001/MetalBronzeWorn001_NRM_1K_METALNESS.jpg",
@@ -178,7 +178,7 @@ export default function App() {
     boundaryNormalMap,
     boundaryRoughnessMap,
     boundaryAoMap,
-  ] = useLoader(TextureLoader, [
+  ] = useLoader(TextureLoader as any, [
     nameBoundaryTexture("COL"),
     nameBoundaryTexture("DISP"),
     nameBoundaryTexture("NRM"),
