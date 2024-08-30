@@ -20,7 +20,7 @@ const SocialNetworkLogo = ({
   model,
 }: SocialNetworkLogoProps) => {
   const logoRef = useRef<LogoRef>();
-  const logoModel = useLoader(GLTFLoader, model);
+  const logoModel = useLoader(GLTFLoader as any, model);
   const [hovered, setHover] = useState(false);
   const [mouseDown, setMouseDown] = useState(false);
 

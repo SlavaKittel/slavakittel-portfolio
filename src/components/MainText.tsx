@@ -32,7 +32,7 @@ const MainText = ({}: TextProps) => {
     const nameTexture = (type: string) =>
       `./texture/DiamondPlate008B/DiamondPlate008B_1K-JPG_${type}.jpg`;
     const [colorMap, displacementMap, normalMap, roughnessMap, aoMap] =
-      useLoader(TextureLoader, [
+      useLoader(TextureLoader as any, [
         nameTexture("Color"),
         nameTexture("Displacement"),
         nameTexture("NormalGL"),
