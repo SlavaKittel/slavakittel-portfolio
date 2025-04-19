@@ -9,24 +9,24 @@ type TextProps = {};
 const MainText = ({}: TextProps) => {
   const lettersArrayMyName = [
     "S",
-    "L",
-    "A",
-    "V",
-    "A",
     "K",
     "I",
     "T",
+    "S",
     "T",
-    "E",
-    "L",
+    "U",
+    "D",
+    "I",
+    "O",
   ];
   const lettersArrayBeCreaive = ["be", "creative"];
   const lettersArrayFunZone = ["fun", "zone"];
 
   const mainTextMyName = lettersArrayMyName.map((letter, index) => {
     const positionLetterByZ = () => {
-      if (index > 4 && index < 7) return -(index * 1.4 - 6);
-      if (index >= 7) return -(index * 1.4 - 6.5);
+      if (index === 3) return -(index * 1.3 - 8.0);
+      if (index > 3 && index < 7) return -(index * 1.4 - 5);
+      if (index >= 7) return -(index * 1.4 - 4.5);
       return -(index * 1.3 - 7.5);
     };
     const nameTexture = (type: string) =>
@@ -61,7 +61,7 @@ const MainText = ({}: TextProps) => {
     return (
       <RigidBody
         colliders="hull"
-        position={[-85, 5.74, positionLetterByZ()]}
+        position={[-85, 10.74, positionLetterByZ()]}
         rotation-y={Math.PI * 0.5}
         key={`${index}-${letter}`}
         friction={1}

@@ -126,13 +126,13 @@ const FunZone = ({
         color={isCubesFlying ? "#50e7d7" : "#5eb0a8"}
         fontSize={1}
         font="/fonts/FjallaOne-Regular.ttf"
-        position={[positionX, 0, 0]}
+        position={[positionX, 0.1, 0]}
         rotation={[Math.PI / 2, Math.PI, -Math.PI / 2]}
         maxWidth={17}
         lineHeight={1.0}
         textAlign="center"
       >
-        Park the car and wait here
+        PARK & POP
       </Text>
 
       {isCubesFlying && cubesBlock}

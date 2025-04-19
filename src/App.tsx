@@ -33,7 +33,7 @@ export default function App() {
     perfVisible: true,
     debug: false,
   });
-  const [isKeydown, setKeydown] = useState(true);
+  const [isKeydown, setKeydown] = useState(false);
   const [isVehicleBack, setVehicleBack] = useState(false);
   const [isJoystikStart, setJoystikStart] = useState(false);
 
@@ -171,7 +171,7 @@ export default function App() {
 
   // Boundary Texture
   const nameBoundaryTexture = (type: string) =>
-    `./texture/BricksLongThinRunningExtruded001/BricksLongThinRunningExtruded001_${type}_1K_METALNESS.jpg`;
+    `./texture/TilesZelligeSquaresWeathered001/TilesZelligeSquaresWeathered001_${type}_1K.jpg`;
   const [
     boundaryColorMap,
     boundaryDisplacementMap,
@@ -179,10 +179,10 @@ export default function App() {
     boundaryRoughnessMap,
     boundaryAoMap,
   ] = useLoader(TextureLoader as any, [
-    nameBoundaryTexture("COL"),
+    nameBoundaryTexture("COL_VAR1"),
     nameBoundaryTexture("DISP"),
     nameBoundaryTexture("NRM"),
-    nameBoundaryTexture("ROUGHNESS"),
+    nameBoundaryTexture("GLOSS"),
     nameBoundaryTexture("AO"),
   ]);
 
@@ -194,8 +194,8 @@ export default function App() {
     const repeat = 0.4;
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
-    texture.repeat.x = repeat * 20;
-    texture.repeat.y = repeat * 1;
+    texture.repeat.x = repeat * 40;
+    texture.repeat.y = repeat * 0.6;
   };
 
   repeatBoundaryTextures(boundaryColorMap);
@@ -253,21 +253,21 @@ export default function App() {
             >
               <Stars
                 radius={2}
-                depth={7}
-                count={300}
-                factor={isMobile ? 2.1 : 1}
+                depth={20}
+                count={isMobile ? 600 : 900}
+                factor={isMobile ? 2.1 : 2}
                 saturation={500}
                 fade
                 speed={0.9}
               />
               {perfVisible && <Perf position="top-left" />}
-              <color args={["#153030"]} attach="background" />
+              <color args={["#000605"]} attach="background" />
               <InfoText />
               {/* Lights */}
               <Lights />
               {/* Video Examples */}
               <VideoSliderShaderBlock
-                position={[-55, 0.01, 0]}
+                position={[-55, 0.05, 0]}
                 video1="video/skate1200x900.mp4"
                 video2="video/furniture1200x900.mp4"
                 toggleSlider={toggleSliderOne}
@@ -277,7 +277,7 @@ export default function App() {
                 }}
               />
               <VideoSliderShaderBlock
-                position={[-37, 0.01, 0]}
+                position={[-37, 0.05, 0]}
                 video1="video/top-view1200x90.mp4"
                 video2="video/scooter1200x900.mp4"
                 toggleSlider={toggleSliderTwo}
@@ -330,12 +330,12 @@ export default function App() {
                 </ScrollControls>
                 {/* Web-site boundary */}
                 <RigidBody colliders={false} type="fixed">
-                  <mesh position={[-38, 1.45, 9.3]} rotation-x={0.1}>
+                  <mesh position={[-38, 1.60, 9.3]} rotation-x={0.2}>
                     <CuboidCollider
                       args={[122 / 2, 3 / 2, 0.3 / 2]}
                       position={[0, 0, 0]}
                     />
-                    <boxGeometry args={[122, 3, 0.3]} />
+                    <boxGeometry args={[250, 3, 0.3]} />
                     <meshStandardMaterial
                       displacementScale={0}
                       displacementBias={0}
@@ -344,16 +344,16 @@ export default function App() {
                       normalMap={boundaryNormalMap}
                       roughnessMap={boundaryRoughnessMap}
                       aoMap={boundaryAoMap}
-                      metalness={0.65}
-                      roughness={0.5}
+                      metalness={0.95}
+                      roughness={1}
                     />
                   </mesh>
-                  <mesh position={[-38, 1.45, -9.3]} rotation-x={-0.1}>
+                  <mesh position={[-38, 1.60, -9.3]} rotation-x={-0.2}>
                     <CuboidCollider
                       args={[122 / 2, 3 / 2, 0.3 / 2]}
                       position={[0, 0, 0]}
                     />
-                    <boxGeometry args={[122, 3, 0.3]} />
+                    <boxGeometry args={[250, 3, 0.3]} />
                     <meshStandardMaterial
                       displacementScale={0}
                       displacementBias={0}
@@ -362,8 +362,8 @@ export default function App() {
                       normalMap={boundaryNormalMap}
                       roughnessMap={boundaryRoughnessMap}
                       aoMap={boundaryAoMap}
-                      metalness={0.65}
-                      roughness={0.5}
+                      metalness={0.95}
+                      roughness={1}
                     />
                   </mesh>
                 </RigidBody>

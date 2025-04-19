@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
-import { isMobile } from "react-device-detect";
+import { ConsoleView, isMobile } from "react-device-detect";
 
 import { useControls } from "../../hooks/use-controls";
 
@@ -262,19 +262,24 @@ export default function Vehicle({
       return 27 * ratioScreen;
     };
     const scrollPosition = () => {
+      const getScrollPosition = () => {
+        if (ratioScreen > 1) return 40;
+        return 40 * ratioScreen
+      };
       if (isVideoBlock === 1) return -65;
       if (isVideoBlock === 2) return -47;
-      return scroll.offset * 2 * 54 - 88;
+      return scroll.offset * 2 * 54 - 88 - (getScrollPosition());
     };
+
 
     // axises calculation
     const videoBlockX = isVideoBlock ? 0.01 : 20;
-    const videoBlockY = isVideoBlock ? calcVideoBlockByRatioY() : 20;
+    const videoBlockY = isVideoBlock ? calcVideoBlockByRatioY() : 40;
     const ratioScreenY = ratioScreen > 1 ? 9 : 3;
     const scrollOrVehiclePositionX =
       isKeydown && !isVideoBlock ? newChassisTranslation.x : scrollPosition();
     const scrollOrVehiclePositionZ =
-      isKeydown && !isVideoBlock ? 0.3 * newChassisTranslation.z : 0;
+      isKeydown && !isVideoBlock ? 1 * newChassisTranslation.z : 0;
 
     // set current scroll
     setCurrentScroll(scroll.range(0, 0));
@@ -285,13 +290,19 @@ export default function Vehicle({
       new THREE.Vector3(10, ratioScreenY, 0),
       calculatedCoefficientScale()
     );
-    newCameraPosition.add(new THREE.Vector3(scrollOrVehiclePositionX, 0, 0));
+    newCameraPosition.add(new THREE.Vector3(scrollOrVehiclePositionX, 0, scrollOrVehiclePositionZ));
 
     // newCameraLookAt
-    newCameraLookAt.set(10, 10, 0);
-    newCameraLookAt.add(
-      new THREE.Vector3(scrollOrVehiclePositionX, 0, scrollOrVehiclePositionZ)
-    );
+    if (!isKeydown && !isVideoBlock) {
+      newCameraLookAt.copy(currentCameraPosition.current);
+      newCameraLookAt.y -= 1000; 
+    } else {
+      newCameraLookAt.copy(currentCameraPosition.current);
+      newCameraLookAt.set(10, 10, 0);
+      newCameraLookAt.add(
+        new THREE.Vector3(scrollOrVehiclePositionX, 0, scrollOrVehiclePositionZ)
+      );
+    }
 
     // smooth animation
     currentCameraPosition.current.lerp(newCameraPosition, speedAnimation);
@@ -299,6 +310,7 @@ export default function Vehicle({
 
     // set camera
     state.camera.position.copy(currentCameraPosition.current);
+    state.camera.up.set(-1, 0, 0); 
     state.camera.lookAt(currentCameraLookAt.current);
   });
 
