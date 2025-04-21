@@ -298,13 +298,13 @@ export default function App() {
                 {/* Social links */}
                 <SocialNetworkLogo
                   position={[-18, 1.4, 2.5]}
-                  link="https://www.linkedin.com/in/slavakittel/"
+                  link="https://www.linkedin.com/company/s-k-it"
                   model="./glb-models/linkedin-logo.glb"
                 />
                 <SocialNetworkLogo
                   position={[-18, 1.4, -2.5]}
-                  link="https://github.com/SlavaKittel"
-                  model="./glb-models/github-logo.glb"
+                  link="mailto:hello@skitstudio.com"
+                  model="./glb-models/mail-logo.glb"
                 />
                 {/* Fun Zone and Test Performance */}
                 <FunZone

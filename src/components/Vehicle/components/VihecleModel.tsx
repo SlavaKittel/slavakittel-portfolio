@@ -195,7 +195,7 @@ const VehicleModel = forwardRef<VehicleRef, VehicleModelProps>(function VehicleM
       <RigidBody
         ref={chassisRigidBodyRef}
         colliders={false}
-        position={[-90, 4, 0]}
+        position={[-80.9, 4, 0]}
         rotation={[0, 0.2, 0]}
       >
         <primitive

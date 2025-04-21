@@ -263,8 +263,9 @@ export default function Vehicle({
     };
     const scrollPosition = () => {
       const getScrollPosition = () => {
-        if (ratioScreen > 1) return 40;
-        return 40 * ratioScreen
+        if (ratioScreen > 1) return 32;
+        if (ratioScreen < 0.34) return 65 * ratioScreen;
+        return 35 * ratioScreen
       };
       if (isVideoBlock === 1) return -65;
       if (isVideoBlock === 2) return -47;

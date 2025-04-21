@@ -9,7 +9,7 @@ const InfoText = ({}: TextProps) => {
         color="#e8e8e8"
         fontSize={1}
         font="/fonts/FjallaOne-Regular.ttf"
-        position={[-78, 0.1, 0]}
+        position={[-90, 0.1, 0]}
         rotation={[Math.PI / 2, Math.PI, -Math.PI / 2]}
         maxWidth={17}
         lineHeight={1.2}
@@ -21,7 +21,7 @@ const InfoText = ({}: TextProps) => {
         color="#e8e8e8"
         fontSize={1}
         font="/fonts/FjallaOne-Regular.ttf"
-        position={[-74, 0.1, 0]}
+        position={[-86.5, 0.1, 0]}
         rotation={[Math.PI / 2, Math.PI, -Math.PI / 2]}
         maxWidth={16}
         lineHeight={1.2}

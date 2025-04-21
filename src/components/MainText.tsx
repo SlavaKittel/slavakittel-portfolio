@@ -61,7 +61,7 @@ const MainText = ({}: TextProps) => {
     return (
       <RigidBody
         colliders="hull"
-        position={[-85, 10.74, positionLetterByZ()]}
+        position={[-77, 8.74, positionLetterByZ()]}
         rotation-y={Math.PI * 0.5}
         key={`${index}-${letter}`}
         friction={1}
@@ -98,7 +98,7 @@ const MainText = ({}: TextProps) => {
     return (
       <RigidBody
         colliders="cuboid"
-        position={[-82, 5.74, positionLetterByZ]}
+        position={[-74, 5.74, positionLetterByZ]}
         rotation-z={Math.PI * 0.5}
         rotation-x={Math.PI * 1.5}
         key={`${index}-${letter}`}
