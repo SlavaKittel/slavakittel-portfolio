@@ -254,22 +254,22 @@ export default function Vehicle({
     };
     const scrollPosition = () => {
       const getScrollPosition = () => {
-        if (ratioScreen > 1) return 32;
-        if (ratioScreen < 0.34) return 65 * ratioScreen;
-        return 35 * ratioScreen
+        if (ratioScreen <= 0.5) return 20;
+        if (ratioScreen >= 0.9) return 30;
+        const t = (ratioScreen - 0.5) / (0.9 - 0.5);
+        const smoothT = t * t * (3 - 2 * t);
+        return 20 + (28 - 20) * smoothT;
       };
       if (isVideoBlock === 1) return -65;
       if (isVideoBlock === 2) return -47;
       return scroll.offset * 2 * 54 - 88 - (getScrollPosition());
     };
-
-    
     
     // axises calculation
     const getYPosition = () => {
       if (ratioScreen > 1) return 20 * ratioScreen;
       if (ratioScreen > 0.58) return 30 * ratioScreen;
-      return 20
+      return 25
     }
     const videoBlockX = isVideoBlock ? 0.01 : 20;
     const videoBlockY = isVideoBlock ? calcVideoBlockByRatioY() : getYPosition();
