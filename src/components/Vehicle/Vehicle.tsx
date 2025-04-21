@@ -272,10 +272,16 @@ export default function Vehicle({
       return scroll.offset * 2 * 54 - 88 - (getScrollPosition());
     };
 
-
+    
+    
     // axises calculation
+    const getYPosition = () => {
+      if (ratioScreen > 1) return 20 * ratioScreen;
+      if (ratioScreen > 0.58) return 30 * ratioScreen;
+      return 20
+    }
     const videoBlockX = isVideoBlock ? 0.01 : 20;
-    const videoBlockY = isVideoBlock ? calcVideoBlockByRatioY() : 40;
+    const videoBlockY = isVideoBlock ? calcVideoBlockByRatioY() : getYPosition();
     const ratioScreenY = ratioScreen > 1 ? 9 : 3;
     const scrollOrVehiclePositionX =
       isKeydown && !isVideoBlock ? newChassisTranslation.x : scrollPosition();
