@@ -5,11 +5,7 @@ import { isMobile } from "react-device-detect";
 import { TextureLoader } from "three/src/loaders/TextureLoader";
 import * as THREE from "three";
 
-import { Leva } from "leva";
-
-import { Perf } from "r3f-perf";
 import { Physics, RigidBody, CuboidCollider } from "@react-three/rapier";
-import { useControls as useLeva } from "leva";
 import {
   ScrollControls,
   MeshReflectorMaterial,
@@ -29,10 +25,6 @@ import Lights from "./components/Lights";
 import LoadingScreen from "./components/LoadingScreen";
 
 export default function App() {
-  const { perfVisible, debug } = useLeva({
-    perfVisible: true,
-    debug: false,
-  });
   const [isKeydown, setKeydown] = useState(false);
   const [isVehicleBack, setVehicleBack] = useState(false);
   const [isJoystikStart, setJoystikStart] = useState(false);
@@ -209,7 +201,6 @@ export default function App() {
       <Suspense fallback={null}>
         {
           <AppStyled $isVideoBlock={isVideoBlock}>
-            <Leva collapsed />
             {isMobile && (
               <ControlStyled $joystikSmall={joystickSize() === 80}>
                 <div className="joystik-block">
@@ -260,7 +251,6 @@ export default function App() {
                 fade
                 speed={0.9}
               />
-              {perfVisible && <Perf position="top-left" />}
               <color args={["#000605"]} attach="background" />
               <InfoText />
               {/* Lights */}
@@ -290,7 +280,6 @@ export default function App() {
                 timeStep={1 / 400}
                 updatePriority={-50}
                 gravity={[0, -9.08, 0]}
-                debug={debug}
                 maxStabilizationIterations={8}
               >
                 {/* Main text */}
