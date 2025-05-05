@@ -268,8 +268,8 @@ export default function Vehicle({
     // axises calculation
     const getYPosition = () => {
       if (ratioScreen > 1) return 20 * ratioScreen;
-      if (ratioScreen > 0.58) return 30 * ratioScreen;
-      return 25
+      if (ratioScreen > 0.58) return 70 * ratioScreen;
+      return 45
     }
     const videoBlockX = isVideoBlock ? 0.01 : 20;
     const videoBlockY = isVideoBlock ? calcVideoBlockByRatioY() : getYPosition();
