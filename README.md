@@ -1,6 +1,6 @@
 ### Hi there 👋
 
-Go to the https://www.slavakittel.com/ 
+Go to the https://www.skitstudio.com
 
 start project: npm run dev
 
